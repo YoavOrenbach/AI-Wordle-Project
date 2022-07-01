@@ -18,37 +18,12 @@ class Grid:
 
     def enter_letter(self, letter):
         letter = letter.upper()
-        #letter = chr(letter).upper()
-        #print(f"Request to enter letter: {letter}....")
         if letter in AVAILABLE_LETTERS:
             if self.current_column == 5:  # user has already entered 5 letters
                 print("Sorry Request cannot be processed")
                 return
             self.matrix[self.current_row][self.current_column].assign_letter(letter)
             self.current_column += 1
-
-    def backspace(self):
-        """
-        !!! This method is not functioning. NEEDS DEBUGGING !!!
-        """
-        # Checks call for valid backspace operation at removes letter from cell
-        print(f"REQUESTING A BACKSPACEs....")
-        if self.current_column < 1:
-            return
-        if self.matrix[self.current_row][self.current_column - 1].get_letter() != None:
-            self.matrix[self.current_row][self.current_column -
-                                          1].remove_letter()
-            if self.current_column > 0:
-                self.current_column -= 1
-
-    def retrieve_word(self):
-        word = ""
-        for cell in self.matrix[self.current_row]:
-            try:
-                word += cell.get_letter()
-            except:
-                return word
-        return word
 
     def submit_word(self, verdict):
         hash = {"g": GREEN, "b": GREY, "y": YELLOW}
@@ -114,10 +89,8 @@ class GraphicalInterface:
         self.window = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("WORDLE REDEEMED")
         self.target_word = target_word
-        self.guesses_left = 6
         self.sharable_verdict = []
         self.grid = Grid()
-        #self.event_handler()
         self.render_graphics()
 
     def show_error_message(self, message):
@@ -125,16 +98,6 @@ class GraphicalInterface:
         self.window.blit(message_screen, (90, 620))
         pygame.display.update()
         pygame.time.delay(500)
-
-    def load_ending_screen(self, win=True):
-        message = ("YOU WON!" if win else "YOU LOST!") + \
-                  f" THE WORD WAS: {self.target_word}"
-        message_screen = FONT.render(message, False, (255, 0, 0))
-        self.window.blit(message_screen, (65, 620))
-        #self.window.blit(FONT.render("PRESS ANY KEY TO RESTART", False, (255, 191, 0)), (85, 80))
-        pygame.display.update()
-        pygame.display.quit()
-        #pygame.quit()
 
     def render_graphics(self):
         self.window.fill(WHITE)
@@ -166,10 +129,18 @@ class GraphicalInterface:
         return verdict
 
     def event_handler(self, guess):
-        print(f"TARGET WORD: {self.target_word}, guess: {guess}")
+        #print(f"TARGET WORD: {self.target_word}, guess: {guess}")
         for letter in guess:
             self.grid.enter_letter(letter)
         current_verdict = self.generate_verdict(guess)
         self.grid.submit_word(current_verdict)
-        self.guesses_left -= 1
         self.render_graphics()
+
+    def load_ending_screen(self, win=True):
+        message = ("YOU WON!" if win else "YOU LOST!") + f" THE WORD WAS: {self.target_word}"
+        message_screen = FONT.render(message, False, (255, 0, 0))
+        self.window.blit(message_screen, (65, 620))
+        #self.window.blit(FONT.render("PRESS ANY KEY TO RESTART", False, (255, 191, 0)), (85, 80))
+        pygame.display.update()
+        pygame.display.quit()
+        #pygame.quit()

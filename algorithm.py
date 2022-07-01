@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import random
-
+import util
 
 class Algorithm(ABC):
     def __init__(self, name):
@@ -18,7 +18,7 @@ class Algorithm(ABC):
 
 class Random(Algorithm):
     def __init__(self):
-        super(Random, self).__init__("random")
+        super(Random, self).__init__("Random")
         self.guess_count = 0
         self.possible_guesses = []
 
@@ -33,6 +33,42 @@ class Random(Algorithm):
 
     def reset(self):
         self.guess_count = 0
+
+
+class MiniMax(Algorithm):
+    def __init__(self):
+        super(MiniMax, self).__init__("MiniMax")
+        util.raiseNotDefined()
+
+    def next_guess(self, game_state, game):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
+
+
+class Entropy(Algorithm):
+    def __init__(self):
+        super(Entropy, self).__init__("Entropy")
+        util.raiseNotDefined()
+
+    def next_guess(self, game_state, game):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
+
+
+class ReinforcementLearning(Algorithm):
+    def __init__(self):
+        super(ReinforcementLearning, self).__init__("Reinforcement learning")
+        util.raiseNotDefined()
+
+    def next_guess(self, game_state, game):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
 
 
 def remove_impossible_words(last_state, word_list):
@@ -54,16 +90,14 @@ def remove_impossible_words(last_state, word_list):
             return False
 
         # remove words if they have misplaced letters in the wrong spot
-        if any( (word[idx] == letter) for idx, letter in misplaced_letters ):
+        if any((word[idx] == letter) for idx, letter in misplaced_letters):
             return False
 
         # remove words that don't match correct letters
-        if any( (word[idx] != letter) for idx, letter in correct_letters ):
+        if any((word[idx] != letter) for idx, letter in correct_letters):
             return False
 
         return True
 
-    new_possible_guesses = list( filter(should_keep_word, word_list) )
-
-    total_removed = len(word_list) - len(new_possible_guesses)
+    new_possible_guesses = list(filter(should_keep_word, word_list))
     return new_possible_guesses

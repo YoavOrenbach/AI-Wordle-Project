@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 import random
+import util
 
 
 class Game(ABC):
-    def __init__(self):
+    def __init__(self, name):
         super(Game, self).__init__()
+        self.name = name
 
     @abstractmethod
     def guess(self, word):
@@ -21,7 +23,7 @@ class Game(ABC):
 
 class Wordle(Game):
     def __init__(self, words, max_iter=6, word=None):
-        super(Wordle, self).__init__()
+        super(Wordle, self).__init__("Wordle")
         self.word_list = words
         self.max_iter = max_iter
         self.cur_iter = 0
@@ -29,7 +31,6 @@ class Wordle(Game):
 
     def guess(self, word):
         word = word.lower()
-
         if word not in self.word_list:
             raise ValueError('invalid word')
 
@@ -40,20 +41,72 @@ class Wordle(Game):
 
         ans = []
         for idx, letter in enumerate(word):
-
             if letter == self.word[idx]:
                 ans.append('CORRECT')
             elif letter in self.word:
                 ans.append('MISPLACED')
             else:
                 ans.append('INCORRECT')
-
         return ans
 
     def reset(self, update_word=False):
         self.cur_iter = 0
         if update_word:
             self.word = random.choice(self.word_list)
+
+    def get_word_list(self):
+        return self.word_list
+
+
+class Absurdle(Game):
+    def __init__(self, words, max_iter=6, word=None):
+        super(Absurdle, self).__init__("Absurdle")
+        self.word_list = words
+        self.max_iter = max_iter
+        self.cur_iter = 0
+        self.word = random.choice(self.word_list) if word is None else word
+
+    def guess(self, word):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
+
+    def get_word_list(self):
+        return self.word_list
+
+
+class NoisyWordle(Game):
+    def __init__(self, words, max_iter=6, word=None):
+        super(NoisyWordle, self).__init__("Noisy Wordle")
+        self.word_list = words
+        self.max_iter = max_iter
+        self.cur_iter = 0
+        self.word = random.choice(self.word_list) if word is None else word
+
+    def guess(self, word):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
+
+    def get_word_list(self):
+        return self.word_list
+
+
+class YellowWordle(Game):
+    def __init__(self, words, max_iter=6, word=None):
+        super(YellowWordle, self).__init__("Yellow Wordle")
+        self.word_list = words
+        self.max_iter = max_iter
+        self.cur_iter = 0
+        self.word = random.choice(self.word_list) if word is None else word
+
+    def guess(self, word):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
 
     def get_word_list(self):
         return self.word_list
