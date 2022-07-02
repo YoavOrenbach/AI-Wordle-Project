@@ -104,35 +104,23 @@ class GraphicalInterface:
         self.grid.draw(self.window)
         pygame.display.update()
 
-    def generate_verdict(self, guessed_word):
-        target_word_copy = [letter for letter in self.target_word]
-        verdict = ['b' for i in range(5)]
+    def generate_verdict(self, verdict):
+        verdict_copy = verdict.copy()
+        for i in range(len(verdict_copy)):
+            if int(verdict_copy[i]) == 0:
+                verdict_copy[i] = "g"
+            elif int(verdict_copy[i]) == 1:
+                verdict_copy[i] = "y"
+            else:
+                verdict_copy[i] = "b"
+        self.sharable_verdict.append(verdict_copy)
+        return verdict_copy
 
-        # first list out the correct letters in the correct spot
-        for i in range(5):
-            if target_word_copy[i] == guessed_word[i]:
-                target_word_copy[i] = "*"
-                verdict[i] = "g"
-
-        # check for letters in the incorrect spots
-        for i in range(5):  # outer loop for the guessed word
-            if verdict[i] != "b":  # skip this letter if it's already in correct spot
-                continue
-            for j in range(5):  # inner loop for the target word
-                if i == j or target_word_copy[j] == "*":
-                    continue
-                if guessed_word[i] == target_word_copy[j]:
-                    target_word_copy[j] = "*"
-                    verdict[i] = "y"
-                    break
-        self.sharable_verdict.append(verdict)
-        return verdict
-
-    def event_handler(self, guess):
+    def event_handler(self, guess, verdict):
         #print(f"TARGET WORD: {self.target_word}, guess: {guess}")
         for letter in guess:
             self.grid.enter_letter(letter)
-        current_verdict = self.generate_verdict(guess)
+        current_verdict = self.generate_verdict(verdict)
         self.grid.submit_word(current_verdict)
         self.render_graphics()
 

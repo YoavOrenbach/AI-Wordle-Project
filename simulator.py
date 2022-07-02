@@ -1,6 +1,7 @@
 import time
 import numpy as np
 from graphical_interface import GraphicalInterface
+from game import Pattern
 
 
 class Simulator:
@@ -33,21 +34,21 @@ class Simulator:
 
         while keep_guessing:
             guess = self.algo.next_guess(game_state, self.game)
-            result = self.game.guess(guess)
+            result = self.game.step(guess)
             game_state.append((guess, result))
             num_guesses += 1
             if result is None:
                 break
             num_letters_guessed += len(guess)
-            num_correct_letters_guessed += result.count('CORRECT')
-            num_misplaced_letters_guessed += result.count('MISPLACED')
-            num_incorrect_letters_guessed += result.count('INCORRECT')
-            if result.count('CORRECT') == len(result):
+            num_correct_letters_guessed += result.count(int(Pattern.correct))
+            num_misplaced_letters_guessed += result.count(int(Pattern.misplaced))
+            num_incorrect_letters_guessed += result.count(int(Pattern.incorrect))
+            if result.count(int(Pattern.correct)) == len(result):
                 keep_guessing = False
                 correct_answer = True
 
             if user_interface:
-                gi.event_handler(guess)
+                gi.event_handler(guess, result)
                 time.sleep(0.5)
 
         if user_interface:
