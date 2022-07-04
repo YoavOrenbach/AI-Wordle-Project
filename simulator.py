@@ -1,15 +1,22 @@
 import time
 import numpy as np
 from graphical_interface import GraphicalInterface
-from game import Pattern
+from game import Placing
+from game_state import GameState
 
 
 class Simulator:
+    """A class for simulating wordle games given a game and algorithm objects"""
     def __init__(self, game, algo):
         self.game = game
         self.algo = algo
 
     def simulate_games(self, num_games, user_interface=True):
+        """
+        This method simulates a given number of game can show a pygame graphical interface
+        :param num_games: the number of games to simulate
+        :param user_interface: a boolean flag that determines if to show graphical interface or not.
+        """
         results = []
         start = time.time()
         for _ in range(num_games):
@@ -20,10 +27,14 @@ class Simulator:
         self.print_simulation_results(np.array(results), num_games, (end-start))
 
     def simulate_game(self, user_interface=True):
-        game_state = []
-        keep_guessing = True
-        num_guesses = 0
+        """
+        This method simulates a single game
+        :return: the stats for the game.
+        """
+        game_state = GameState(self.game.get_word_list())
+        done = False
         correct_answer = False
+        num_guesses = 0
         num_letters_guessed = 0
         num_correct_letters_guessed = 0
         num_misplaced_letters_guessed = 0
@@ -32,23 +43,22 @@ class Simulator:
         if user_interface:
             gi = GraphicalInterface(self.game.word)
 
-        while keep_guessing:
-            guess = self.algo.next_guess(game_state, self.game)
-            result = self.game.step(guess)
-            game_state.append((guess, result))
+        while not done:
+            guess = self.algo.get_action(game_state)
+            pattern, done = self.game.step(guess)
+            game_state.add_state(guess, pattern)
             num_guesses += 1
-            if result is None:
+            if not pattern:
                 break
             num_letters_guessed += len(guess)
-            num_correct_letters_guessed += result.count(int(Pattern.correct))
-            num_misplaced_letters_guessed += result.count(int(Pattern.misplaced))
-            num_incorrect_letters_guessed += result.count(int(Pattern.incorrect))
-            if result.count(int(Pattern.correct)) == len(result):
-                keep_guessing = False
+            num_correct_letters_guessed += pattern.count(int(Placing.correct))
+            num_misplaced_letters_guessed += pattern.count(int(Placing.misplaced))
+            num_incorrect_letters_guessed += pattern.count(int(Placing.incorrect))
+            if pattern.count(int(Placing.correct)) == len(pattern):
                 correct_answer = True
 
             if user_interface:
-                gi.event_handler(guess, result)
+                gi.event_handler(guess, pattern)
                 time.sleep(0.5)
 
         if user_interface:
@@ -58,6 +68,12 @@ class Simulator:
                num_misplaced_letters_guessed, num_incorrect_letters_guessed
 
     def print_simulation_results(self, all_stats, num_games, duration):
+        """
+        This method prints all the stats for the number of simulated wordle games.
+        :param all_stats: all the stats recorded during each game in the method simulate_game
+        :param num_games: the number of played games.
+        :param duration: the duration of the simulated games.
+        """
         cum_stats = np.sum(all_stats, axis=0)
         sub_six = (all_stats[:, 1] <= 6).sum() / num_games * 100.0
 

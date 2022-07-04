@@ -87,7 +87,7 @@ class GraphicalInterface:
 
     def __init__(self, target_word):
         self.window = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("WORDLE REDEEMED")
+        pygame.display.set_caption("WORDLE")
         self.target_word = target_word
         self.sharable_verdict = []
         self.grid = Grid()

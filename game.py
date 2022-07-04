@@ -4,8 +4,8 @@ import random
 import util
 
 
-class Pattern(IntEnum):
-    """An Enum for representing the color of every letter"""
+class Placing(IntEnum):
+    """An Enum for representing the placing color of every letter"""
     correct = 0
     misplaced = 1
     incorrect = 2
@@ -19,7 +19,10 @@ class Game(ABC):
 
     @abstractmethod
     def step(self, guess):
-        """Performs a single step in the game following a guess."""
+        """
+        Performs a single step in the game following a guess.
+        :return: the resulting pattern of each guess and a boolean flag if the game is done.
+        """
         pass
 
     @abstractmethod
@@ -34,12 +37,14 @@ class Game(ABC):
 
 
 class Wordle(Game):
+    """Classic Wordle game"""
     def __init__(self, words, max_iter=6, word=None):
         super(Wordle, self).__init__("Wordle")
         self.word_list = words
         self.max_iter = max_iter
         self.cur_iter = 0
         self.word = random.choice(self.word_list) if word is None else word
+        self.done = False
 
     def step(self, guess):
         guess = guess.lower()
@@ -47,36 +52,40 @@ class Wordle(Game):
             raise ValueError('invalid word')
 
         if self.max_iter is not None and self.cur_iter >= self.max_iter:
-            return None
+            self.done = True
+            return [], self.done
 
         self.cur_iter += 1
 
         target_word_copy = [letter for letter in self.word]
-        verdict = [int(Pattern.incorrect) for _ in range(5)]
+        pattern = [int(Placing.incorrect) for _ in range(5)]
 
         # first list out the correct letters in the correct spot
         for i in range(5):
             if target_word_copy[i] == guess[i]:
                 target_word_copy[i] = "*"
-                verdict[i] = int(Pattern.correct)
+                pattern[i] = int(Placing.correct)
 
         # check for letters in the incorrect spots
         for i in range(5):  # outer loop for the guessed word
-            if verdict[i] != int(Pattern.incorrect):  # skip this letter if it's already in correct spot
+            if pattern[i] != int(Placing.incorrect):  # skip this letter if it's already in correct spot
                 continue
             for j in range(5):  # inner loop for the target word
                 if i == j or target_word_copy[j] == "*":
                     continue
                 if guess[i] == target_word_copy[j]:
                     target_word_copy[j] = "*"
-                    verdict[i] = int(Pattern.misplaced)
+                    pattern[i] = int(Placing.misplaced)
                     break
-        return verdict
+        if pattern.count(int(Placing.correct)) == len(pattern):
+            self.done = True
+        return pattern, self.done
 
     def reset(self, update_word=False):
         self.cur_iter = 0
         if update_word:
             self.word = random.choice(self.word_list)
+        self.done = False
 
     def get_word_list(self):
         return self.word_list

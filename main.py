@@ -7,6 +7,10 @@ import itertools
 
 
 def parse_args():
+    """
+    Parses the command line arguments to decide on various game features.
+    :return: the Parsed arguments.
+    """
     parser = ArgumentParser()
     parser.add_argument('--word-list', type=str, default='word-list-all.txt', help='Used word list.')
     parser.add_argument('-n', '--num-games', type=int, default=20, help='# of games to simulate')
@@ -43,7 +47,7 @@ def main():
     elif args.game == 'absurdle':
         game = Absurdle(word_list)
     elif args.game == 'vocab_wordle':
-        game = Absurdle([''.join(p) for p in itertools.product(letters, repeat=5)])
+        game = Wordle([''.join(p) for p in itertools.product(letters, repeat=5)])
     elif args.game == 'noisy_wordle':
         game = NoisyWordle(word_list)
     else:
