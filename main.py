@@ -12,7 +12,6 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument('--word-list', type=str, default='word-list-all.txt', help='Used word list.')
     parser.add_argument('-n', '--num-games', type=int, default=20, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=True, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower, choices=['wordle', 'absurdle', 'vocab_wordle', 'noisy_wordle', 'yellow_wordle'],
@@ -45,18 +44,18 @@ def main():
 
     # select game
     if args.game == 'wordle':
-        game = Wordle(word_list_small)
+        game = Wordle(word_list_small, word_list_large)
     elif args.game == 'absurdle':
-        game = Absurdle(word_list_small)
+        game = Absurdle(word_list_small, word_list_large)
     elif args.game == 'vocab_wordle':
-        game = Wordle([''.join(p) for p in itertools.product(letters, repeat=5)])
+        game = Wordle(word_list_small, [''.join(p) for p in itertools.product(letters, repeat=5)])
     elif args.game == 'noisy_wordle':
-        game = NoisyWordle(word_list_small)
+        game = NoisyWordle(word_list_small, word_list_large)
     else:
-        game = YellowWordle(word_list_small)
+        game = YellowWordle(word_list_small, word_list_large)
 
     # Simulate games
-    simulator = Simulator(game, algo, word_list_large)
+    simulator = Simulator(game, algo)
     simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface)
 
 
