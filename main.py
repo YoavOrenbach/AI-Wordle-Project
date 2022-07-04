@@ -27,8 +27,10 @@ def main():
     args = parse_args()
 
     # Preprocess word list
-    with open(args.word_list, 'r') as f:
-        word_list = f.read().splitlines()
+    with open('word-list-all.txt', 'r') as f:
+        word_list_large = f.read().splitlines()
+    with open('word-list-solutions.txt', 'r') as f:
+        word_list_small = f.read().splitlines()
     letters = [letter for letter in string.ascii_lowercase]
 
     # select policy
@@ -43,18 +45,18 @@ def main():
 
     # select game
     if args.game == 'wordle':
-        game = Wordle(word_list)
+        game = Wordle(word_list_small)
     elif args.game == 'absurdle':
-        game = Absurdle(word_list)
+        game = Absurdle(word_list_small)
     elif args.game == 'vocab_wordle':
         game = Wordle([''.join(p) for p in itertools.product(letters, repeat=5)])
     elif args.game == 'noisy_wordle':
-        game = NoisyWordle(word_list)
+        game = NoisyWordle(word_list_small)
     else:
-        game = YellowWordle(word_list)
+        game = YellowWordle(word_list_small)
 
     # Simulate games
-    simulator = Simulator(game, algo)
+    simulator = Simulator(game, algo, word_list_large)
     simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface)
 
 

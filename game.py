@@ -48,8 +48,8 @@ class Wordle(Game):
 
     def step(self, guess):
         guess = guess.lower()
-        if guess not in self.word_list:
-            raise ValueError('invalid word')
+        #if guess not in self.word_list:
+        #    raise ValueError('invalid word')
 
         if self.max_iter is not None and self.cur_iter >= self.max_iter:
             self.done = True
@@ -100,6 +100,7 @@ class Absurdle(Game):
         self.word = random.choice(self.word_list) if word is None else word
 
     def step(self, guess):
+        """Your code here"""
         util.raiseNotDefined()
 
     def reset(self):

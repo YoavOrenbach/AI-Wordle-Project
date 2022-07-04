@@ -7,9 +7,10 @@ from game_state import GameState
 
 class Simulator:
     """A class for simulating wordle games given a game and algorithm objects"""
-    def __init__(self, game, algo):
+    def __init__(self, game, algo, word_list):
         self.game = game
         self.algo = algo
+        self.word_list = word_list
 
     def simulate_games(self, num_games, user_interface=True):
         """
@@ -31,7 +32,7 @@ class Simulator:
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameState(self.game.get_word_list())
+        game_state = GameState(self.word_list)
         done = False
         correct_answer = False
         num_guesses = 0
