@@ -1,12 +1,14 @@
 import time
 import numpy as np
+
+from common import Placing
 from graphical_interface import GraphicalInterface
-from game import Placing
 from game_state import GameState
 
 
 class Simulator:
     """A class for simulating wordle games given a game and algorithm objects"""
+
     def __init__(self, game, algo):
         self.game = game
         self.algo = algo
@@ -24,7 +26,7 @@ class Simulator:
             self.game.reset(update_word=True)
             self.algo.reset()
         end = time.time()
-        self.print_simulation_results(np.array(results), num_games, (end-start))
+        self.print_simulation_results(np.array(results), num_games, (end - start))
 
     def simulate_game(self, user_interface=True):
         """
@@ -81,7 +83,7 @@ class Simulator:
         print('# Games: {}'.format(num_games))
         print('# Wins:  {}'.format(cum_stats[0]))
         print('% <= 6 Guesses:    {:.3f}'.format(sub_six))
-        print('Avg Time per Game: {:.3f} sec'.format(duration/num_games))
+        print('Avg Time per Game: {:.3f} sec'.format(duration / num_games))
         print('Max # Guesses:     {:}'.format(all_stats[:, 1].max()))
         print('Min # Guesses:     {:}'.format(all_stats[:, 1].min()))
         print('Avg. # Guesses:    {:}'.format(cum_stats[1] / num_games))
@@ -90,4 +92,3 @@ class Simulator:
         print('% Correct Letters:   {:.3f}'.format(float(cum_stats[3]) / cum_stats[2] * 100))
         print('% Misplaced Letters: {:.3f}'.format(float(cum_stats[4]) / cum_stats[2] * 100))
         print('% Incorrect Letters: {:.3f}'.format(float(cum_stats[5]) / cum_stats[2] * 100))
-
