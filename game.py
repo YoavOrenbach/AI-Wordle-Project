@@ -13,9 +13,16 @@ class Placing(IntEnum):
 
 class Game(ABC):
     """An abstract class representing each Wordle type game"""
-    def __init__(self, name):
+
+    def __init__(self, name, secret_words, legal_words, max_iter=6, word=None):
         super(Game, self).__init__()
         self.name = name
+        self.secret_words = secret_words
+        self.legal_words = legal_words
+        self.max_iter = max_iter
+        self.cur_iter = 0
+        self.word = random.choice(self.secret_words) if word is None else word
+        self.done = False
 
     @abstractmethod
     def step(self, guess):
@@ -38,18 +45,13 @@ class Game(ABC):
 
 class Wordle(Game):
     """Classic Wordle game"""
-    def __init__(self, secret_words, words_list, max_iter=6, word=None):
-        super(Wordle, self).__init__("Wordle")
-        self.secret_words = secret_words
-        self.word_list = words_list
-        self.max_iter = max_iter
-        self.cur_iter = 0
-        self.word = random.choice(self.secret_words) if word is None else word
-        self.done = False
+
+    def __init__(self, secret_words, legal_words, max_iter=6, word=None):
+        super(Wordle, self).__init__("Wordle", secret_words, legal_words, max_iter, word)
 
     def step(self, guess):
         guess = guess.lower()
-        if guess not in self.word_list:
+        if guess not in self.legal_words:
             raise ValueError('invalid word')
 
         if self.max_iter is not None and self.cur_iter >= self.max_iter:
@@ -89,17 +91,12 @@ class Wordle(Game):
         self.done = False
 
     def get_word_list(self):
-        return self.word_list
+        return self.legal_words
 
 
 class Absurdle(Game):
-    def __init__(self, secret_words, words_list, max_iter=6, word=None):
-        super(Absurdle, self).__init__("Absurdle")
-        self.secret_words = secret_words
-        self.word_list = words_list
-        self.max_iter = max_iter
-        self.cur_iter = 0
-        self.word = random.choice(self.secret_words) if word is None else word
+    def __init__(self, secret_words, legal_words, max_iter=6, word=None):
+        super(Absurdle, self).__init__("Absurdle", secret_words, legal_words, max_iter, word)
 
     def step(self, guess):
         """Your code here"""
@@ -113,13 +110,8 @@ class Absurdle(Game):
 
 
 class NoisyWordle(Game):
-    def __init__(self, secret_words, words_list, max_iter=6, word=None):
-        super(NoisyWordle, self).__init__("Noisy Wordle")
-        self.secret_words = secret_words
-        self.word_list = words_list
-        self.max_iter = max_iter
-        self.cur_iter = 0
-        self.word = random.choice(self.secret_words) if word is None else word
+    def __init__(self, secret_words, legal_words, max_iter=6, word=None):
+        super(NoisyWordle, self).__init__("Noisy Wordle", secret_words, legal_words, max_iter, word)
 
     def step(self, guess):
         util.raiseNotDefined()
@@ -132,13 +124,8 @@ class NoisyWordle(Game):
 
 
 class YellowWordle(Game):
-    def __init__(self, secret_words, words_list, max_iter=6, word=None):
-        super(YellowWordle, self).__init__("Yellow Wordle")
-        self.secret_words = secret_words
-        self.word_list = words_list
-        self.max_iter = max_iter
-        self.cur_iter = 0
-        self.word = random.choice(self.secret_words) if word is None else word
+    def __init__(self, secret_words, legal_words, max_iter=6, word=None):
+        super(YellowWordle, self).__init__("Yellow Wordle", secret_words, legal_words, max_iter, word)
 
     def step(self, guess):
         util.raiseNotDefined()
