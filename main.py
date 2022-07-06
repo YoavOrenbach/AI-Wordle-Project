@@ -35,8 +35,8 @@ def main():
         word_list_small = f.read().splitlines()
     letters = [letter for letter in string.ascii_lowercase]
 
-    # select policy
-    algo = get_algorithm(AlgorithmType(args.algorithm))
+    # select algorithm
+    algorithm = get_algorithm(AlgorithmType(args.algorithm))
 
     # select game
     if args.game == 'wordle':
@@ -51,7 +51,7 @@ def main():
         game = YellowWordle(word_list_small, word_list_large)
 
     # Simulate games
-    simulator = Simulator(game, algo)
+    simulator = Simulator(game, algorithm)
     simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface)
 
 
