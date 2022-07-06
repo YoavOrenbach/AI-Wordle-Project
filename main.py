@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 from WordleGames import BasicWordle, Absurdle, NoisyWordle, YellowWordle
-from common import AlgorithmType
+from common import AlgorithmType, GameType
 from factories import get_algorithm
 from simulator import Simulator
 import string
@@ -17,10 +17,11 @@ def parse_args():
     parser.add_argument('-n', '--num-games', type=int, default=20, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=True, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
-                        choices=['wordle', 'absurdle', 'vocab_wordle', 'noisy_wordle', 'yellow_wordle'],
-                        default="wordle", help='which game to use')
-    parser.add_argument('-a', '--algorithm', type=str.lower, choices=['random', 'minimax', 'entropy', 'learning'],
-                        default='random', help='which algorithm to use')
+                        choices=[game_type.value for game_type in GameType],
+                        default=GameType.BasicWordle.value, help='which game to use')
+    parser.add_argument('-a', '--algorithm', type=str.lower,
+                        choices=[algorithm_type.value for algorithm_type in AlgorithmType],
+                        default=AlgorithmType.Random.value, help='which algorithm to use')
     return parser.parse_args()
 
 
