@@ -1,5 +1,5 @@
 import util
-from Algorithms.basic_wordle import BasicWordle
+from WordleGames.basic_wordle import BasicWordle
 
 
 class YellowWordle(BasicWordle):

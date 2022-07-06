@@ -1,6 +1,6 @@
 import random
 
-from Algorithms.abstract_wordle import AbstractWordle
+from WordleGames.abstract_wordle import AbstractWordle
 from common import Placing
 
 

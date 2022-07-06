@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 
-from Algorithms.absurdle import Absurdle
-from Algorithms.basic_wordle import BasicWordle
-from Algorithms.noisy_wordle import NoisyWordle
-from Algorithms.yellow_wordle import YellowWordle
+from WordleGames.absurdle import Absurdle
+from WordleGames.basic_wordle import BasicWordle
+from WordleGames.noisy_wordle import NoisyWordle
+from WordleGames.yellow_wordle import YellowWordle
 from algorithm import Random, Minimax, Entropy, Reinforcement
 from common import AlgorithmType
 from factories import get_algorithm

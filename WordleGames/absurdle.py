@@ -1,5 +1,5 @@
 import util
-from Algorithms.abstract_wordle import AbstractWordle
+from WordleGames.abstract_wordle import AbstractWordle
 
 
 class Absurdle(AbstractWordle):
