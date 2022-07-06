@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 class AlgorithmType(Enum):
@@ -15,3 +15,10 @@ class GameType(Enum):
     VocabWordle = "vocab_wordle"
     NoisyWordle = "noisy_wordle"
     YellowWordle = "yellow_wordle"
+
+
+class Placing(IntEnum):
+    """An Enum for representing the placing color of every letter"""
+    correct = 0
+    misplaced = 1
+    incorrect = 2

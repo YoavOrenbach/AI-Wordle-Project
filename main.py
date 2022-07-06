@@ -1,8 +1,12 @@
 from argparse import ArgumentParser
+
+from Algorithms.absurdle import Absurdle
+from Algorithms.basic_wordle import BasicWordle
+from Algorithms.noisy_wordle import NoisyWordle
+from Algorithms.yellow_wordle import YellowWordle
 from algorithm import Random, Minimax, Entropy, Reinforcement
 from common import AlgorithmType
 from factories import get_algorithm
-from game import Wordle, Absurdle, NoisyWordle, YellowWordle
 from simulator import Simulator
 import string
 import itertools
@@ -39,12 +43,13 @@ def main():
     algorithm = get_algorithm(AlgorithmType(args.algorithm))
 
     # select game
+    # TODO: create better factory
     if args.game == 'wordle':
-        game = Wordle(word_list_small, word_list_large)
+        game = BasicWordle(word_list_small, word_list_large)
     elif args.game == 'absurdle':
         game = Absurdle(word_list_small, word_list_large)
     elif args.game == 'vocab_wordle':
-        game = Wordle(word_list_small, [''.join(p) for p in itertools.product(letters, repeat=5)])
+        game = BasicWordle(word_list_small, [''.join(p) for p in itertools.product(letters, repeat=5)])
     elif args.game == 'noisy_wordle':
         game = NoisyWordle(word_list_small, word_list_large)
     else:

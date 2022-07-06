@@ -1,7 +1,8 @@
 import time
 import numpy as np
+
+from common import Placing
 from graphical_interface import GraphicalInterface
-from game import Placing
 from game_state import GameState
 
 

@@ -1,5 +1,5 @@
 import util
-from game import Placing
+from common import Placing
 
 
 class GameState:
