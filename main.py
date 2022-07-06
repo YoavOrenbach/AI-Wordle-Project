@@ -1,10 +1,6 @@
 from argparse import ArgumentParser
 
-from WordleGames.absurdle import Absurdle
-from WordleGames.basic_wordle import BasicWordle
-from WordleGames.noisy_wordle import NoisyWordle
-from WordleGames.yellow_wordle import YellowWordle
-from algorithm import Random, Minimax, Entropy, Reinforcement
+from WordleGames import BasicWordle, Absurdle, NoisyWordle
 from common import AlgorithmType
 from factories import get_algorithm
 from simulator import Simulator

@@ -1,4 +1,4 @@
-from algorithm import Random, Minimax, Expectimax, Entropy, Reinforcement
+from Algorithms import Random, Minimax, Expectimax, Entropy, Reinforcement
 from common import AlgorithmType
 
 
