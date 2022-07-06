@@ -18,6 +18,7 @@ class GameState:
     def add_state(self, guess, pattern):
         self.states.append((guess, pattern))
 
+    # TODO: make it a method that returns possible words, and add method returns legal words
     def filter_wordle_guesses(self, ):
         guess, pattern = self.states[-1]
 
