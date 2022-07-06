@@ -12,6 +12,7 @@ class Grid:
     """
     Implement a Grid class to add one more layer of abstraction
     """
+
     def __init__(self):
         self.matrix = [[Cell(i, j) for j in range(5)] for i in range(6)]
         self.current_row, self.current_column = 0, 0
@@ -117,7 +118,7 @@ class GraphicalInterface:
         return verdict_copy
 
     def event_handler(self, guess, verdict):
-        #print(f"TARGET WORD: {self.target_word}, guess: {guess}")
+        # print(f"TARGET WORD: {self.target_word}, guess: {guess}")
         for letter in guess:
             self.grid.enter_letter(letter)
         current_verdict = self.generate_verdict(verdict)
@@ -128,7 +129,7 @@ class GraphicalInterface:
         message = ("YOU WON!" if win else "YOU LOST!") + f" THE WORD WAS: {self.target_word}"
         message_screen = FONT.render(message, False, (255, 0, 0))
         self.window.blit(message_screen, (65, 620))
-        #self.window.blit(FONT.render("PRESS ANY KEY TO RESTART", False, (255, 191, 0)), (85, 80))
+        # self.window.blit(FONT.render("PRESS ANY KEY TO RESTART", False, (255, 191, 0)), (85, 80))
         pygame.display.update()
         pygame.display.quit()
-        #pygame.quit()
+        # pygame.quit()

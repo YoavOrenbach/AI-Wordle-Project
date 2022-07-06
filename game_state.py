@@ -4,6 +4,7 @@ from common import Placing
 
 class GameState:
     """A class for representing the game state"""
+
     def __init__(self, word_list):
         self.possible_guesses = word_list
         self.states = []  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
@@ -17,7 +18,7 @@ class GameState:
     def add_state(self, guess, pattern):
         self.states.append((guess, pattern))
 
-    def filter_wordle_guesses(self,):
+    def filter_wordle_guesses(self, ):
         guess, pattern = self.states[-1]
 
         correct_letters, removed_letters, misplaced_letters = [], [], []
