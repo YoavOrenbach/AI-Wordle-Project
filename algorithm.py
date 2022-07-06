@@ -6,6 +6,7 @@ from game_state import GameState
 
 class Algorithm(ABC):
     """An abstract class representing each algorithm used to solving the various games."""
+
     def __init__(self, name):
         super(Algorithm, self).__init__()
         self.name = name
@@ -38,9 +39,21 @@ class Random(Algorithm):
         self.guess_count = 0
 
 
-class MiniMax(Algorithm):
+class Minimax(Algorithm):
     def __init__(self):
-        super(MiniMax, self).__init__("MiniMax")
+        super(Minimax, self).__init__("MiniMax")
+        util.raiseNotDefined()
+
+    def get_action(self, game_state):
+        util.raiseNotDefined()
+
+    def reset(self):
+        util.raiseNotDefined()
+
+
+class Expectimax(Algorithm):
+    def __init__(self):
+        super(Minimax, self).__init__("MiniMax")
         util.raiseNotDefined()
 
     def get_action(self, game_state):
@@ -62,9 +75,9 @@ class Entropy(Algorithm):
         util.raiseNotDefined()
 
 
-class ReinforcementLearning(Algorithm):
+class Reinforcement(Algorithm):
     def __init__(self):
-        super(ReinforcementLearning, self).__init__("Reinforcement learning")
+        super(Reinforcement, self).__init__("Reinforcement learning")
         util.raiseNotDefined()
 
     def get_action(self, game_state):

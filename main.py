@@ -1,5 +1,7 @@
 from argparse import ArgumentParser
-from algorithm import Random, MiniMax, Entropy, ReinforcementLearning
+from algorithm import Random, Minimax, Entropy, Reinforcement
+from common import AlgorithmType
+from factories import get_algorithm
 from game import Wordle, Absurdle, NoisyWordle, YellowWordle
 from simulator import Simulator
 import string
@@ -14,7 +16,8 @@ def parse_args():
     parser = ArgumentParser()
     parser.add_argument('-n', '--num-games', type=int, default=20, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=True, help='show pygame interface')
-    parser.add_argument('-g', '--game', type=str.lower, choices=['wordle', 'absurdle', 'vocab_wordle', 'noisy_wordle', 'yellow_wordle'],
+    parser.add_argument('-g', '--game', type=str.lower,
+                        choices=['wordle', 'absurdle', 'vocab_wordle', 'noisy_wordle', 'yellow_wordle'],
                         default="wordle", help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower, choices=['random', 'minimax', 'entropy', 'learning'],
                         default='random', help='which algorithm to use')
@@ -33,14 +36,7 @@ def main():
     letters = [letter for letter in string.ascii_lowercase]
 
     # select policy
-    if args.algorithm == 'random':
-        algo = Random()
-    elif args.algorithm == 'minimax':
-        algo = MiniMax()
-    elif args.algorithm == 'entropy':
-        algo = Entropy()
-    else:
-        algo = ReinforcementLearning()
+    algo = get_algorithm(AlgorithmType(args.algorithm))
 
     # select game
     if args.game == 'wordle':
