@@ -10,7 +10,30 @@ class BasicWordle(AbstractWordle):
     def __init__(self, secret_words, legal_words, max_iter=6, word=None):
         super(BasicWordle, self).__init__("Wordle", secret_words, legal_words, max_iter, word)
 
-    def step(self, guess):
+    def get_pattern(self, guess: str, secret_word: str):
+        target_word_letters = [letter for letter in secret_word]
+        pattern = [int(Placing.incorrect) for _ in range(5)]
+
+        # first list out the correct letters in the correct spot
+        for i in range(5):
+            if target_word_letters[i] == guess[i]:
+                target_word_letters[i] = "*"
+                pattern[i] = int(Placing.correct)
+
+        # check for letters in the incorrect spots
+        for i in range(5):  # outer loop for the guessed word
+            if pattern[i] != int(Placing.incorrect):  # skip this letter if it's already in correct spot
+                continue
+            for j in range(5):  # inner loop for the target word
+                if i == j or target_word_letters[j] == "*":
+                    continue
+                if guess[i] == target_word_letters[j]:
+                    target_word_letters[j] = "*"
+                    pattern[i] = int(Placing.misplaced)
+                    break
+        return pattern
+
+    def step(self, guess, secret_word):
         guess = guess.lower()
         if guess not in self.legal_words:
             raise ValueError('invalid word')
@@ -21,32 +44,13 @@ class BasicWordle(AbstractWordle):
 
         self.cur_iter += 1
 
-        target_word_copy = [letter for letter in self.word]
-        pattern = [int(Placing.incorrect) for _ in range(5)]
+        pattern = self.get_pattern(guess, secret_word)
 
-        # first list out the correct letters in the correct spot
-        for i in range(5):
-            if target_word_copy[i] == guess[i]:
-                target_word_copy[i] = "*"
-                pattern[i] = int(Placing.correct)
-
-        # check for letters in the incorrect spots
-        for i in range(5):  # outer loop for the guessed word
-            if pattern[i] != int(Placing.incorrect):  # skip this letter if it's already in correct spot
-                continue
-            for j in range(5):  # inner loop for the target word
-                if i == j or target_word_copy[j] == "*":
-                    continue
-                if guess[i] == target_word_copy[j]:
-                    target_word_copy[j] = "*"
-                    pattern[i] = int(Placing.misplaced)
-                    break
         if pattern.count(int(Placing.correct)) == len(pattern):
             self.done = True
+
         return pattern, self.done
 
-    def reset(self, update_word=False):
+    def reset(self):
         self.cur_iter = 0
-        if update_word:
-            self.word = random.choice(self.secret_words)
         self.done = False

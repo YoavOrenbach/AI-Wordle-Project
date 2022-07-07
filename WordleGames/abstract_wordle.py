@@ -12,11 +12,13 @@ class AbstractWordle(ABC):
         self.legal_words = legal_words
         self.max_iter = max_iter
         self.cur_iter = 0
-        self.word = random.choice(self.secret_words) if word is None else word
         self.done = False
 
+    def generate_secret_word(self):
+        return random.choice(self.secret_words)
+
     @abstractmethod
-    def step(self, guess):
+    def step(self, guess, secret_word):
         """
         Performs a single step in the game following a guess.
         :return: the resulting pattern of each guess and a boolean flag if the game is done.

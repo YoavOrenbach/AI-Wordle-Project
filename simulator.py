@@ -3,7 +3,7 @@ import numpy as np
 
 from common import Placing
 from graphical_interface import GraphicalInterface
-from game_state import GameState
+from game_state import GameVisibleState
 
 
 class Simulator:
@@ -22,18 +22,19 @@ class Simulator:
         results = []
         start = time.time()
         for _ in range(num_games):
-            results.append(list(self.simulate_game(user_interface)))
-            self.game.reset(update_word=True)
+            secret_word = self.game.generate_secret_word()
+            results.append(list(self.simulate_game(secret_word, user_interface)))
+            self.game.reset()
             self.algo.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
 
-    def simulate_game(self, user_interface=True):
+    def simulate_game(self, secret_word, user_interface=True):
         """
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameState(self.game.get_legal_words())
+        game_state = GameVisibleState(self.game.get_legal_words())
         done = False
         correct_answer = False
         num_guesses = 0
@@ -43,11 +44,11 @@ class Simulator:
         num_incorrect_letters_guessed = 0
 
         if user_interface:
-            gi = GraphicalInterface(self.game.word)
+            gi = GraphicalInterface(secret_word)
 
         while not done:
             guess = self.algo.get_action(game_state)
-            pattern, done = self.game.step(guess)
+            pattern, done = self.game.step(guess, secret_word)
             game_state.add_state(guess, pattern)
             num_guesses += 1
             if not pattern:

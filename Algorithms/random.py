@@ -11,10 +11,10 @@ class Random(Algorithm):
     def get_action(self, game_state):
         if self.guess_count == 0:
             self.guess_count += 1
-            return random.choice(game_state.get_possible_guesses())
+            return random.choice(game_state.get_possible_words())
         self.guess_count += 1
-        game_state.filter_wordle_guesses()
-        return random.choice(game_state.get_possible_guesses())
+        # game_state.filter_wordle_guesses()
+        return random.choice(game_state.get_possible_words())
 
     def reset(self):
         self.guess_count = 0
