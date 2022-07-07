@@ -50,6 +50,3 @@ class BasicWordle(AbstractWordle):
         if update_word:
             self.word = random.choice(self.secret_words)
         self.done = False
-
-    def get_word_list(self):
-        return self.legal_words

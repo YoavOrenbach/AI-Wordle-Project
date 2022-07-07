@@ -11,6 +11,3 @@ class YellowWordle(BasicWordle):
 
     def reset(self):
         util.raiseNotDefined()
-
-    def get_word_list(self):
-        return self.word_list
