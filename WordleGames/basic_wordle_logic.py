@@ -1,14 +1,15 @@
-import random
+from typing import List, Tuple
 
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Placing
+from game_state import GameVisibleState
 
 
 class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
 
-    def __init__(self, secret_words, legal_words, max_iter=6, word=None):
-        super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter, word)
+    def __init__(self, secret_words, legal_words, max_iter=6):
+        super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter)
 
     def get_pattern(self, guess: str, secret_word: str):
         target_word_letters = [letter for letter in secret_word]
@@ -32,6 +33,13 @@ class BasicWordleLogic(AbstractWordleLogic):
                     pattern[i] = int(Placing.misplaced)
                     break
         return pattern
+
+    def _word_matches_patterns(self, word: str, states: List[Tuple]) -> bool:
+        return all(self.get_pattern(guess, word) == pattern for guess, pattern in states)
+
+    def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
+        return list(
+            filter(lambda word: self._word_matches_patterns(word, game_visible_state.get_states()), self.legal_words))
 
     def step(self, guess, secret_word):
         guess = guess.lower()

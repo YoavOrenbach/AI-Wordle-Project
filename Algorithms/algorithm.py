@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from game_state import GameVisibleState
 
 
@@ -11,7 +12,7 @@ class Algorithm(ABC):
         self.name = name
 
     @abstractmethod
-    def get_action(self, game_state: GameVisibleState):
+    def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
         """Returns the next guess given the game state and the game being played."""
         pass
 

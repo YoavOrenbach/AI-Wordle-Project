@@ -1,12 +1,11 @@
+from typing import List, Tuple
+
+
 class GameVisibleState:
     """A class for representing the game state"""
 
-    def __init__(self, word_list):
-        self.legal_words = word_list
-        self.states = []  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
-
-    def get_possible_words(self):
-        return self.legal_words
+    def __init__(self):
+        self.states: List[Tuple] = []  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
 
     def get_states(self):
         return self.states
