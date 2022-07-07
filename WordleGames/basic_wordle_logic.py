@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Placing
-from game_state import GameVisibleState
+from game_visible_state import GameVisibleState
 
 
 class BasicWordleLogic(AbstractWordleLogic):

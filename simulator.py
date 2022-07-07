@@ -3,7 +3,7 @@ import numpy as np
 
 from common import Placing
 from graphical_interface import GraphicalInterface
-from game_state import GameVisibleState
+from game_visible_state import GameVisibleState
 
 
 class Simulator:

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 from typing import List
 
-from game_state import GameVisibleState
+from game_visible_state import GameVisibleState
 
 
 class AbstractWordleLogic(ABC):
