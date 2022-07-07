@@ -28,6 +28,6 @@ class AbstractWordle(ABC):
         """Resets the game state."""
         pass
 
-    def get_word_list(self):
+    def get_legal_words(self):
         """Returns the large list of words used in the game."""
         return self.legal_words

@@ -33,7 +33,7 @@ class Simulator:
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameState(self.game.get_word_list())
+        game_state = GameState(self.game.get_legal_words())
         done = False
         correct_answer = False
         num_guesses = 0
