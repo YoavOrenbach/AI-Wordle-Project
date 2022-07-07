@@ -1,5 +1,6 @@
 import util
 from Algorithms.algorithm import Algorithm
+from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 
 
 class Entropy(Algorithm):
@@ -7,7 +8,7 @@ class Entropy(Algorithm):
         super(Entropy, self).__init__("Entropy")
         util.raiseNotDefined()
 
-    def get_action(self, game_state):
+    def get_action(self, game_state, game_logic: AbstractWordleLogic):
         util.raiseNotDefined()
 
     def reset(self):

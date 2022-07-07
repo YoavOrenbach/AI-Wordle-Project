@@ -3,14 +3,14 @@ import numpy as np
 
 from common import Placing
 from graphical_interface import GraphicalInterface
-from game_state import GameState
+from game_visible_state import GameVisibleState
 
 
 class Simulator:
     """A class for simulating wordle games given a game and algorithm objects"""
 
     def __init__(self, game, algo):
-        self.game = game
+        self.game_logic = game
         self.algo = algo
 
     def simulate_games(self, num_games, user_interface=True):
@@ -22,18 +22,19 @@ class Simulator:
         results = []
         start = time.time()
         for _ in range(num_games):
-            results.append(list(self.simulate_game(user_interface)))
-            self.game.reset(update_word=True)
+            secret_word = self.game_logic.generate_secret_word()
+            results.append(list(self.simulate_game(secret_word, user_interface)))
+            self.game_logic.reset()
             self.algo.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
 
-    def simulate_game(self, user_interface=True):
+    def simulate_game(self, secret_word, user_interface=True):
         """
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameState(self.game.get_word_list())
+        game_state = GameVisibleState()
         done = False
         correct_answer = False
         num_guesses = 0
@@ -43,11 +44,11 @@ class Simulator:
         num_incorrect_letters_guessed = 0
 
         if user_interface:
-            gi = GraphicalInterface(self.game.word)
+            gi = GraphicalInterface(secret_word)
 
         while not done:
-            guess = self.algo.get_action(game_state)
-            pattern, done = self.game.step(guess)
+            guess = self.algo.get_action(game_state, self.game_logic)
+            pattern, done = self.game_logic.step(guess, secret_word)
             game_state.add_state(guess, pattern)
             num_guesses += 1
             if not pattern:
@@ -79,7 +80,7 @@ class Simulator:
         cum_stats = np.sum(all_stats, axis=0)
         sub_six = (all_stats[:, 1] <= 6).sum() / num_games * 100.0
 
-        print(f'Results for {self.game.name} game with {self.algo.name} algorithm:')
+        print(f'Results for {self.game_logic.name} game with {self.algo.name} algorithm:')
         print('# Games: {}'.format(num_games))
         print('# Wins:  {}'.format(cum_stats[0]))
         print('% <= 6 Guesses:    {:.3f}'.format(sub_six))

@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from WordleGames import BasicWordle, Absurdle, NoisyWordle, YellowWordle
+from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle
 from common import AlgorithmType, GameType
 from factories import get_algorithm
 from simulator import Simulator
@@ -14,7 +14,7 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument('-n', '--num-games', type=int, default=20, help='# of games to simulate')
+    parser.add_argument('-n', '--num-games', type=int, default=5, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=True, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
@@ -42,13 +42,13 @@ def main():
     # select game
     # TODO: create better factory
     if args.game == 'wordle':
-        game = BasicWordle(secret_words, legal_words)
+        game = BasicWordleLogic(secret_words, legal_words)
     elif args.game == 'absurdle':
-        game = Absurdle(secret_words, legal_words)
+        game = AbsurdleLogic(secret_words, legal_words)
     elif args.game == 'vocab_wordle':
-        game = BasicWordle(secret_words, [''.join(p) for p in itertools.product(letters, repeat=5)])
+        game = BasicWordleLogic(secret_words, [''.join(p) for p in itertools.product(letters, repeat=5)])
     elif args.game == 'noisy_wordle':
-        game = NoisyWordle(secret_words, legal_words)
+        game = NoisyWordleLogic(secret_words, legal_words)
     else:
         game = YellowWordle(secret_words, legal_words)
 
