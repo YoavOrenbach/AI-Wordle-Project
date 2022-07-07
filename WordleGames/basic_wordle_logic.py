@@ -1,14 +1,14 @@
 import random
 
-from WordleGames.abstract_wordle import AbstractWordle
+from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Placing
 
 
-class BasicWordle(AbstractWordle):
+class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
 
     def __init__(self, secret_words, legal_words, max_iter=6, word=None):
-        super(BasicWordle, self).__init__("Wordle", secret_words, legal_words, max_iter, word)
+        super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter, word)
 
     def get_pattern(self, guess: str, secret_word: str):
         target_word_letters = [letter for letter in secret_word]

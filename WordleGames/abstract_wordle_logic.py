@@ -2,11 +2,11 @@ import random
 from abc import ABC, abstractmethod
 
 
-class AbstractWordle(ABC):
+class AbstractWordleLogic(ABC):
     """An abstract class representing each Wordle type game"""
 
     def __init__(self, name, secret_words, legal_words, max_iter=6, word=None):
-        super(AbstractWordle, self).__init__()
+        super(AbstractWordleLogic, self).__init__()
         self.name = name
         self.secret_words = secret_words
         self.legal_words = legal_words
@@ -18,7 +18,7 @@ class AbstractWordle(ABC):
         return random.choice(self.secret_words)
 
     @abstractmethod
-    def step(self, guess, secret_word):
+    def step(self, guess: str, secret_word: str):
         """
         Performs a single step in the game following a guess.
         :return: the resulting pattern of each guess and a boolean flag if the game is done.
