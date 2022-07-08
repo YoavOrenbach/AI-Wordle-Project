@@ -13,26 +13,24 @@ class BasicWordleLogic(AbstractWordleLogic):
         super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter)
 
     def get_pattern(self, guess: str, secret_word: str):
-        target_word_letters = [letter for letter in secret_word]
-        pattern = [int(Placing.incorrect) for _ in range(5)]
-
-        # first list out the correct letters in the correct spot
-        for i in range(5):
-            if target_word_letters[i] == guess[i]:
-                target_word_letters[i] = "*"
-                pattern[i] = int(Placing.correct)
-
-        # check for letters in the incorrect spots
-        for i in range(5):  # outer loop for the guessed word
-            if pattern[i] != int(Placing.incorrect):  # skip this letter if it's already in correct spot
+        pool = {}
+        for g, s in zip(guess, secret_word):
+            if g == s:
                 continue
-            for j in range(5):  # inner loop for the target word
-                if i == j or target_word_letters[j] == "*":
-                    continue
-                if guess[i] == target_word_letters[j]:
-                    target_word_letters[j] = "*"
-                    pattern[i] = int(Placing.misplaced)
-                    break
+            if s in pool:
+                pool[s] += 1
+            else:
+                pool[s] = 1
+
+        pattern = []
+        for guess_letter, solution_letter in zip(guess, secret_word):
+            if guess_letter == solution_letter:
+                pattern.append(int(Placing.correct))
+            elif guess_letter in secret_word and guess_letter in pool and pool[guess_letter] > 0:
+                pattern.append(int(Placing.misplaced))
+                pool[guess_letter] -= 1
+            else:
+                pattern.append(Placing.incorrect)
         return pattern
 
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
@@ -99,21 +97,16 @@ class BasicWordleLogic(AbstractWordleLogic):
         self.cur_legal_words = list(filter(should_keep_word, self.cur_legal_words))
         return self.cur_legal_words
 
-
     def step(self, guess, secret_word):
         guess = guess.lower()
         if guess not in self.legal_words:
             raise ValueError('invalid word')
 
-        if self.max_iter is not None and self.cur_iter >= self.max_iter:
-            self.done = True
-            return [], self.done
-
         self.cur_iter += 1
 
         pattern = self.get_pattern(guess, secret_word)
 
-        if pattern.count(int(Placing.correct)) == len(pattern):
+        if pattern.count(int(Placing.correct)) == len(pattern) or (self.max_iter is not None and self.cur_iter >= self.max_iter):
             self.done = True
 
         return pattern, self.done

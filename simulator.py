@@ -51,8 +51,6 @@ class Simulator:
             pattern, done = self.game_logic.step(guess, secret_word)
             game_state.add_state(guess, pattern)
             num_guesses += 1
-            if not pattern:
-                break
             num_letters_guessed += len(guess)
             num_correct_letters_guessed += pattern.count(int(Placing.correct))
             num_misplaced_letters_guessed += pattern.count(int(Placing.misplaced))

@@ -1,11 +1,11 @@
 from argparse import ArgumentParser
-
 from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle
 from common import AlgorithmType, GameType
 from factories import get_algorithm
 from simulator import Simulator
 import string
 import itertools
+import random
 
 
 def parse_args():
@@ -22,12 +22,17 @@ def parse_args():
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
                         default=AlgorithmType.Random.value, help='which algorithm to use')
+    parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 
 
 def main():
     # Parse arguments
     args = parse_args()
+
+    # seeding
+    if args.seed != -1:
+        random.seed(args.seed)
 
     # Preprocess word list
     with open('legal_words.txt', 'r') as f:
