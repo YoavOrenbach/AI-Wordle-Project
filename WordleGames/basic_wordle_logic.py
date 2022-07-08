@@ -97,20 +97,6 @@ class BasicWordleLogic(AbstractWordleLogic):
         self.cur_legal_words = list(filter(should_keep_word, self.cur_legal_words))
         return self.cur_legal_words
 
-    def step(self, guess, secret_word):
-        guess = guess.lower()
-        if guess not in self.legal_words:
-            raise ValueError('invalid word')
-
-        self.cur_iter += 1
-
-        pattern = self.get_pattern(guess, secret_word)
-
-        if pattern.count(int(Placing.correct)) == len(pattern) or (self.max_iter is not None and self.cur_iter >= self.max_iter):
-            self.done = True
-
-        return pattern, self.done
-
     def reset(self):
         self.cur_iter = 0
         self.done = False
