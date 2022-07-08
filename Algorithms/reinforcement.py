@@ -26,7 +26,6 @@ class Reinforcement(Algorithm):
         alpha = 0.2
         discount = 0.8
         epsilon = 1.0
-        decay_rate = 0.005
         epsilon_decay = 0.9995  # 0.995 for secret list
         epsilon_min = 0.05
 
@@ -57,7 +56,6 @@ class Reinforcement(Algorithm):
                 state = next_state
 
             # Decrease epsilon
-            #epsilon = np.exp(-decay_rate*episode)
             epsilon = max(epsilon_min, epsilon*epsilon_decay)
             game_logic.reset()
 
