@@ -12,8 +12,6 @@ class Minimax(Algorithm):
         self.guess_count = 0
 
     def get_action(self, game_state, game_logic: AbstractWordleLogic):
-        """comments for myself:
-        game state is """
         game_state = GameVisibleState()
         high_score = float('-inf')
 
