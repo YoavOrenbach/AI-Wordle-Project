@@ -12,3 +12,6 @@ class GameVisibleState:
 
     def add_state(self, guess, pattern):
         self.states.append((guess, pattern))
+
+    def __copy__(self):
+        self.states.copy()
