@@ -43,7 +43,7 @@ class AbstractWordleLogic(ABC):
 
         pattern = self.get_pattern(guess, secret_word)
 
-        if pattern.count(int(Placing.correct)) == len(pattern) or (self.max_iter is not None and self.cur_iter >= self.max_iter):
+        if guess == secret_word or (self.max_iter is not None and self.cur_iter >= self.max_iter):
             self.done = True
 
         return pattern, self.done
