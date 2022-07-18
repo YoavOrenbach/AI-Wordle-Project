@@ -46,17 +46,13 @@ class YellowWordle(AbstractWordleLogic):
             return self.cur_legal_words
         guess, pattern = states[-1]
 
-        correct_letters, removed_letters, misplaced_letters = [], [], []  # lists to hold letters placing with indices.
-        correct, removed, misplaced = [], [], []  # lists to hold only letters placing.
+        removed_letters, misplaced_letters = [], []  # lists to hold letters placing with indices.
+        removed, misplaced = [], []  # lists to hold only letters placing.
         minimum_letters = util.Counter()  # Counter to hold the minimal number of letters appearances (filter 5)
         for idx, (letter, match) in enumerate(zip(guess, pattern)):
             if match == int(Placing.incorrect):
                 removed_letters.append((idx, letter))
                 removed.append(letter)
-            elif match == int(Placing.correct):
-                correct_letters.append((idx, letter))
-                correct.append(letter)
-                minimum_letters[letter] += 1
             else:
                 misplaced_letters.append((idx, letter))
                 misplaced.append(letter)
@@ -65,10 +61,6 @@ class YellowWordle(AbstractWordleLogic):
         special_letters = util.Counter()  # special Counter to hold the maximal number of letter appearances (filter 4)
         for idx, letter in removed_letters:  # we are looking for grey letters that were also green or yellow.
             pop_flag = False
-            if letter in correct:
-                special_letters[letter] += correct.count(letter)
-                misplaced_letters.append((idx, letter))
-                pop_flag = True
             if letter in misplaced:
                 special_letters[letter] += misplaced.count(letter)
                 misplaced_letters.append((idx, letter))
