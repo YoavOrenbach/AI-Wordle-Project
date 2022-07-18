@@ -25,7 +25,7 @@ class AbstractWordleLogic(ABC):
         self.max_iter = max_iter
         self.cur_iter = 0
         self.done = False
-        self.cur_possible_words = legal_words
+        self.cur_possible_words = legal_words  # TODO: move to game visible state
 
     def generate_secret_word(self):
         return random.choice(self._secret_words)
