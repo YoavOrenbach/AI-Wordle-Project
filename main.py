@@ -61,6 +61,10 @@ def main():
     simulator = Simulator(game, algorithm)
     simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface)
 
-
+import time
 if __name__ == '__main__':
+    start = time.time()
     main()
+    end = time.time()
+    print("Finished! time:")
+    print(end-start)

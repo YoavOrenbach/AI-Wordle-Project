@@ -5,7 +5,7 @@ from typing import List
 from common import Placing
 
 from game_visible_state import GameVisibleState
-
+from copy import deepcopy
 
 class InvalidGuessException(ValueError):
     pass
