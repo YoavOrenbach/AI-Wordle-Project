@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle
+from Algorithms import Random, Minimax, Expectimax, Entropy, Reinforcement
 from common import AlgorithmType, GameType, LETTERS_NUM
 from factories import get_algorithm
 from simulator import Simulator
@@ -26,6 +27,14 @@ def parse_args():
     return parser.parse_args()
 
 
+def get_vocabulary_list(secret_words):
+    letters = [letter for letter in string.ascii_lowercase]
+    all_combos = [''.join(p) for p in itertools.product(letters, repeat=LETTERS_NUM)]
+    vocab = set(secret_words.copy())
+    vocab.update(set(random.sample(all_combos, 100000)))
+    return list(vocab)
+
+
 def main():
     # Parse arguments
     args = parse_args()
@@ -39,10 +48,6 @@ def main():
         legal_words = f.read().splitlines()
     with open('secret_words.txt', 'r') as f:
         secret_words = f.read().splitlines()
-    letters = [letter for letter in string.ascii_lowercase]
-
-    # select algorithm
-    algorithm = get_algorithm(AlgorithmType(args.algorithm))
 
     # select game
     # TODO: create better factory
@@ -51,11 +56,24 @@ def main():
     elif args.game == 'absurdle':
         game = AbsurdleLogic(secret_words, legal_words)
     elif args.game == 'vocab_wordle':
-        game = BasicWordleLogic(secret_words, [''.join(p) for p in itertools.product(letters, repeat=LETTERS_NUM)])
+        vocab = get_vocabulary_list(secret_words)
+        game = BasicWordleLogic(secret_words, vocab)
     elif args.game == 'noisy_wordle':
         game = NoisyWordleLogic(secret_words, legal_words)
     else:
         game = YellowWordle(secret_words, legal_words)
+
+    # select algorithm
+    if args.algorithm == "random":
+        algorithm = Random()
+    elif args.algorithm == "minimax":
+        algorithm = Minimax()
+    elif args.algorithm == "expectimax":
+        algorithm = Expectimax()
+    elif args.algorithm == "entropy":
+        algorithm = Entropy()
+    else:
+        algorithm = Reinforcement(game)
 
     # Simulate games
     simulator = Simulator(game, algorithm)
