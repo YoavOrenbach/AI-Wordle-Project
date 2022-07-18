@@ -30,7 +30,7 @@ class BasicWordleLogic(AbstractWordleLogic):
                 pattern.append(int(Placing.misplaced))
                 pool[guess_letter] -= 1
             else:
-                pattern.append(Placing.incorrect)
+                pattern.append(int(Placing.incorrect))
         return pattern
 
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[
