@@ -2,6 +2,8 @@ from enum import Enum, IntEnum
 
 Word = str
 
+LETTERS_NUM = 5
+
 
 class AlgorithmType(Enum):
     Random = "random"

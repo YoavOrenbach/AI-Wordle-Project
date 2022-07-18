@@ -50,7 +50,7 @@ class BasicWordleLogic(AbstractWordleLogic):
         """
         states = game_visible_state.get_states()
         if not states: # if no guess was made we return the list as is, since every word is possible.
-            return self.cur_legal_words
+            return self.cur_possible_words
         guess, pattern = states[-1]
 
         correct_letters, removed_letters, misplaced_letters = [], [], []  # lists to hold letters placing with indices.
@@ -108,10 +108,10 @@ class BasicWordleLogic(AbstractWordleLogic):
 
             return True
 
-        self.cur_legal_words = list(filter(should_keep_word, self.cur_legal_words))
-        return self.cur_legal_words
+        self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
+        return self.cur_possible_words
 
     def reset(self):
         self.cur_iter = 0
         self.done = False
-        self.cur_legal_words = self.legal_words
+        self.cur_possible_words = self.legal_words
