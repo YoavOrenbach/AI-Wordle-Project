@@ -1,10 +1,6 @@
 import math
-
 from typing import Dict
 
-from tqdm import tqdm
-
-import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Word
@@ -34,21 +30,20 @@ class Entropy(Algorithm):
             pattern in game_logic.possible_patterns)
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
-        if game_state.get_turn_num() == 1: # TODO
-            return "crane"
+        if game_state.get_turn_num() == 1:
+            return "tares"  # this word was pre-computed using the same algororithm
 
         best_expected_info = -math.inf
         best_word = None
 
-        # for word in tqdm(game_logic.legal_words):
-        possible_words = game_logic.get_possible_words(game_state)
-        for word in tqdm(game_logic.cur_possible_words):
+        possible_words = game_logic.get_possible_words(game_state)  # TODO: maybe use all legal words?
+        for word in possible_words:
             expected_info = self.get_expected_info(word, game_state, game_logic)
             if expected_info > best_expected_info:
                 best_expected_info = expected_info
                 best_word = word
 
-        # TODO: implement last guess strategy
+        # TODO: implement "last guess" strategy
 
         return best_word
 
