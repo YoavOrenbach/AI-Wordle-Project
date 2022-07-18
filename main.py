@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle
-from common import AlgorithmType, GameType
+from common import AlgorithmType, GameType, LETTERS_NUM
 from factories import get_algorithm
 from simulator import Simulator
 import string
@@ -51,7 +51,7 @@ def main():
     elif args.game == 'absurdle':
         game = AbsurdleLogic(secret_words, legal_words)
     elif args.game == 'vocab_wordle':
-        game = BasicWordleLogic(secret_words, [''.join(p) for p in itertools.product(letters, repeat=5)])
+        game = BasicWordleLogic(secret_words, [''.join(p) for p in itertools.product(letters, repeat=LETTERS_NUM)])
     elif args.game == 'noisy_wordle':
         game = NoisyWordleLogic(secret_words, legal_words)
     else:

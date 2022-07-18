@@ -33,7 +33,8 @@ class BasicWordleLogic(AbstractWordleLogic):
                 pattern.append(Placing.incorrect)
         return pattern
 
-    def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
+    def get_possible_words(self, game_visible_state: GameVisibleState) -> List[
+        str]:  # TODO: it also updates and this behaviour is unexpected
         """
         This method updates and returns the current words one can guess in a basic wordle game.
         There are 5 filters a word must pass to be considered possible:
@@ -49,8 +50,8 @@ class BasicWordleLogic(AbstractWordleLogic):
         :return: the current list of legal words to guess: self.cur_legal_words
         """
         states = game_visible_state.get_states()
-        if not states: # if no guess was made we return the list as is, since every word is possible.
-            return self.cur_legal_words
+        if not states:  # if no guess was made we return the list as is, since every word is possible.
+            return self.cur_possible_words
         guess, pattern = states[-1]
 
         correct_letters, removed_letters, misplaced_letters = [], [], []  # lists to hold letters placing with indices.
@@ -108,10 +109,10 @@ class BasicWordleLogic(AbstractWordleLogic):
 
             return True
 
-        self.cur_legal_words = list(filter(should_keep_word, self.cur_legal_words))
-        return self.cur_legal_words
+        self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
+        return self.cur_possible_words
 
     def reset(self):
         self.cur_iter = 0
         self.done = False
-        self.cur_legal_words = self.legal_words
+        self.cur_possible_words = self.legal_words

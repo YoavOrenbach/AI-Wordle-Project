@@ -1,6 +1,8 @@
 import pygame
 import string
 
+from common import LETTERS_NUM
+
 pygame.init()
 pygame.font.init()
 FONT = pygame.font.Font('freesansbold.ttf', 22)
@@ -14,13 +16,13 @@ class Grid:
     """
 
     def __init__(self):
-        self.matrix = [[Cell(i, j) for j in range(5)] for i in range(6)]
+        self.matrix = [[Cell(i, j) for j in range(LETTERS_NUM)] for i in range(6)]
         self.current_row, self.current_column = 0, 0
 
     def enter_letter(self, letter):
         letter = letter.upper()
         if letter in AVAILABLE_LETTERS:
-            if self.current_column == 5:  # user has already entered 5 letters
+            if self.current_column == LETTERS_NUM:  # user has already entered 5 letters
                 print("Sorry Request cannot be processed")
                 return
             self.matrix[self.current_row][self.current_column].assign_letter(letter)

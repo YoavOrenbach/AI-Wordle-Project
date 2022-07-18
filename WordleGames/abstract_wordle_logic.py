@@ -1,10 +1,12 @@
+import itertools
 import random
 from abc import ABC, abstractmethod
 
 from typing import List
-from common import Placing
+from common import Placing, LETTERS_NUM
 
 from game_visible_state import GameVisibleState
+
 
 class InvalidGuessException(ValueError):
     pass
@@ -12,6 +14,8 @@ class InvalidGuessException(ValueError):
 
 class AbstractWordleLogic(ABC):
     """An abstract class representing each Wordle type game"""
+    possible_patterns = [pattern for pattern in
+                         itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
     def __init__(self, name, secret_words, legal_words, max_iter=6):
         super(AbstractWordleLogic, self).__init__()
@@ -21,14 +25,13 @@ class AbstractWordleLogic(ABC):
         self.max_iter = max_iter
         self.cur_iter = 0
         self.done = False
-        self.cur_legal_words = legal_words
+        self.cur_possible_words = legal_words  # TODO: move to game visible state
 
     def generate_secret_word(self):
         return random.choice(self._secret_words)
 
     def get_legal_words(self):
         return self.legal_words
-
 
     def step(self, guess: str, secret_word: str):
         """
@@ -43,7 +46,8 @@ class AbstractWordleLogic(ABC):
 
         pattern = self.get_pattern(guess, secret_word)
 
-        if pattern.count(int(Placing.correct)) == len(pattern) or (self.max_iter is not None and self.cur_iter >= self.max_iter):
+        if pattern.count(int(Placing.correct)) == len(pattern) or (
+                self.max_iter is not None and self.cur_iter >= self.max_iter):
             self.done = True
 
         return pattern, self.done
@@ -58,6 +62,6 @@ class AbstractWordleLogic(ABC):
         pass
 
     @abstractmethod
-    def get_pattern(self, guess: str, secret_word:str):
+    def get_pattern(self, guess: str, secret_word: str):
         """Returns a list containing the placing of each letter in the guess."""
         pass
