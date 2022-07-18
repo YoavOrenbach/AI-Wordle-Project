@@ -6,6 +6,7 @@ from common import Placing
 
 from game_visible_state import GameVisibleState
 
+
 class InvalidGuessException(ValueError):
     pass
 
@@ -21,14 +22,13 @@ class AbstractWordleLogic(ABC):
         self.max_iter = max_iter
         self.cur_iter = 0
         self.done = False
-        self.cur_legal_words = legal_words
+        self.cur_possible_words = legal_words
 
     def generate_secret_word(self):
         return random.choice(self._secret_words)
 
     def get_legal_words(self):
         return self.legal_words
-
 
     def step(self, guess: str, secret_word: str):
         """
@@ -43,7 +43,8 @@ class AbstractWordleLogic(ABC):
 
         pattern = self.get_pattern(guess, secret_word)
 
-        if pattern.count(int(Placing.correct)) == len(pattern) or (self.max_iter is not None and self.cur_iter >= self.max_iter):
+        if pattern.count(int(Placing.correct)) == len(pattern) or (
+                self.max_iter is not None and self.cur_iter >= self.max_iter):
             self.done = True
 
         return pattern, self.done
@@ -58,6 +59,6 @@ class AbstractWordleLogic(ABC):
         pass
 
     @abstractmethod
-    def get_pattern(self, guess: str, secret_word:str):
+    def get_pattern(self, guess: str, secret_word: str):
         """Returns a list containing the placing of each letter in the guess."""
         pass
