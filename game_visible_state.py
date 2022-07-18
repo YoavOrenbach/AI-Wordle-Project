@@ -12,3 +12,6 @@ class GameVisibleState:
 
     def add_state(self, guess, pattern):
         self.states.append((guess, pattern))
+
+    def get_turn_num(self):
+        return len(self.states) + 1
