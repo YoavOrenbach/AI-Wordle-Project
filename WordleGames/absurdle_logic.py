@@ -114,7 +114,6 @@ class AbsurdleLogic(AbstractWordleLogic):
     def get_pattern(self, guess: str, secret_word: str, game_state: GameVisibleState):
         """Returns a list containing the placing of each letter in the guess."""
         all_patterns = AbstractWordleLogic.all_patterns
-        losing_patterns = [pattern for pattern in all_patterns if pattern != tuple(WINNING_PATTERN)]
         pattern_words_count = {pattern: 0 for pattern in all_patterns}
         possible_words = self.get_possible_words(game_state)
         for word in possible_words:
@@ -124,6 +123,6 @@ class AbsurdleLogic(AbstractWordleLogic):
         if max_count == 0:
             best_pattern = tuple(WINNING_PATTERN)
         else:
-            best_patterns = [k for k, v in pattern_words_count.items() if v == max_count]
+            best_patterns = [k for k, v in pattern_words_count.items() if v == max_count and k != WINNING_PATTERN]
             best_pattern = random.choice(best_patterns)
         return list(best_pattern)
