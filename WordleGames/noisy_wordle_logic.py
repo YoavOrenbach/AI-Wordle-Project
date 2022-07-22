@@ -40,8 +40,3 @@ class NoisyWordleLogic(AbstractWordleLogic):
 
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
         return self.cur_possible_words
-
-    def reset(self):
-        self.cur_iter = 0
-        self.done = False
-        self.cur_possible_words = self.legal_words

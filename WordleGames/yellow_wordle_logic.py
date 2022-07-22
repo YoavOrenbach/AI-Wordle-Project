@@ -1,7 +1,8 @@
+from typing import List
+
 import util
 # from WordleGames.basic_wordle_logic import BasicWordleLogic
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from typing import List
 from common import Placing
 from game_visible_state import GameVisibleState
 
@@ -21,11 +22,6 @@ class YellowWordle(AbstractWordleLogic):
 
         return [int(elem) for elem in pattern]
 
-    def reset(self):
-        self.cur_iter = 0
-        self.done = False
-        self.cur_possible_words = self.legal_words
-
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
         """
         This method updates and returns the current words one can guess in a basic wordle game.
@@ -42,7 +38,7 @@ class YellowWordle(AbstractWordleLogic):
         :return: the current list of legal words to guess: self.cur_legal_words
         """
         states = game_visible_state.get_states()
-        if not states: # if no guess was made we return the list as is, since every word is possible.
+        if not states:  # if no guess was made we return the list as is, since every word is possible.
             return self.cur_possible_words
         guess, pattern = states[-1]
 

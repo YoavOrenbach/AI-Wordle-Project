@@ -1,9 +1,9 @@
-from typing import List, Tuple
+from typing import List
 
+import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Placing
 from game_visible_state import GameVisibleState
-import util
 
 
 class BasicWordleLogic(AbstractWordleLogic):
@@ -111,8 +111,3 @@ class BasicWordleLogic(AbstractWordleLogic):
 
         self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
         return self.cur_possible_words
-
-    def reset(self):
-        self.cur_iter = 0
-        self.done = False
-        self.cur_possible_words = self.legal_words

@@ -53,10 +53,11 @@ class AbstractWordleLogic(ABC):
 
         return pattern, self.done, is_win
 
-    @abstractmethod
     def reset(self):
         """Resets the game state."""
-        pass
+        self.cur_iter = 0
+        self.done = False
+        self.cur_possible_words = self.legal_words
 
     @abstractmethod
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
