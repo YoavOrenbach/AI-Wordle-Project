@@ -31,7 +31,7 @@ class Entropy(Algorithm):
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
         if game_state.get_turn_num() == 1:
-            return "tares"  # this word was pre-computed using the same algororithm
+            return "tares"  # this word was pre-computed using the same algorithm #TODO: it may change between games
 
         best_expected_info = -math.inf
         best_word = None
