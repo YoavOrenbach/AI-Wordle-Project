@@ -1,10 +1,9 @@
 import itertools
 import random
 from abc import ABC, abstractmethod
-
 from typing import List
-from common import Placing, LETTERS_NUM
 
+from common import Placing, LETTERS_NUM
 from game_visible_state import GameVisibleState
 
 

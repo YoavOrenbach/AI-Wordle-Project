@@ -1,6 +1,8 @@
 import math
 from typing import Dict
 
+from tqdm import tqdm
+
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Word
@@ -8,6 +10,8 @@ from game_visible_state import GameVisibleState
 
 
 class Entropy(Algorithm):
+    opening_guesses = {"Wordle": "tares", "Yellow Wordle": "arise"}  # these words were pre-computed using the same algorithm
+
     def __init__(self):
         super(Entropy, self).__init__("Entropy")
 
@@ -29,9 +33,12 @@ class Entropy(Algorithm):
             pattern_probs[pattern] * math.log2(1 / pattern_probs[pattern]) if pattern_probs[pattern] != 0 else 0 for
             pattern in game_logic.possible_patterns)
 
-    def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
+    def get_opening_guess(self, game_logic: AbstractWordleLogic) -> Word:
+        return Entropy.opening_guesses[game_logic.name]
+
+    def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic) -> Word:
         if game_state.get_turn_num() == 1:
-            return "tares"  # this word was pre-computed using the same algororithm
+            return self.get_opening_guess(game_logic)
 
         best_expected_info = -math.inf
         best_word = None
@@ -44,7 +51,6 @@ class Entropy(Algorithm):
                 best_word = word
 
         # TODO: implement "last guess" strategy
-
         return best_word
 
     def reset(self):

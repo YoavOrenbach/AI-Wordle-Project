@@ -1,5 +1,6 @@
 import time
 import numpy as np
+from tqdm import tqdm
 
 from common import Placing
 from graphical_interface import GraphicalInterface
@@ -21,7 +22,7 @@ class Simulator:
         """
         results = []
         start = time.time()
-        for _ in range(num_games):
+        for _ in tqdm(range(num_games)):
             secret_word = self.game_logic.generate_secret_word()
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()
