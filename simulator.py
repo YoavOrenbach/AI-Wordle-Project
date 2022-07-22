@@ -49,14 +49,14 @@ class Simulator:
 
         while not done:
             guess = self.algo.get_action(game_state, self.game_logic)
-            pattern, done = self.game_logic.step(guess, secret_word)
+            pattern, done, is_win = self.game_logic.step(guess, secret_word)
             game_state.add_state(guess, pattern)
             num_guesses += 1
             num_letters_guessed += len(guess)
             num_correct_letters_guessed += pattern.count(int(Placing.correct))
             num_misplaced_letters_guessed += pattern.count(int(Placing.misplaced))
             num_incorrect_letters_guessed += pattern.count(int(Placing.incorrect))
-            if pattern.count(int(Placing.correct)) == len(pattern):
+            if is_win:
                 correct_answer = True
 
             if user_interface:

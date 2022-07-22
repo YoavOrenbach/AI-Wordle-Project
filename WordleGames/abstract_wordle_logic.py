@@ -35,7 +35,8 @@ class AbstractWordleLogic(ABC):
     def step(self, guess: str, secret_word: str):
         """
         Performs a single step in the game following a guess.
-        :return: the resulting pattern of each guess and a boolean flag if the game is done.
+        :return: the resulting pattern of the guess, a boolean flag - whether the game is done, a boolean flag -
+        did the player win.
         """
         guess = guess.lower()
         if guess not in self.legal_words:
@@ -45,10 +46,12 @@ class AbstractWordleLogic(ABC):
 
         pattern = self.get_pattern(guess, secret_word)
 
-        if guess == secret_word or (self.max_iter is not None and self.cur_iter >= self.max_iter):
+        is_win = (guess == secret_word)
+        is_max_iter = (self.max_iter is not None and self.cur_iter >= self.max_iter)
+        if is_win or is_max_iter:
             self.done = True
 
-        return pattern, self.done
+        return pattern, self.done, is_win
 
     @abstractmethod
     def reset(self):
