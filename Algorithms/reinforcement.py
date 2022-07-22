@@ -145,7 +145,7 @@ class Reinforcement(Algorithm):
 
             while not done:
                 action = self.agent.get_q_action(state, legal_actions, epsilon)
-                pattern, done, _ = self.game.step(action, secret_word)
+                pattern, done, _ = self.game.step(action, secret_word, game_state)
                 reward = 0
                 for placing in pattern:
                     if placing == Placing.correct.value:

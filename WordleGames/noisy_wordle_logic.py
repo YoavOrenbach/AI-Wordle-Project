@@ -15,7 +15,7 @@ class NoisyWordleLogic(AbstractWordleLogic):
         return [real_placing] * 85 + [Placing.correct] * 4 + [Placing.misplaced] * 8 + [
             Placing.incorrect] * 3  # TODO: why this weighting?
 
-    def get_pattern(self, guess: str, secret_word: str):
+    def get_pattern(self, guess: str, secret_word: str, game_visible_state: GameVisibleState):
         # First, get the real pattern
         pool = {}
         for g, s in zip(guess, secret_word):

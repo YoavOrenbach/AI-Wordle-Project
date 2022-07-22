@@ -49,7 +49,7 @@ class Simulator:
 
         while not done:
             guess = self.algo.get_action(game_state, self.game_logic)
-            pattern, done, is_win = self.game_logic.step(guess, secret_word)
+            pattern, done, is_win = self.game_logic.step(guess, secret_word, game_state)
             game_state.add_state(guess, pattern)
             num_guesses += 1
             num_letters_guessed += len(guess)
