@@ -1,8 +1,8 @@
-from typing import List
 import random
-import util
-from common import Placing
+from typing import List
+
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
+from common import Placing
 from game_visible_state import GameVisibleState
 
 
@@ -12,7 +12,8 @@ class NoisyWordleLogic(AbstractWordleLogic):
 
     @staticmethod
     def weight_placing(real_placing):
-        return [real_placing] * 85 + [Placing.correct] * 4 + [Placing.misplaced] * 8 + [Placing.incorrect] * 3
+        return [real_placing] * 85 + [Placing.correct] * 4 + [Placing.misplaced] * 8 + [
+            Placing.incorrect] * 3  # TODO: why this weighting?
 
     def get_pattern(self, guess: str, secret_word: str):
         # First, get the real pattern
@@ -36,7 +37,7 @@ class NoisyWordleLogic(AbstractWordleLogic):
                 pattern.append(Placing.incorrect)
 
         return [random.choice(NoisyWordleLogic.weight_placing(c)) for c in pattern]
-    
+
     def get_possible_words(self, game_visible_state: GameVisibleState) -> List[str]:
         return self.cur_possible_words
 

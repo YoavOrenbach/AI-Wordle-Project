@@ -69,6 +69,7 @@ class YellowWordle(AbstractWordleLogic):
                 removed = list(filter((letter).__ne__, removed))  # we remove a special letter from the removed list
 
         def should_keep_word(word):
+            # TODO: this is code duplication
             # 1. remove words with incorrect letters
             if any(letter in word for letter in removed):
                 return False

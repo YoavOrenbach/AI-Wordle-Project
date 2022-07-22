@@ -1,10 +1,9 @@
 import itertools
 import random
 from abc import ABC, abstractmethod
-
 from typing import List
-from common import Placing, LETTERS_NUM
 
+from common import Placing, LETTERS_NUM
 from game_visible_state import GameVisibleState
 
 
@@ -15,7 +14,8 @@ class InvalidGuessException(ValueError):
 class AbstractWordleLogic(ABC):
     """An abstract class representing each Wordle type game"""
     possible_patterns = [pattern for pattern in
-                         itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
+                         itertools.product([placing.value for placing in Placing],
+                                           repeat=LETTERS_NUM)]  # TODO: it may change between games
 
     def __init__(self, name, secret_words, legal_words, max_iter=6):
         super(AbstractWordleLogic, self).__init__()
