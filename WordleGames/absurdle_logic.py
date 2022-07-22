@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import util
@@ -119,7 +120,10 @@ class AbsurdleLogic(AbstractWordleLogic):
         for word in possible_words:
             word_pattern = tuple(get_pattern_vanilla(guess, word))
             pattern_words_count[word_pattern] += 1
-        best_pattern = max(losing_patterns, key=pattern_words_count.get)
-        if pattern_words_count[best_pattern] == 0:
+        max_count = max(pattern_words_count.values())
+        if max_count == 0:
             best_pattern = tuple(WINNING_PATTERN)
+        else:
+            best_patterns = [k for k, v in pattern_words_count.items() if v == max_count]
+            best_pattern = random.choice(best_patterns)
         return list(best_pattern)
