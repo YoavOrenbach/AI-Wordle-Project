@@ -25,7 +25,7 @@ class AbsurdleLogic(AbstractWordleLogic):
 
         pattern = self.get_pattern(guess, secret_word, game_state)
 
-        is_win = (guess == WINNING_PATTERN)
+        is_win = (tuple(pattern) == WINNING_PATTERN)
         is_max_iter = (self.max_iter is not None and self.cur_iter >= self.max_iter)
         if is_win or is_max_iter:
             self.done = True
@@ -111,18 +111,21 @@ class AbsurdleLogic(AbstractWordleLogic):
         self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
         return self.cur_possible_words
 
+
     def get_pattern(self, guess: str, secret_word: str, game_state: GameVisibleState):
         """Returns a list containing the placing of each letter in the guess."""
         all_patterns = AbstractWordleLogic.all_patterns
         pattern_words_count = {pattern: 0 for pattern in all_patterns}
-        possible_words = self.get_possible_words(game_state)
-        for word in possible_words:  # TODO: should iterate only over the secret possible words
+        possible_words = set(self.get_possible_words(game_state))
+        possible_secret_words = [word for word in self._secret_words if word in possible_words]
+        print(len(possible_words), len(possible_secret_words))
+        for word in possible_secret_words:  # TODO: should iterate only over the secret possible words
             word_pattern = tuple(get_pattern_vanilla(guess, word))
             pattern_words_count[word_pattern] += 1
-        max_count = max(pattern_words_count.values())
-        if max_count == 0:
-            best_pattern = tuple(WINNING_PATTERN)
+        if len(possible_secret_words) == 1 and pattern_words_count[WINNING_PATTERN] == 1:
+            best_pattern = WINNING_PATTERN
         else:
+            max_count = max(pattern_words_count.values())
             best_patterns = [k for k, v in pattern_words_count.items() if v == max_count and k != WINNING_PATTERN]
             best_pattern = random.choice(best_patterns)
         return list(best_pattern)

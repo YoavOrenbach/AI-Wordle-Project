@@ -28,4 +28,4 @@ class Placing(IntEnum):
     incorrect = 2
 
 
-WINNING_PATTERN = [Placing.correct for _ in range(LETTERS_NUM)]
+WINNING_PATTERN = tuple([Placing.correct for _ in range(LETTERS_NUM)])
