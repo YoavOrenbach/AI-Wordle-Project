@@ -26,3 +26,6 @@ class Placing(IntEnum):
     correct = 0
     misplaced = 1
     incorrect = 2
+
+
+WINNING_PATTERN = tuple([Placing.correct for _ in range(LETTERS_NUM)])
