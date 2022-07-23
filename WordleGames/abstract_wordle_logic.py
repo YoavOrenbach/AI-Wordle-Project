@@ -3,7 +3,7 @@ import random
 from abc import ABC, abstractmethod
 from typing import List
 
-from common import Placing, LETTERS_NUM
+from common import Placing, LETTERS_NUM, GameType
 from game_visible_state import GameVisibleState
 
 
@@ -16,9 +16,9 @@ class AbstractWordleLogic(ABC):
     all_patterns = [pattern for pattern in
                     itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
-    def __init__(self, name, secret_words, legal_words, max_iter=6):
+    def __init__(self, type, secret_words, legal_words, max_iter=6):
         super(AbstractWordleLogic, self).__init__()
-        self.name = name
+        self.type: GameType = type
         self._secret_words = secret_words
         self.legal_words = legal_words
         self.max_iter = max_iter

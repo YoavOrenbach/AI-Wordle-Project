@@ -2,13 +2,13 @@ import random
 from typing import List
 
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing
+from common import Placing, GameType
 from game_visible_state import GameVisibleState
 
 
 class NoisyWordleLogic(AbstractWordleLogic):
     def __init__(self, secret_words, legal_words, max_iter=6):
-        super(NoisyWordleLogic, self).__init__("Noisy Wordle", secret_words, legal_words, max_iter)
+        super(NoisyWordleLogic, self).__init__(GameType.NoisyWordle, secret_words, legal_words, max_iter)
 
     @staticmethod
     def weight_placing(real_placing):

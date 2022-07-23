@@ -3,13 +3,13 @@ from typing import List
 import util
 # from WordleGames.basic_wordle_logic import BasicWordleLogic
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing
+from common import Placing, GameType
 from game_visible_state import GameVisibleState
 
 
 class YellowWordle(AbstractWordleLogic):
     def __init__(self, secret_words, legal_words, max_iter=6):
-        super(YellowWordle, self).__init__("Yellow Wordle", secret_words, legal_words, max_iter)
+        super(YellowWordle, self).__init__(GameType.YellowWordle, secret_words, legal_words, max_iter)
 
     def get_pattern(self, guess: str, secret_word: str, game_visible_state: GameVisibleState) -> List[int]:
         target_word = list(secret_word)
