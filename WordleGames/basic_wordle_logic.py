@@ -3,7 +3,7 @@ from typing import List
 import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from WordleGames.utils import get_pattern_vanilla
-from common import Placing, Word
+from common import Placing, Word, GameType
 from game_visible_state import GameVisibleState
 
 
@@ -11,7 +11,7 @@ class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
 
     def __init__(self, secret_words, legal_words, max_iter=6):
-        super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter)
+        super(BasicWordleLogic, self).__init__(GameType.BasicWordle, secret_words, legal_words, max_iter)
 
     def get_pattern(self, guess: Word, secret_word: Word, game_visible_state: GameVisibleState):
         return get_pattern_vanilla(guess, secret_word)

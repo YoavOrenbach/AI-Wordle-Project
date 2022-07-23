@@ -4,13 +4,13 @@ from typing import List
 import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic, InvalidGuessException
 from WordleGames.utils import get_pattern_vanilla
-from common import Word, Placing, WINNING_PATTERN
+from common import Word, Placing, WINNING_PATTERN, GameType
 from game_visible_state import GameVisibleState
 
 
 class AbsurdleLogic(AbstractWordleLogic):
     def __init__(self, secret_words, legal_words, max_iter=6):
-        super(AbsurdleLogic, self).__init__("Absurdle", secret_words, legal_words, max_iter)
+        super(AbsurdleLogic, self).__init__(GameType.Absurdle, secret_words, legal_words, max_iter)
 
     def generate_secret_word(self):
         return None

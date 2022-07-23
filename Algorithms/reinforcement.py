@@ -2,7 +2,7 @@ import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from game_visible_state import GameVisibleState
-from common import Placing
+from common import Placing, GameType, AlgorithmType
 from tqdm import tqdm
 import random
 
@@ -113,10 +113,10 @@ class Reinforcement(Algorithm):
         fixed number of episodes.
         :param game: An AbstractWordleLogic type game to simulate training and decide on the type of agent to use.
         """
-        super(Reinforcement, self).__init__("Reinforcement learning")
+        super(Reinforcement, self).__init__(AlgorithmType.Reinforcement)
         self.guess_count = 0
         self.game = game
-        if game.name != "Noisy Wordle":
+        if game.type != GameType.NoisyWordle:
             self.agent = QLearningAgent()
             self.approximate = False
             self.train(num_episodes=20000)

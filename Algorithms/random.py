@@ -2,11 +2,12 @@ import random
 
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
+from common import AlgorithmType
 
 
 class Random(Algorithm):
     def __init__(self):
-        super(Random, self).__init__("Random")
+        super(Random, self).__init__(AlgorithmType.Random)
         self.guess_count = 0
 
     def get_action(self, game_state, game_logic: AbstractWordleLogic):
