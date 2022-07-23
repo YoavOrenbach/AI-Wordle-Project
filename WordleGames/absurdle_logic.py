@@ -118,7 +118,6 @@ class AbsurdleLogic(AbstractWordleLogic):
         pattern_words_count = {pattern: 0 for pattern in all_patterns}
         possible_words = set(self.get_possible_words(game_state))
         possible_secret_words = [word for word in self._secret_words if word in possible_words]
-        print(len(possible_words), len(possible_secret_words))
         for word in possible_secret_words:  # TODO: should iterate only over the secret possible words
             word_pattern = tuple(get_pattern_vanilla(guess, word))
             pattern_words_count[word_pattern] += 1
