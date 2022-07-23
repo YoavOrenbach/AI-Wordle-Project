@@ -79,7 +79,7 @@ class Simulator:
         cum_stats = np.sum(all_stats, axis=0)
         sub_six = (all_stats[:, 1] <= 6).sum() / num_games * 100.0
 
-        print(f'Results for {self.game_logic.type} game with {self.algo.name} algorithm:')
+        print(f'Results for {self.game_logic.type} game with {self.algo.type} algorithm:')
         print('# Games: {}'.format(num_games))
         print('# Wins:  {}'.format(cum_stats[0]))
         print('% <= 6 Guesses:    {:.3f}'.format(sub_six))

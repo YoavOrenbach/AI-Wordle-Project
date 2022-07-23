@@ -1,11 +1,12 @@
 import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
+from common import AlgorithmType
 
 
 class Minimax(Algorithm):
     def __init__(self):
-        super(Minimax, self).__init__("MiniMax")
+        super(Minimax, self).__init__(AlgorithmType.Minimax)
         util.raiseNotDefined()
 
     def get_action(self, game_state, game_logic: AbstractWordleLogic):

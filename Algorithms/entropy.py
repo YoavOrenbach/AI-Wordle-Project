@@ -6,7 +6,7 @@ from tqdm import tqdm
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from WordleGames.utils import get_pattern_vanilla
-from common import Word, GameType
+from common import Word, GameType, AlgorithmType
 from game_visible_state import GameVisibleState
 
 
@@ -15,7 +15,7 @@ class Entropy(Algorithm):
                        GameType.Absurdle: "tares"}  # these words were pre-computed using the same algorithm
 
     def __init__(self):
-        super(Entropy, self).__init__("Entropy")
+        super(Entropy, self).__init__(AlgorithmType.Entropy)
 
     def get_pattern(self, guess: Word, secret_word: Word, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
         if game_logic.type in [GameType.Absurdle]:

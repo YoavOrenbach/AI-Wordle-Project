@@ -7,9 +7,9 @@ from game_visible_state import GameVisibleState
 class Algorithm(ABC):
     """An abstract class representing each algorithm used to solving the various games."""
 
-    def __init__(self, name):
+    def __init__(self, type):
         super(Algorithm, self).__init__()
-        self.name = name
+        self.type = type
 
     @abstractmethod
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
