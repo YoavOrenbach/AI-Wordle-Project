@@ -11,7 +11,7 @@ from copy import deepcopy, copy
 import time
 
 class Minimax(Algorithm):
-    def __init__(self, depth=2):
+    def __init__(self, depth=1):
         super(Minimax, self).__init__("MiniMax")
         self.guess_count = 0
         self.depth = depth
@@ -31,15 +31,15 @@ class Minimax(Algorithm):
                 reward -= (turn + 1) * 5
         return reward
 
-    def generate_successor(self, agent_index=0, action="crane"):
-        successor = GameVisibleState(current_game_state)
-        if agent_index == 0:
-            successor.apply_action(action)
-        elif agent_index == 1:
-            successor.apply_opponent_action(action)
-        else:
-            raise Exception("illegal agent index.")
-        return successor
+    # def generate_successor(self, agent_index=0, action="crane"):
+    #     successor = GameVisibleState(current_game_state)
+    #     if agent_index == 0:
+    #         successor.apply_action(action)
+    #     elif agent_index == 1:
+    #         successor.apply_opponent_action(action)
+    #     else:
+    #         raise Exception("illegal agent index.")
+    #     return successor
 
     def MiniMaxVal(self, curr_depth, game_logic, game_state, player_id, done):
         legal_words = game_logic.get_possible_words(game_state)
