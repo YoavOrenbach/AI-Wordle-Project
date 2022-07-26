@@ -8,7 +8,14 @@ from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from game_visible_state import GameVisibleState
 from copy import deepcopy, copy
 
-import time
+import collections
+
+GREEN_PLAC = 2
+YELLOW_PLAC = 1
+GREY_PLAC = 0
+
+WORD_LEN = 5
+
 
 class Minimax(Algorithm):
     def __init__(self, depth=1):
@@ -16,63 +23,76 @@ class Minimax(Algorithm):
         self.guess_count = 0
         self.depth = depth
 
-    def evaluation_function(self, game_state):
-        if not game_state.get_states:
-            return 0
-        action, pattern = game_state.get_states()[-1]
-        reward = 0
-        turn = len(game_state.get_states())
-        for placing in pattern:
-            if placing == 0:
-                reward += (6 - turn) * 10
-            elif placing == 1:
-                reward += (6 - turn) * 5
-            else:
-                reward -= (turn + 1) * 5
-        return reward
+    def generate_feedback(self, game_logic: AbstractWordleLogic, possible_soln, word):
+        game_logic_copy = deepcopy(game_logic)
+        game_logic_copy.set_secret_word(possible_soln)
+        pattern, done = game_logic_copy.step(word)
+        return pattern
 
-    # def generate_successor(self, agent_index=0, action="crane"):
-    #     successor = GameVisibleState(current_game_state)
-    #     if agent_index == 0:
-    #         successor.apply_action(action)
-    #     elif agent_index == 1:
-    #         successor.apply_opponent_action(action)
-    #     else:
-    #         raise Exception("illegal agent index.")
-    #     return successor
+    def word_consistent(self, pattern, guess):
+        def pred(word):
+            # count the letters in word
+            letter_counts = collections.Counter()
+            for letter in word:
+                letter_counts[letter] += 1
 
-    def MiniMaxVal(self, curr_depth, game_logic, game_state, player_id, done):
-        legal_words = game_logic.get_possible_words(game_state)
-        if curr_depth == self.depth * 2 or not legal_words or done:
-            return self.evaluation_function(game_state)
+            for i in range(WORD_LEN):
+                if pattern[i] == GREEN_PLAC:
+                    # green pair does not match
+                    if word[i] != guess[i]:
+                        return False
+                    # green letters "use up" one of the solution letters
+                    else:
+                        letter_counts[guess[i]] -= 1
 
-        result_lst = []
-        for i, word in enumerate(legal_words):
-            game_logic_copy = deepcopy(game_logic)
-            game_state_copy = deepcopy(game_state)
-            pattern, done = game_logic_copy.step(word)
-            game_state_copy.add_state(word, pattern)
-            if player_id == 0:
-                result_lst.append(self.MiniMaxVal(curr_depth + 1, game_logic_copy, game_state_copy, 1, done))
-            else:
-                result_lst.append(self.MiniMaxVal(curr_depth + 1, game_logic_copy, game_state_copy, 0, done))
-        return max(result_lst) if player_id == 0 else min(result_lst)
+                if pattern[i] == YELLOW_PLAC:
+                    # letter does match, but it shouldn't
+                    if word[i] == guess[i]:
+                        return False
+                    # contain letter l somewhere, aside from a green space
+                    else:
+                        if letter_counts[guess[i]] <= 0:
+                            return False
+                        else:
+                            letter_counts[guess[i]] -= 1
+
+                if pattern[i] == GREY_PLAC:
+                    # contain no gray letters
+                    if letter_counts[guess[i]] != 0:
+                        return False
+            return True
+
+        return pred
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
-        best_move = "crane"
-        game_logic_copy = deepcopy(game_logic)
-        game_state_copy = deepcopy(game_state)
-        possible_words = game_logic_copy.get_possible_words(game_state_copy)
-        high_score = float("-inf")
-        for word in possible_words:
-            pattern, done = game_logic_copy.step(word)
-            game_state_copy.add_state(word, pattern)
-            minimax_score = self.MiniMaxVal(1, game_logic_copy, game_state_copy, 1, 0)
-            if high_score < minimax_score:
-                high_score = minimax_score
-                best_move = word
-        self.guess_count += 1
-        return best_move
+        current_minimax = None
+        current_minimax_word = None
+
+        possible_words = game_logic.get_possible_words(game_state)
+
+        for guess in possible_words:
+            # max loss for this guess
+            maximum_remaining = None
+            for possible_soln in possible_words: # TODO: change possible words
+                # feedback guessing `guess` when the solution is `soln`
+                pattern = self.generate_feedback(game_logic, possible_soln, guess)
+                # how many words remain after incorporating this feedback
+                remaining = len(list(filter(self.word_consistent(pattern, guess), possible_words)))
+
+                # is this a new maximum loss?
+                if maximum_remaining is None or remaining > maximum_remaining:
+                    maximum_remaining = remaining
+
+                if current_minimax is not None and maximum_remaining > current_minimax:
+                    # the maximum for this guess is larger than the current minimax
+                    # not possible that this word represents a minimax, we can break early
+                    break
+
+            if current_minimax is None or maximum_remaining < current_minimax:
+                current_minimax = maximum_remaining
+                current_minimax_word = guess
+
+        return current_minimax_word
 
     def reset(self):
         self.guess_count = 0

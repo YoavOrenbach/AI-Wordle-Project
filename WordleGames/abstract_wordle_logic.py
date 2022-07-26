@@ -29,6 +29,9 @@ class AbstractWordleLogic(ABC):
         self._secret_word = random.choice(self._secret_words)
         return self._secret_word
 
+    def set_secret_word(self, new_word):
+        self._secret_word = new_word
+
     def get_legal_words(self):
         return self.legal_words
 
