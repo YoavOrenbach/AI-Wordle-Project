@@ -11,13 +11,6 @@ from copy import deepcopy, copy
 import collections
 from tqdm import tqdm
 
-GREEN_PLAC = 2
-YELLOW_PLAC = 1
-GREY_PLAC = 0
-
-WORD_LEN = 5
-
-
 class Minimax(Algorithm):
     def __init__(self, depth=1):
         super(Minimax, self).__init__("MiniMax")
@@ -26,41 +19,6 @@ class Minimax(Algorithm):
 
     def generate_feedback(self, game_logic: AbstractWordleLogic, possible_soln, word):
         return game_logic.get_pattern(word, possible_soln)
-
-    def word_consistent(self, pattern, guess):
-        def pred(word):
-            # count the letters in word
-            letter_counts = collections.Counter()
-            for letter in word:
-                letter_counts[letter] += 1
-
-            for i in range(WORD_LEN):
-                if pattern[i] == GREEN_PLAC:
-                    # green pair does not match
-                    if word[i] != guess[i]:
-                        return False
-                    # green letters "use up" one of the solution letters
-                    else:
-                        letter_counts[guess[i]] -= 1
-
-                if pattern[i] == YELLOW_PLAC:
-                    # letter does match, but it shouldn't
-                    if word[i] == guess[i]:
-                        return False
-                    # contain letter l somewhere, aside from a green space
-                    else:
-                        if letter_counts[guess[i]] <= 0:
-                            return False
-                        else:
-                            letter_counts[guess[i]] -= 1
-
-                if pattern[i] == GREY_PLAC:
-                    # contain no gray letters
-                    if letter_counts[guess[i]] != 0:
-                        return False
-            return True
-
-        return pred
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
         if len(game_state.get_states()) == 0:
@@ -96,6 +54,8 @@ class Minimax(Algorithm):
                 current_minimax_word = guess
 
         return current_minimax_word
+
+    def get_action(self):
 
     def reset(self):
         self.guess_count = 0
