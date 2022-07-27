@@ -4,7 +4,6 @@ from tqdm import tqdm
 
 from common import Placing
 from graphical_interface import GraphicalInterface
-from game_visible_state import GameVisibleState
 
 
 class Simulator:
@@ -26,7 +25,6 @@ class Simulator:
             secret_word = self.game_logic.generate_secret_word()
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()
-            self.algo.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
 
@@ -35,7 +33,6 @@ class Simulator:
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameVisibleState()
         done = False
         correct_answer = False
         num_guesses = 0
@@ -48,9 +45,8 @@ class Simulator:
             gi = GraphicalInterface(secret_word)
 
         while not done:
-            guess = self.algo.get_action(game_state, self.game_logic)
-            pattern, done, is_win = self.game_logic.step(guess, secret_word, game_state)
-            game_state.add_state(guess, pattern)
+            guess = self.algo.get_action(self.game_logic)
+            pattern, done, is_win = self.game_logic.step(guess, secret_word)
             num_guesses += 1
             num_letters_guessed += len(guess)
             num_correct_letters_guessed += pattern.count(int(Placing.correct))

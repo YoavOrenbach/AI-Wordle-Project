@@ -10,9 +10,9 @@ class Random(Algorithm):
         super(Random, self).__init__(AlgorithmType.Random)
         self.guess_count = 0
 
-    def get_action(self, game_state, game_logic: AbstractWordleLogic):
+    def get_action(self, game_logic: AbstractWordleLogic):
         self.guess_count += 1
-        return random.choice(game_logic.get_possible_words(game_state))
+        return random.choice(game_logic.get_possible_words())
 
     def reset(self):
         self.guess_count = 0

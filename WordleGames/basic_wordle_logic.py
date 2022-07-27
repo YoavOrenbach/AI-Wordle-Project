@@ -3,21 +3,44 @@ from typing import List
 import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from WordleGames.utils import get_pattern_vanilla
-from common import Placing, Word, GameType
-from game_visible_state import GameVisibleState
+from common import Placing, Word, GameType, MAX, MIN
 
 
 class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
 
-    def __init__(self, secret_words, legal_words, max_iter=6):
-        super(BasicWordleLogic, self).__init__(GameType.BasicWordle, secret_words, legal_words, max_iter)
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=GameType.BasicWordle):
+        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, game_state, cur_possible_words, game_type)
 
-    def get_pattern(self, guess: Word, secret_word: Word, game_visible_state: GameVisibleState):
-        return get_pattern_vanilla(guess, secret_word)
+    def get_pattern(self, guess: Word, secret_word: Word):
+        pool = {}
+        for g, s in zip(guess, secret_word):
+            if g == s:
+                continue
+            if s in pool:
+                pool[s] += 1
+            else:
+                pool[s] = 1
 
-    def get_possible_words(self, game_visible_state: GameVisibleState) -> List[
-        Word]:  # TODO: it also updates and this behaviour is unexpected
+        pattern = []
+        for guess_letter, solution_letter in zip(guess, secret_word):
+            if guess_letter == solution_letter:
+                pattern.append(int(Placing.correct))
+            elif guess_letter in secret_word and guess_letter in pool and pool[guess_letter] > 0:
+                pattern.append(int(Placing.misplaced))
+                pool[guess_letter] -= 1
+            else:
+                pattern.append(int(Placing.incorrect))
+        return pattern
+
+    def get_possible_patterns(self, guess: str):
+        return [self.get_pattern(guess, self._secret_word)]
+
+    def successor_creator(self, successor=None, agent_index=MAX, action=None):
+        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter,
+            self.states.copy(), self.cur_possible_words.copy())
+
+    def filter_words(self) -> List[Word]:
         """
         This method updates and returns the current words one can guess in a basic wordle game.
         There are 5 filters a word must pass to be considered possible:
@@ -32,7 +55,7 @@ class BasicWordleLogic(AbstractWordleLogic):
         :param game_visible_state: the current state of the game containing a list of pairs of (guess, patterns)
         :return: the current list of legal words to guess: self.cur_legal_words
         """
-        states = game_visible_state.get_states()
+        states = self.states
         if not states:  # if no guess was made we return the list as is, since every word is possible.
             return self.cur_possible_words
         guess, pattern = states[-1]
@@ -73,11 +96,11 @@ class BasicWordleLogic(AbstractWordleLogic):
                 return False
 
             # 2. remove words if they have misplaced letters in the wrong spot or misplaced letters are not in the word
-            if any((word[idx] == letter or letter not in word) for idx, letter in misplaced_letters):
+            if any((word[idx]==letter or letter not in word) for idx, letter in misplaced_letters):
                 return False
 
             # 3. remove words that don't match correct letters
-            if any((word[idx] != letter) for idx, letter in correct_letters):
+            if any((word[idx]!=letter) for idx, letter in correct_letters):
                 return False
 
             # 4. remove words that contain more letters than the known amount
@@ -92,5 +115,4 @@ class BasicWordleLogic(AbstractWordleLogic):
 
             return True
 
-        self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
-        return self.cur_possible_words
+        return list(filter(should_keep_word, self.cur_possible_words))

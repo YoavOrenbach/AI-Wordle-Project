@@ -1,6 +1,5 @@
 from common import Placing, Word
 
-
 def get_pattern_vanilla(guess: Word, secret_word: Word):
     pool = {}
     for g, s in zip(guess, secret_word):

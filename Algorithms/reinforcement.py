@@ -1,7 +1,6 @@
 import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from game_visible_state import GameVisibleState
 from common import Placing, GameType, AlgorithmType
 from tqdm import tqdm
 import random

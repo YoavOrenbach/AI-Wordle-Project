@@ -1,13 +1,15 @@
 from enum import Enum, IntEnum
 
 Word = str
-
+MAX = 0
+MIN = 1
 LETTERS_NUM = 5
 
 
 class AlgorithmType(Enum):
     Random = "random"
     Minimax = "minimax"
+    AlphaBeta = "alphabeta"
     Expectimax = "expectimax"
     Entropy = "entropy"
     Reinforcement = "reinforcement"
