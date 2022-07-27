@@ -49,7 +49,8 @@ class Entropy(Algorithm):
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic) -> Word:
         if game_state.get_turn_num() == 1:
-            return self.get_opening_guess(game_logic)
+            if game_logic in self.opening_guesses:
+                return self.get_opening_guess(game_logic)
 
         best_expected_info = -math.inf
         best_word = None
