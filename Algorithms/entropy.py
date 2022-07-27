@@ -12,12 +12,15 @@ from game_visible_state import GameVisibleState
 
 class Entropy(Algorithm):
     opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
-                       GameType.Absurdle: "tares"}  # these words were pre-computed using the same algorithm
+                       GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
+
+    # these words were pre-computed using the same algorithm
 
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
 
-    def get_pattern(self, guess: Word, secret_word: Word, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
+    def get_pattern(self, guess: Word, secret_word: Word, game_state: GameVisibleState,
+                    game_logic: AbstractWordleLogic):
         if game_logic.type in [GameType.Absurdle]:
             return get_pattern_vanilla(guess, secret_word)
         else:
@@ -46,7 +49,8 @@ class Entropy(Algorithm):
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic) -> Word:
         if game_state.get_turn_num() == 1:
-            return self.get_opening_guess(game_logic)
+            if game_logic in self.opening_guesses:
+                return self.get_opening_guess(game_logic)
 
         best_expected_info = -math.inf
         best_word = None
@@ -58,7 +62,6 @@ class Entropy(Algorithm):
                 best_expected_info = expected_info
                 best_word = word
 
-        # TODO: implement "last guess" strategy
         return best_word
 
     def reset(self):
