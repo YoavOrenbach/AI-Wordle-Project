@@ -32,7 +32,7 @@ class Minimax(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in tqdm(possible_words):
+        for word in possible_words:
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.minimax_val(1, successor_game, MIN)
             if high_score < minimax_score:
@@ -83,7 +83,7 @@ class AlphaBeta(Algorithm):
 
 
 class Expectimax(Algorithm):
-    def __init__(self, depth=2):
+    def __init__(self, depth=3):
         super(Expectimax, self).__init__(AlgorithmType.Expectimax)
         self.depth = depth
 
@@ -111,7 +111,7 @@ class Expectimax(Algorithm):
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
-        print(best_action)
+        print(game_logic.get_turn_num(), best_action)
         return best_action
 
 
