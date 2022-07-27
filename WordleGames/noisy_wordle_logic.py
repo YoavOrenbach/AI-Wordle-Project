@@ -6,9 +6,10 @@ from typing import List
 from WordleGames import BasicWordleLogic
 from common import Placing, GameType, LETTERS_NUM, MAX, Word
 
+
 class NoisyWordleLogic(BasicWordleLogic):
-    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
-        super(NoisyWordleLogic, self).__init__(secret_words, legal_words, max_iter,
+    def __init__(self, secret_words, legal_words, max_iter=6, secret_word='', game_state=[], cur_possible_words=[]):
+        super(NoisyWordleLogic, self).__init__(secret_words, legal_words, max_iter, secret_word,
             game_state, cur_possible_words, GameType.NoisyWordle)
 
     @staticmethod
@@ -17,14 +18,14 @@ class NoisyWordleLogic(BasicWordleLogic):
             Placing.incorrect.value] * 33  # TODO: why this weighting?
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return NoisyWordleLogic(self._secret_words, self.legal_words, self.max_iter,
+        return NoisyWordleLogic(self._secret_words, self.legal_words, self.max_iter, self._secret_word,
             self.states.copy(), self.cur_possible_words.copy())
 
     def get_pattern(self, guess: str, secret_word: Word):
         secret_word = self._secret_word
         pattern = super(NoisyWordleLogic, self).get_pattern(guess, secret_word)
-        #chosen_square = random.randrange(LETTERS_NUM)
-        #pattern[chosen_square] = random.choice(NoisyWordleLogic.weight_placing(pattern[chosen_square]))
+        chosen_square = random.randrange(LETTERS_NUM)
+        pattern[chosen_square] = random.choice(NoisyWordleLogic.weight_placing(pattern[chosen_square]))
         return pattern
 
     def get_possible_patterns(self, guess: str):

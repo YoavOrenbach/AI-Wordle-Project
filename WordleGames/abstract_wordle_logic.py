@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from typing import List, Tuple
 
-from common import Placing, LETTERS_NUM, GameType, MAX, MIN
+from common import Placing, LETTERS_NUM, GameType, MAX, MIN, WINNING_PATTERN
 
 
 class InvalidGuessException(ValueError):
@@ -16,7 +16,7 @@ class AbstractWordleLogic(ABC):
     all_patterns = [pattern for pattern in
                     itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
-    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
+    def __init__(self, secret_words, legal_words, max_iter=6, secret_word='', game_state=[], cur_possible_words=[], game_type=None):
         super(AbstractWordleLogic, self).__init__()
         if cur_possible_words is None:
             cur_possible_words = []
@@ -32,7 +32,7 @@ class AbstractWordleLogic(ABC):
             self.cur_possible_words = legal_words  # TODO: move to game visible state
         else:
             self.cur_possible_words = cur_possible_words
-        self._secret_word = random.choice(self._secret_words)
+        self._secret_word = secret_word
         self.states = game_state  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
 
     def apply_action(self, action: str):
@@ -69,8 +69,8 @@ class AbstractWordleLogic(ABC):
         return len(self.states) + 1
 
     def generate_secret_word(self):
-       # self._secret_word = random.choice(self._secret_words)
-       return self._secret_word
+        self._secret_word = random.choice(self._secret_words)
+        return self._secret_word
 
     def get_legal_words(self):
         return self.legal_words
@@ -91,7 +91,7 @@ class AbstractWordleLogic(ABC):
         self.states.append((guess, pattern))
         self.cur_possible_words = self.filter_words()
 
-        is_win = (guess==secret_word)
+        is_win = (guess == secret_word) if self.type != GameType.Absurdle else (tuple(pattern) == WINNING_PATTERN)
         is_max_iter = (self.max_iter is not None and self.cur_iter >= self.max_iter)
         if is_win or is_max_iter:
             self.done = True
@@ -104,7 +104,6 @@ class AbstractWordleLogic(ABC):
         self.done = False
         self.cur_possible_words = self.legal_words
         self.states = []
-        self._secret_word = random.choice(self._secret_words)
 
     def get_possible_words(self) -> List[str]:
         return self.cur_possible_words
@@ -125,7 +124,3 @@ class AbstractWordleLogic(ABC):
     @abstractmethod
     def successor_creator(self):
         pass
-
-    @property
-    def secret_word(self):
-        return self._secret_word

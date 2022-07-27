@@ -9,8 +9,8 @@ from common import Placing, Word, GameType, MAX, MIN
 class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
 
-    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=GameType.BasicWordle):
-        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, game_state, cur_possible_words, game_type)
+    def __init__(self, secret_words, legal_words, max_iter=6, secret_word='', game_state=[], cur_possible_words=[], game_type=GameType.BasicWordle):
+        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, secret_word, game_state, cur_possible_words, game_type)
 
     def get_pattern(self, guess: Word, secret_word: Word):
         pool = {}
@@ -37,7 +37,7 @@ class BasicWordleLogic(AbstractWordleLogic):
         return [self.get_pattern(guess, self._secret_word)]
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter,
+        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter, self._secret_word,
             self.states.copy(), self.cur_possible_words.copy())
 
     def filter_words(self) -> List[Word]:

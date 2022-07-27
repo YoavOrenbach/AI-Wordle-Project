@@ -14,11 +14,11 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument('-n', '--num-games', type=int, default=5, help='# of games to simulate')
+    parser.add_argument('-n', '--num-games', type=int, default=1, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=False, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
-                        default=GameType.NoisyWordle.value, help='which game to use')
+                        default=GameType.Absurdle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
                         default=AlgorithmType.Minimax.value, help='which algorithm to use')
