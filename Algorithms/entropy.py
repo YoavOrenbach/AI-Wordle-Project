@@ -12,7 +12,8 @@ from game_visible_state import GameVisibleState
 
 class Entropy(Algorithm):
     opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
-                       GameType.Absurdle: "tares"}  # these words were pre-computed using the same algorithm
+                       GameType.Absurdle: "tares", GameType.VocabularyWordle: "lxpyn"}
+                        # these words were pre-computed using the same algorithm
 
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
@@ -58,7 +59,6 @@ class Entropy(Algorithm):
                 best_expected_info = expected_info
                 best_word = word
 
-        # TODO: implement "last guess" strategy
         return best_word
 
     def reset(self):

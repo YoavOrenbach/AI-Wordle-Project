@@ -16,7 +16,7 @@ class AlgorithmType(Enum):
 class GameType(Enum):
     BasicWordle = "wordle"
     Absurdle = "absurdle"
-    VocabWordle = "vocab_wordle"
+    VocabularyWordle = "vocab_wordle"
     NoisyWordle = "noisy_wordle"
     YellowWordle = "yellow_wordle"
 
