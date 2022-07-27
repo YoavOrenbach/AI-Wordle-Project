@@ -9,6 +9,7 @@ from game_visible_state import GameVisibleState
 from copy import deepcopy, copy
 
 import collections
+from tqdm import tqdm
 
 GREEN_PLAC = 2
 YELLOW_PLAC = 1
@@ -24,10 +25,7 @@ class Minimax(Algorithm):
         self.depth = depth
 
     def generate_feedback(self, game_logic: AbstractWordleLogic, possible_soln, word):
-        game_logic_copy = deepcopy(game_logic)
-        game_logic_copy.set_secret_word(possible_soln)
-        pattern, done = game_logic_copy.step(word)
-        return pattern
+        return game_logic.get_pattern(word, possible_soln)
 
     def word_consistent(self, pattern, guess):
         def pred(word):
@@ -65,12 +63,17 @@ class Minimax(Algorithm):
         return pred
 
     def get_action(self, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
+        if len(game_state.get_states()) == 0:
+            return "crane"
+        if len(game_state.get_states()) == 1:
+            return "yours"
+
         current_minimax = None
         current_minimax_word = None
 
         possible_words = game_logic.get_possible_words(game_state)
 
-        for guess in possible_words:
+        for guess in tqdm(possible_words):
             # max loss for this guess
             maximum_remaining = None
             for possible_soln in possible_words: # TODO: change possible words
