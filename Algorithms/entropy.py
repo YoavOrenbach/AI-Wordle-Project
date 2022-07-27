@@ -13,12 +13,14 @@ from game_visible_state import GameVisibleState
 class Entropy(Algorithm):
     opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
                        GameType.Absurdle: "tares", GameType.VocabularyWordle: "lxpyn"}
-                        # these words were pre-computed using the same algorithm
+
+    # these words were pre-computed using the same algorithm
 
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
 
-    def get_pattern(self, guess: Word, secret_word: Word, game_state: GameVisibleState, game_logic: AbstractWordleLogic):
+    def get_pattern(self, guess: Word, secret_word: Word, game_state: GameVisibleState,
+                    game_logic: AbstractWordleLogic):
         if game_logic.type in [GameType.Absurdle]:
             return get_pattern_vanilla(guess, secret_word)
         else:
