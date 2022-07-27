@@ -12,7 +12,7 @@ from game_visible_state import GameVisibleState
 
 class Entropy(Algorithm):
     opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
-                       GameType.Absurdle: "tares", GameType.VocabularyWordle: "lxpyn"}
+                       GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
 
     # these words were pre-computed using the same algorithm
 

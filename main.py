@@ -42,13 +42,16 @@ def main():
 
     # select game
     # TODO: create better factory
-    if args.game == 'wordle':
+    if args.game == GameType.BasicWordle:
         game = BasicWordleLogic(secret_words, legal_words)
-    elif args.game == 'absurdle':
+    elif args.game == GameType.Absurdle:
         game = AbsurdleLogic(secret_words, legal_words)
-    elif args.game == 'vocab_wordle':
+    elif args.game == GameType.FakeVocabularyWordle:
         game = VocabularyWordleLogic(vocabulary_size=12972, real_vocabulary=False)
-    elif args.game == 'noisy_wordle':
+    elif args.game == GameType.RealVocabularyWordle:
+        game = VocabularyWordleLogic(vocabulary_size=15, real_vocabulary=True, secret_words=secret_words,
+                                     legal_words=legal_words)
+    elif args.game == GameType.NoisyWordle:
         game = NoisyWordleLogic(secret_words, legal_words)
     else:
         game = YellowWordle(secret_words, legal_words)

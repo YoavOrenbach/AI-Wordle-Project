@@ -13,12 +13,13 @@ class AlgorithmType(Enum):
     Reinforcement = "reinforcement"
 
 
-class GameType(Enum):
+class GameType(str, Enum):
     BasicWordle = "wordle"
     Absurdle = "absurdle"
-    VocabularyWordle = "vocab_wordle"
-    NoisyWordle = "noisy_wordle"
-    YellowWordle = "yellow_wordle"
+    FakeVocabularyWordle = "fake_vocabulary"
+    RealVocabularyWordle = "real_vocabulary"
+    NoisyWordle = "noisy"
+    YellowWordle = "yellow"
 
 
 class Placing(IntEnum):
