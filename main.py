@@ -49,12 +49,14 @@ def main():
     elif args.game == GameType.FakeVocabularyWordle:
         game = VocabularyWordleLogic(vocabulary_size=12972, real_vocabulary=False)
     elif args.game == GameType.RealVocabularyWordle:
-        game = VocabularyWordleLogic(vocabulary_size=15, real_vocabulary=True, secret_words=secret_words,
+        game = VocabularyWordleLogic(vocabulary_size=1000, real_vocabulary=True, secret_words=secret_words,
                                      legal_words=legal_words)
     elif args.game == GameType.NoisyWordle:
         game = NoisyWordleLogic(secret_words, legal_words)
-    else:
+    elif args.game == GameType.YellowWordle:
         game = YellowWordle(secret_words, legal_words)
+    else:
+        raise Exception(f"{args.game} is not valid game")
 
     # select algorithm
     if args.algorithm == "random":
