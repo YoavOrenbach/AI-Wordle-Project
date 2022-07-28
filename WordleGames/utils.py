@@ -1,3 +1,5 @@
+import string
+
 from common import Placing, Word
 
 def get_pattern_vanilla(guess: Word, secret_word: Word):
@@ -20,3 +22,7 @@ def get_pattern_vanilla(guess: Word, secret_word: Word):
         else:
             pattern.append(int(Placing.incorrect))
     return pattern
+
+
+def get_all_letters():
+    return list(string.ascii_lowercase)
