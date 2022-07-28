@@ -38,7 +38,7 @@ class Entropy(Algorithm):
 
     def get_expected_info(self, guess: Word, game_logic: AbstractWordleLogic) -> float:
         pattern_probs = self.get_pattern_probs(guess, game_logic)
-        # return sum(
+        #return sum(
         #    pattern_probs[pattern] * math.log2(1 / pattern_probs[pattern]) if pattern_probs[pattern] != 0 else 0 for
         #    pattern in game_logic.all_patterns)
         return entropy(list(pattern_probs.values()))
