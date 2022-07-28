@@ -1,4 +1,4 @@
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 from Algorithms import Random, Minimax, AlphaBeta, Expectimax, Entropy, Reinforcement
@@ -23,7 +23,7 @@ def evaluate_algorithms(num_games, game: AbstractWordleLogic):
     plt.bar(algorithm_names, avg_results)
     for i in range(len(algorithm_names)):
         plt.text(i, avg_results[i], "{:.2f}".format(avg_results[i]), ha='center')
-    plt.title(f"Algorithms average number guesses on {game.get_type().value}")
+    plt.title(f"Algorithms average number guesses on {game.get_type().value} for {num_games} games")
     plt.ylabel("Average number of guesses")
     plt.xlabel("Algorithms")
     plt.show()
