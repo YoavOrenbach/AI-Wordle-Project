@@ -11,5 +11,4 @@ class Random(Algorithm):
 
     def get_action(self, game_logic: AbstractWordleLogic):
         word = random.choice(game_logic.get_possible_words())
-        print(word)
         return word

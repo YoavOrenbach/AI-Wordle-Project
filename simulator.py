@@ -21,12 +21,13 @@ class Simulator:
         """
         results = []
         start = time.time()
-        for _ in (range(num_games)):
+        for _ in tqdm(range(num_games)):
             secret_word = self.game_logic.generate_secret_word()
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
+        #return results
 
     def simulate_game(self, secret_word, user_interface=True):
         """

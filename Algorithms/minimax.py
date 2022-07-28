@@ -32,7 +32,7 @@ class Minimax(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in possible_words:
+        for word in tqdm(possible_words):
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.minimax_val(1, successor_game, MIN)
             if high_score < minimax_score:
@@ -73,7 +73,7 @@ class AlphaBeta(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in possible_words:
+        for word in tqdm(possible_words):
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.alphabeta_val(1, successor_game, -np.inf, np.inf, MIN)
             if high_score < minimax_score:
