@@ -13,6 +13,3 @@ class Random(Algorithm):
     def get_action(self, game_logic: AbstractWordleLogic):
         self.guess_count += 1
         return random.choice(game_logic.get_possible_words())
-
-    def reset(self):
-        self.guess_count = 0

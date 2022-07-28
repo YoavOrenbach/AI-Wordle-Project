@@ -113,7 +113,6 @@ class Reinforcement(Algorithm):
         :param game: An AbstractWordleLogic type game to simulate training and decide on the type of agent to use.
         """
         super(Reinforcement, self).__init__(AlgorithmType.Reinforcement)
-        self.guess_count = 0
         self.game = game
         if game.type != GameType.NoisyWordle:
             self.agent = QLearningAgent()
@@ -136,15 +135,14 @@ class Reinforcement(Algorithm):
         epsilon_min = 0.05
 
         for _ in tqdm(range(num_episodes)):
-            game_state = GameVisibleState()
             secret_word = self.game.generate_secret_word()
-            legal_actions = self.game.get_possible_words(game_state)
+            legal_actions = self.game.get_possible_words()
             done = False
             state = 0 if not self.approximate else ()
 
             while not done:
                 action = self.agent.get_q_action(state, legal_actions, epsilon)
-                pattern, done, _ = self.game.step(action, secret_word, game_state)
+                pattern, done, _ = self.game.step(action, secret_word)
                 reward = 0
                 for placing in pattern:
                     if placing == Placing.correct.value:
@@ -153,8 +151,7 @@ class Reinforcement(Algorithm):
                         reward += YELLOW_REWARD
                     else:
                         reward += GREY_REWARD
-                game_state.add_state(action, pattern)
-                legal_actions = self.game.get_possible_words(game_state)
+                legal_actions = self.game.get_possible_words()
                 next_state = 0 if not self.approximate else (action, pattern)
                 self.agent.update(state, action, next_state, reward, alpha, discount, legal_actions)
                 state = next_state
@@ -166,18 +163,13 @@ class Reinforcement(Algorithm):
 
         print(f"Training completed over {num_episodes} episodes")
 
-    def get_action(self, game_state, game_logic: AbstractWordleLogic):
+    def get_action(self, game_logic: AbstractWordleLogic):
         """Returns the next guess given the game state and the game being played, according to the type of agent."""
-        self.guess_count += 1
-        actions = game_logic.get_possible_words(game_state)
+        actions = game_logic.get_possible_words()
         if not self.approximate:
             return self.agent.get_policy(0, actions)
         state = ()
-        if game_state.get_states():
-            guess, pattern = game_state.get_states()[-1]
+        if game_logic.get_game_state():
+            guess, pattern = game_logic.get_game_state()[-1]
             state = (guess, pattern)
         return self.agent.get_policy(state, actions)
-
-    def reset(self):
-        """Resets the algorithm."""
-        self.guess_count = 0
