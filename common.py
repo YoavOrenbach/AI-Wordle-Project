@@ -6,7 +6,7 @@ MIN = 1
 LETTERS_NUM = 5
 
 
-class AlgorithmType(Enum):
+class AlgorithmType(str, Enum):
     Random = "random"
     Minimax = "minimax"
     AlphaBeta = "alphabeta"
@@ -31,4 +31,4 @@ class Placing(IntEnum):
     incorrect = 2
 
 
-WINNING_PATTERN = tuple([Placing.correct for _ in range(LETTERS_NUM)])
+WINNING_PATTERN = tuple([Placing.correct.value for _ in range(LETTERS_NUM)])

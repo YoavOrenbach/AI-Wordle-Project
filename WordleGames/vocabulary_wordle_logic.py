@@ -1,8 +1,8 @@
 import itertools
 import random
+import string
 
 from WordleGames import BasicWordleLogic
-from WordleGames.utils import get_all_letters
 from common import LETTERS_NUM, GameType
 
 
@@ -27,7 +27,7 @@ class VocabularyWordleLogic(BasicWordleLogic):
             sampled_legal_words = sampled_secret_words + sampled_legal_non_secret_words
         else:
             all_words = [''.join(word_letters) for word_letters in
-                         itertools.product(get_all_letters(), repeat=LETTERS_NUM)]
+                         itertools.product(list(string.ascii_lowercase), repeat=LETTERS_NUM)]
             sampled_legal_words = random.sample(all_words, vocabulary_size)
             sampled_secret_words = random.sample(sampled_legal_words, secret_vocabulary_size)
         return sampled_secret_words, sampled_legal_words

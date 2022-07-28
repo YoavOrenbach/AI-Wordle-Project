@@ -16,7 +16,7 @@ class Minimax(Algorithm):
 
     def minimax_val(self, curr_depth, game_logic: AbstractWordleLogic, player_id):
         legal_actions = game_logic.get_legal_actions(player_id)
-        if curr_depth == self.depth * 2 or game_logic.done or not legal_actions:
+        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
 
         result_lst = []
@@ -49,7 +49,7 @@ class AlphaBeta(Algorithm):
 
     def alphabeta_val(self, curr_depth, game_logic: AbstractWordleLogic, alpha, beta, player_id):
         legal_actions = game_logic.get_legal_actions(player_id)
-        if curr_depth == self.depth * 2 or game_logic.done or not legal_actions:
+        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
 
         if player_id == MAX:
@@ -83,13 +83,13 @@ class AlphaBeta(Algorithm):
 
 
 class Expectimax(Algorithm):
-    def __init__(self, depth=3):
+    def __init__(self, depth=1):
         super(Expectimax, self).__init__(AlgorithmType.Expectimax)
         self.depth = depth
 
     def expectimax_val(self, curr_depth, game_logic: AbstractWordleLogic, player_id):
         legal_actions = game_logic.get_legal_actions(player_id)
-        if curr_depth == self.depth * 2 or game_logic.done or not legal_actions:
+        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
 
         result_lst = []
@@ -105,13 +105,12 @@ class Expectimax(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in possible_words:
+        for word in tqdm(possible_words):
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.expectimax_val(1, successor_game, MIN)
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
-        print(game_logic.get_turn_num(), best_action)
         return best_action
 
 

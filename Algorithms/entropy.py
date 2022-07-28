@@ -25,8 +25,7 @@ class Entropy(Algorithm):
         else:
             return game_logic.get_pattern(guess, secret_word)
 
-    def get_pattern_probs(self, guess: Word, game_logic: AbstractWordleLogic) -> Dict[
-        tuple, float]:
+    def get_pattern_probs(self, guess: Word, game_logic: AbstractWordleLogic) -> Dict[tuple, float]:
         pattern_counts = {pattern: 0 for pattern in game_logic.all_patterns}
         possible_secret_words = game_logic.get_possible_words()
         for secret_word in possible_secret_words:
@@ -39,7 +38,7 @@ class Entropy(Algorithm):
 
     def get_expected_info(self, guess: Word, game_logic: AbstractWordleLogic) -> float:
         pattern_probs = self.get_pattern_probs(guess, game_logic)
-        #return sum(
+        # return sum(
         #    pattern_probs[pattern] * math.log2(1 / pattern_probs[pattern]) if pattern_probs[pattern] != 0 else 0 for
         #    pattern in game_logic.all_patterns)
         return entropy(list(pattern_probs.values()))
@@ -48,15 +47,15 @@ class Entropy(Algorithm):
         return Entropy.opening_guesses[game_logic.type]
 
     def get_action(self, game_logic: AbstractWordleLogic) -> Word:
-        if game_logic.get_turn_num() == 1:
-            if game_logic.type in self.opening_guesses:
+        if game_logic.get_turn_num()==1:
+            if game_logic.get_type() in self.opening_guesses:
                 return self.get_opening_guess(game_logic)
 
         best_expected_info = -math.inf
         best_word = None
 
         possible_words = game_logic.get_possible_words()  # TODO: maybe use all legal words?
-        for word in possible_words:
+        for word in tqdm(possible_words):
             expected_info = self.get_expected_info(word, game_logic)
             if expected_info > best_expected_info:
                 best_expected_info = expected_info

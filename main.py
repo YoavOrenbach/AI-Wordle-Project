@@ -59,15 +59,15 @@ def main():
         raise Exception(f"{args.game} is not valid game")
 
     # select algorithm
-    if args.algorithm == AlgorithmType.Random.value:
+    if args.algorithm == AlgorithmType.Random:
         algorithm = Random()
-    elif args.algorithm == AlgorithmType.Minimax.value:
+    elif args.algorithm == AlgorithmType.Minimax:
         algorithm = Minimax()
-    elif args.algorithm == AlgorithmType.AlphaBeta.value:
+    elif args.algorithm == AlgorithmType.AlphaBeta:
         algorithm = AlphaBeta()
-    elif args.algorithm == AlgorithmType.Expectimax.value:
+    elif args.algorithm == AlgorithmType.Expectimax:
         algorithm = Expectimax()
-    elif args.algorithm == AlgorithmType.Entropy.value:
+    elif args.algorithm == AlgorithmType.Entropy:
         algorithm = Entropy()
     else:
         algorithm = Reinforcement(game)
