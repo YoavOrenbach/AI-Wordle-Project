@@ -1,14 +1,16 @@
+import itertools
 from typing import List
 
 import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, GameType, LETTERS_NUM, MIN, MAX
+from common import Placing, GameType, LETTERS_NUM, MAX
 
 
 class YellowWordle(AbstractWordleLogic):
-    def __init__(self, secret_words, legal_words, max_iter=6,secret_word='', game_state=[], cur_possible_words=[]):
-        super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, secret_word,
-            game_state, cur_possible_words, GameType.YellowWordle)
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
+        super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
+            cur_possible_words, GameType.YellowWordle)
+        self.all_patterns = [list(pattern) for pattern in itertools.product([1, 2], repeat=LETTERS_NUM)]
 
     def get_pattern(self, guess: str, secret_word: str):
         secret_word = self._secret_word if secret_word is None else secret_word
@@ -22,12 +24,25 @@ class YellowWordle(AbstractWordleLogic):
 
         return [int(elem) for elem in pattern]
 
-    def get_possible_patterns(self, guess: str):
-        return [self.get_pattern(guess, self._secret_word)]
+    def get_possible_patterns(self):
+        # return [self.get_pattern(guess, self._secret_word)]
+
+        if len(self.states) <= 1:
+            return self.all_patterns
+        _, last_pattern = self.states[-2]
+
+        yellow_sum = last_pattern.count(Placing.misplaced.value)
+
+        def should_keep_pattern(pattern):
+            if pattern.count(Placing.misplaced.value) < yellow_sum:
+                return False
+            return True
+
+        return list(filter(should_keep_pattern, self.all_patterns))
 
     def successor_creator(self, agent_index=MAX, action=None):
-        return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self._secret_word,
-            self.states.copy(), self.cur_possible_words.copy())
+        return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self.states.copy(),
+            self.cur_possible_words.copy())
 
     def filter_words(self) -> List[str]:
         """

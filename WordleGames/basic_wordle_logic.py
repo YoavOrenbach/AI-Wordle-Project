@@ -1,16 +1,19 @@
 from typing import List
-
+import itertools
 import util
+
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from WordleGames.utils import get_pattern_vanilla
-from common import Placing, Word, GameType, MAX, MIN
+from common import Placing, Word, GameType, MAX, LETTERS_NUM
 
 
 class BasicWordleLogic(AbstractWordleLogic):
     """Classic Wordle game"""
-
-    def __init__(self, secret_words, legal_words, max_iter=6, secret_word='', game_state=[], cur_possible_words=[], game_type=GameType.BasicWordle):
-        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, secret_word, game_state, cur_possible_words, game_type)
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[],
+                 game_type=GameType.BasicWordle):
+        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, game_state,
+            cur_possible_words, game_type)
+        self.all_patterns = [list(pattern) for pattern in
+                        itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
     def get_pattern(self, guess: Word, secret_word: Word):
         pool = {}
@@ -33,12 +36,27 @@ class BasicWordleLogic(AbstractWordleLogic):
                 pattern.append(int(Placing.incorrect))
         return pattern
 
-    def get_possible_patterns(self, guess: str): #TODO: Maybe all possible words?
-        return [self.get_pattern(guess, secret_word) for secret_word in self._secret_words]
-        #return [self.get_pattern(guess, self._secret_word)]
+    def get_possible_patterns(self):
+        if len(self.states) <= 1:
+            return self.all_patterns
+        _, last_pattern = self.states[-2]
+        
+        correct_indices = []
+        green_sum, yellow_sum = (last_pattern.count(Placing.correct.value), last_pattern.count(Placing.misplaced.value))
+        correct_indices = [i for i, placing in enumerate(last_pattern) if placing == Placing.correct.value]
+
+        def should_keep_pattern(pattern):
+            if any(pattern[i] != Placing.correct.value for i in correct_indices):
+                return False
+            if pattern.count(Placing.misplaced.value) + pattern.count(Placing.correct.value) < yellow_sum + green_sum:
+                return False
+            return True
+        return list(filter(should_keep_pattern, self.all_patterns))
+        # return [self.get_pattern(guess, secret_word) for secret_word in self._secret_words]
+        # return [self.get_pattern(guess, self._secret_word)]
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter, self._secret_word,
+        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter,
             self.states.copy(), self.cur_possible_words.copy())
 
     def filter_words(self) -> List[Word]:

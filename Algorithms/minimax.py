@@ -11,7 +11,8 @@ from tqdm import tqdm
 
 
 class AdversarialAgent(Algorithm):
-    opening_guess = {GameType.BasicWordle: "tares", GameType.Absurdle: "tares"}
+    opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise", GameType.NoisyWordle: "tares",
+                       GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
 
     def __init__(self, algorithm_type, depth=1):
         super(AdversarialAgent, self).__init__(algorithm_type)
@@ -23,7 +24,7 @@ class AdversarialAgent(Algorithm):
 
     def get_action(self, game_logic: AbstractWordleLogic):
         if game_logic.get_turn_num() == 1:
-            return AdversarialAgent.opening_guess[game_logic.type]
+            return AdversarialAgent.opening_guesses[game_logic.get_type()]
 
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
@@ -67,7 +68,7 @@ class AlphaBeta(AdversarialAgent):
 
         if player_id == MAX:
             for i, action in enumerate(legal_actions):
-                successor_game = game_logic.generate_successor(agent_index=MAX, action=action)
+                successor_game = game_logic.generate_successor(agent_index=player_id, action=action)
                 result = self.adversarial_search(curr_depth + 1, successor_game, MIN, alpha, beta)
                 alpha = max(alpha, result)
                 if beta <= alpha:
@@ -75,7 +76,7 @@ class AlphaBeta(AdversarialAgent):
             return alpha
         else:
             for i, action in enumerate(legal_actions):
-                successor_game = game_logic.generate_successor(agent_index=MAX, action=action)
+                successor_game = game_logic.generate_successor(agent_index=player_id, action=action)
                 result = self.adversarial_search(curr_depth + 1, successor_game, MAX, alpha, beta)
                 beta = min(beta, result)
                 if beta <= alpha:

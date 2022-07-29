@@ -19,14 +19,14 @@ class Entropy(Algorithm):
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
 
-    def get_pattern(self, guess: Word, secret_word: Word, game_logic: AbstractWordleLogic):
-        if game_logic.type in [GameType.Absurdle]:
-            return get_pattern_vanilla(guess, secret_word)
-        else:
-            return game_logic.get_pattern(guess, secret_word)
+    # def get_pattern(self, guess: Word, secret_word: Word, game_logic: AbstractWordleLogic):
+    #     if game_logic.type in [GameType.Absurdle]:
+    #         return get_pattern_vanilla(guess, secret_word)
+    #     else:
+    #         return game_logic.get_pattern(guess, secret_word)
 
     def get_pattern_probs(self, guess: Word, game_logic: AbstractWordleLogic) -> Dict[tuple, float]:
-        pattern_counts = {pattern: 0 for pattern in game_logic.all_patterns}
+        pattern_counts = {pattern: 0 for pattern in game_logic.get_all_patterns()}
         possible_secret_words = game_logic.get_possible_words()
         for secret_word in possible_secret_words:
             pattern_counts[tuple(game_logic.get_pattern(guess, secret_word))] += 1
@@ -44,10 +44,10 @@ class Entropy(Algorithm):
         return entropy(list(pattern_probs.values()))
 
     def get_opening_guess(self, game_logic: AbstractWordleLogic) -> Word:
-        return Entropy.opening_guesses[game_logic.type]
+        return Entropy.opening_guesses[game_logic.get_type()]
 
     def get_action(self, game_logic: AbstractWordleLogic) -> Word:
-        if game_logic.get_turn_num()==1:
+        if game_logic.get_turn_num() == 1:
             if game_logic.get_type() in self.opening_guesses:
                 return self.get_opening_guess(game_logic)
 

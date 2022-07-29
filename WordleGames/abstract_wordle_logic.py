@@ -1,10 +1,8 @@
-import itertools
 import random
 from abc import ABC, abstractmethod
 from typing import List
-from typing import List, Tuple
 
-from common import Placing, LETTERS_NUM, GameType, MAX, MIN, WINNING_PATTERN
+from common import GameType, MAX, MIN, WINNING_PATTERN
 
 
 class InvalidGuessException(ValueError):
@@ -13,10 +11,8 @@ class InvalidGuessException(ValueError):
 
 class AbstractWordleLogic(ABC):
     """An abstract class representing each Wordle type game"""
-    all_patterns = [pattern for pattern in
-                    itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
-    def __init__(self, secret_words, legal_words, max_iter=6, secret_word='', game_state=[], cur_possible_words=[], game_type=None):
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
         super(AbstractWordleLogic, self).__init__()
         if cur_possible_words is None:
             cur_possible_words = []
@@ -32,11 +28,14 @@ class AbstractWordleLogic(ABC):
             self.cur_possible_words = legal_words  # TODO: move to game visible state
         else:
             self.cur_possible_words = cur_possible_words
-        self._secret_word = secret_word
+        self.all_patterns = []
         self.states = game_state  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
 
     def get_type(self):
         return self.type
+
+    def get_all_patterns(self):
+        return self.all_patterns
 
     def get_done(self):
         return self.done
@@ -87,9 +86,10 @@ class AbstractWordleLogic(ABC):
         self.states = []
 
     def apply_action(self, action: str):
-        self.states.append((action, ()))
+        self.states.append((action, []))
 
-    def apply_opponent_action(self, guess, action):
+    def apply_opponent_action(self, action):
+        guess, _ = self.states[-1]
         self.states[-1] = (guess, action)
         self.cur_possible_words = self.filter_words()
 
@@ -99,7 +99,7 @@ class AbstractWordleLogic(ABC):
             successor.apply_action(action)  # action = guess
         elif agent_index == MIN:
             guess, _ = self.states[-1]
-            successor.apply_opponent_action(guess, action)  # action = pattern
+            successor.apply_opponent_action(action)  # action = pattern
         else:
             raise Exception("illegal agent index.")
         return successor
@@ -108,8 +108,7 @@ class AbstractWordleLogic(ABC):
         if agent_index == MAX:
             return self.get_possible_words()
         elif agent_index == MIN:
-            guess, _ = self.states[-1]
-            return self.get_possible_patterns(guess)
+            return self.get_possible_patterns()
         else:
             raise Exception("illegal agent index.")
 
@@ -123,7 +122,7 @@ class AbstractWordleLogic(ABC):
         pass
 
     @abstractmethod
-    def get_possible_patterns(self, guess: str):
+    def get_possible_patterns(self):
         pass
 
     @abstractmethod
