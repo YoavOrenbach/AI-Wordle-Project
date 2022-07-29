@@ -7,6 +7,7 @@ from WordleGames.vocabulary_wordle_logic import VocabularyWordleLogic
 from common import AlgorithmType, GameType
 from simulator import Simulator
 
+
 def parse_args():
     """
     Parses the command line arguments to decide on various game features.
@@ -17,10 +18,10 @@ def parse_args():
     parser.add_argument('-u', '--user-interface', type=bool, default=False, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
-                        default=GameType.BasicWordle.value, help='which game to use')
+                        default=GameType.Absurdle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
-                        default=AlgorithmType.Expectimax.value, help='which algorithm to use')
+                        default=AlgorithmType.AlphaBeta.value, help='which algorithm to use')
     parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 

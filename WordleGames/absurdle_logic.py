@@ -22,7 +22,7 @@ class AbsurdleLogic(BasicWordleLogic):
         self.possible_secret_words = [word for word in self._secret_words if word in filtered_words]
         return filtered_words
 
-    def get_pattern(self, guess: str, secret_word: str = None):
+    def get_pattern(self, guess: str, secret_word: str):
         """Returns a list containing the placing of each letter in the guess."""
         best_patterns = self.get_possible_patterns(guess)
         best_pattern = best_patterns[-1]

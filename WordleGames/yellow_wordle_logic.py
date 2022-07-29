@@ -10,7 +10,7 @@ class YellowWordle(AbstractWordleLogic):
         super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, secret_word,
             game_state, cur_possible_words, GameType.YellowWordle)
 
-    def get_pattern(self, guess: str, secret_word: str = None) -> List[int]:
+    def get_pattern(self, guess: str, secret_word: str):
         secret_word = self._secret_word if secret_word is None else secret_word
         target_word = list(secret_word)
         pattern = [Placing.incorrect for _ in range(LETTERS_NUM)]
@@ -22,8 +22,8 @@ class YellowWordle(AbstractWordleLogic):
 
         return [int(elem) for elem in pattern]
 
-    def get_possible_patterns(self, guess: str, secret_word: str = None):
-        return [self.get_pattern(guess, secret_word)]
+    def get_possible_patterns(self, guess: str):
+        return [self.get_pattern(guess, self._secret_word)]
 
     def successor_creator(self, agent_index=MAX, action=None):
         return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self._secret_word,

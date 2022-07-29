@@ -6,11 +6,13 @@ from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import AlgorithmType
 
 import random
-from common import MAX, MIN
+from common import MAX, MIN, GameType
 from tqdm import tqdm
 
 
 class AdversarialAgent(Algorithm):
+    opening_guess = {GameType.BasicWordle: "tares", GameType.Absurdle: "tares"}
+
     def __init__(self, algorithm_type, depth=1):
         super(AdversarialAgent, self).__init__(algorithm_type)
         self.depth = depth
@@ -20,16 +22,18 @@ class AdversarialAgent(Algorithm):
         pass
 
     def get_action(self, game_logic: AbstractWordleLogic):
+        if game_logic.get_turn_num() == 1:
+            return AdversarialAgent.opening_guess[game_logic.type]
+
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in tqdm(possible_words):
+        for word in possible_words:
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
-        print(best_action)
         return best_action
 
 
