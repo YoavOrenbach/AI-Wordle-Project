@@ -117,7 +117,7 @@ class Reinforcement(Algorithm):
         if game.type != GameType.NoisyWordle:
             self.agent = QLearningAgent()
             self.approximate = False
-            self.train(num_episodes=20000)
+            self.train(num_episodes=40000)
         else:
             self.agent = ApproximateQAgent(game.get_pattern)
             self.approximate = True
@@ -131,7 +131,7 @@ class Reinforcement(Algorithm):
         discount = 0.8
         epsilon = 1.0
         #decay_rate = 0.005
-        epsilon_decay = 0.9995  # 0.995 for secret list
+        epsilon_decay = 0.9999  # 0.995 for secret list
         epsilon_min = 0.05
 
         for _ in tqdm(range(num_episodes)):

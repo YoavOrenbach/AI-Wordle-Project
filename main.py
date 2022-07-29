@@ -20,7 +20,7 @@ def parse_args():
                         default=GameType.BasicWordle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
-                        default=AlgorithmType.Random.value, help='which algorithm to use')
+                        default=AlgorithmType.Expectimax.value, help='which algorithm to use')
     parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 

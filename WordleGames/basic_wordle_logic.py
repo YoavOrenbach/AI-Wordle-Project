@@ -34,6 +34,7 @@ class BasicWordleLogic(AbstractWordleLogic):
         return pattern
 
     def get_possible_patterns(self, guess: str):
+        #return [self.get_pattern(guess, secret_word) for secret_word in self._secret_words]
         return [self.get_pattern(guess, self._secret_word)]
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
