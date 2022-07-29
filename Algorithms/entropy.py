@@ -60,5 +60,4 @@ class Entropy(Algorithm):
             if expected_info > best_expected_info:
                 best_expected_info = expected_info
                 best_word = word
-        print(best_word)
         return best_word
