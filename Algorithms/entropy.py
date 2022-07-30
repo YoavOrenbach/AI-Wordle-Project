@@ -26,7 +26,7 @@ class Entropy(Algorithm):
     #         return game_logic.get_pattern(guess, secret_word)
 
     def get_pattern_probs(self, guess: Word, game_logic: AbstractWordleLogic) -> Dict[tuple, float]:
-        pattern_counts = {pattern: 0 for pattern in game_logic.get_all_patterns()}
+        pattern_counts = {tuple(pattern): 0 for pattern in game_logic.get_all_patterns()}
         possible_secret_words = game_logic.get_possible_words()
         for secret_word in possible_secret_words:
             pattern_counts[tuple(game_logic.get_pattern(guess, secret_word))] += 1

@@ -14,10 +14,6 @@ class AbstractWordleLogic(ABC):
 
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
         super(AbstractWordleLogic, self).__init__()
-        if cur_possible_words is None:
-            cur_possible_words = []
-        if game_state is None:
-            game_state = []
         self.type: GameType = game_type
         self._secret_words = secret_words
         self.legal_words = legal_words
@@ -25,7 +21,7 @@ class AbstractWordleLogic(ABC):
         self.cur_iter = 0
         self.done = False
         if not cur_possible_words:
-            self.cur_possible_words = legal_words  # TODO: move to game visible state
+            self.cur_possible_words = legal_words
         else:
             self.cur_possible_words = cur_possible_words
         self.all_patterns = []
@@ -53,8 +49,7 @@ class AbstractWordleLogic(ABC):
         return self.cur_possible_words
 
     def generate_secret_word(self):
-        self._secret_word = random.choice(self._secret_words)
-        return self._secret_word
+        return random.choice(self._secret_words)
 
     def step(self, guess: str, secret_word: str):
         """
