@@ -22,7 +22,6 @@ class NoisyWordleLogic(BasicWordleLogic):
             self.states.copy(), self.cur_possible_words.copy())
 
     def get_pattern(self, guess: str, secret_word: Word):
-        secret_word = self._secret_word
         pattern = super(NoisyWordleLogic, self).get_pattern(guess, secret_word)
         chosen_square = random.randrange(LETTERS_NUM)
         pattern[chosen_square] = random.choice(NoisyWordleLogic.weight_placing(pattern[chosen_square]))
