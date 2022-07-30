@@ -13,7 +13,6 @@ class YellowWordle(AbstractWordleLogic):
         self.all_patterns = [list(pattern) for pattern in itertools.product([1, 2], repeat=LETTERS_NUM)]
 
     def get_pattern(self, guess: str, secret_word: str):
-        secret_word = self._secret_word if secret_word is None else secret_word
         target_word = list(secret_word)
         pattern = [Placing.incorrect for _ in range(LETTERS_NUM)]
 
