@@ -47,12 +47,6 @@ class QLearningAgent:
                 actions_lst = [action]
             elif max_action == self.get_q_value(state, action):
                 actions_lst.append(action)
-        if not actions_lst:
-            print(state)
-            print(actions)
-            print(max_action)
-            for action in actions:
-                print(self.get_q_value(state, action), max_action < self.get_q_value(state, action))
         return random.choice(actions_lst)
 
     def get_q_action(self, state, actions, epsilon):
@@ -68,12 +62,12 @@ class QLearningAgent:
         self.Q_values[(state, action)] = self.Q_values[(state, action)] + alpha * \
                                          (reward+discount*self.get_value(next_state, actions)-self.Q_values[(state, action)])
 
-    def save_agent(self, game_name):
-        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'wb') as f:
+    def save_agent(self):
+        with open('Algorithms/saved_rl_agents/wordle.pkl', 'wb') as f:
             pickle.dump(self.Q_values, f)
 
-    def load_agent(self, game_name):
-        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'rb') as f:
+    def load_agent(self):
+        with open('Algorithms/saved_rl_agents/wordle.pkl', 'rb') as f:
             self.Q_values = pickle.load(f)
 
 
@@ -118,12 +112,12 @@ class ApproximateQAgent(QLearningAgent):
         for i in features:
             self.weights[i] = self.weights[i] + alpha * correction * features[i]
 
-    def save_agent(self, game_name):
-        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'wb') as f:
+    def save_agent(self):
+        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'wb') as f:
             pickle.dump(self.weights, f)
 
-    def load_agent(self, game_name):
-        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'rb') as f:
+    def load_agent(self):
+        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'rb') as f:
             self.weights = pickle.load(f)
 
 
@@ -148,7 +142,7 @@ class Reinforcement(Algorithm):
         if train:
             self.train()
         else:
-            self.agent.load_agent(game_name=self.game.type.value)
+            self.agent.load_agent()
 
     def train(self):
         """Trains the agent for a given number of episodes.
@@ -186,7 +180,7 @@ class Reinforcement(Algorithm):
             # Decrease epsilon
             epsilon = max(epsilon_min, epsilon*epsilon_decay)
             self.game.reset()
-        self.agent.save_agent(game_name=self.game.type.value)
+        self.agent.save_agent()
         print(f"Training completed over {num_episodes} episodes")
 
     def get_action(self, game_logic: AbstractWordleLogic):
