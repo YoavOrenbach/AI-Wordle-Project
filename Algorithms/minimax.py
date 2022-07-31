@@ -29,7 +29,7 @@ class AdversarialAgent(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in tqdm(possible_words):
+        for word in possible_words:
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:
@@ -104,17 +104,5 @@ class Expectimax(AdversarialAgent):
 
 
 def evaluation_function(game_logic: AbstractWordleLogic):
-    """
-    score = 0
-    for guess, pattern in game_logic.get_game_state():
-        for placing in pattern:
-            if placing == Placing.correct.value:
-                score += (game_logic.max_iter-game_logic.get_turn_num()+1) * 10
-            elif placing == Placing.misplaced.value:
-                score += (game_logic.max_iter-game_logic.get_turn_num()+1) * 5
-            else:
-                score -= (game_logic.get_turn_num()+1) * 5
-    return -score
-    """
     remaining_words = len(game_logic.get_possible_words())
     return -remaining_words

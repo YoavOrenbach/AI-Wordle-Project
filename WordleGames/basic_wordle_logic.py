@@ -3,7 +3,7 @@ import itertools
 import util
 
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, Word, GameType, MAX, LETTERS_NUM, LOSING_PATTERN
+from common import Placing, Word, GameType, MAX, LETTERS_NUM, LOSING_PATTERN,min_patterns
 
 
 class BasicWordleLogic(AbstractWordleLogic):
@@ -35,35 +35,6 @@ class BasicWordleLogic(AbstractWordleLogic):
             else:
                 pattern.append(int(Placing.incorrect))
         return pattern
-
-    def get_possible_patterns(self):
-        if len(self.states) <= 1:
-            return [LOSING_PATTERN]
-
-        _, last_pattern = self.states[-2]
-        if last_pattern == LOSING_PATTERN:
-            return [LOSING_PATTERN]
-
-        green_sum, yellow_sum = (last_pattern.count(Placing.correct.value), last_pattern.count(Placing.misplaced.value))
-        misplaced_indices = [i for i, placing in enumerate(last_pattern) if placing == Placing.misplaced.value]
-        correct_indices = [i for i, placing in enumerate(last_pattern) if placing == Placing.correct.value]
-
-        def should_keep_pattern(pattern):
-            # 1. correct placing must be in the same place in the pattern
-            if any(pattern[i] != Placing.correct.value for i in correct_indices):
-                return False
-
-            # 2. misplaced placing must not be in the same place in the patten
-            if any(pattern[i] == Placing.misplaced.value for i in misplaced_indices):
-                return False
-
-            # 3. the sum of the correct and misplaced placings must remain in the pattern - not less and no more
-            if pattern.count(Placing.misplaced.value) != yellow_sum or pattern.count(Placing.correct.value) != green_sum:
-                return False
-
-            return True
-
-        return list(filter(should_keep_pattern, self.all_patterns))
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
         return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter,

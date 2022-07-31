@@ -24,23 +24,6 @@ class YellowWordle(AbstractWordleLogic):
 
         return [int(elem) for elem in pattern]
 
-    def get_possible_patterns(self):
-        if len(self.states) <= 1:
-            return [LOSING_PATTERN]
-
-        _, last_pattern = self.states[-2]
-        if last_pattern == LOSING_PATTERN:
-            return [LOSING_PATTERN]
-
-        yellow_sum = last_pattern.count(Placing.misplaced.value)
-
-        def should_keep_pattern(pattern):
-            if pattern.count(Placing.misplaced.value) != yellow_sum:
-                return False
-            return True
-
-        return list(filter(should_keep_pattern, self.all_patterns))
-
     def successor_creator(self, agent_index=MAX, action=None):
         return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self.states.copy(),
             self.cur_possible_words.copy())

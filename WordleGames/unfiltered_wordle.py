@@ -11,8 +11,5 @@ class UnfilteredWordle(BasicWordleLogic):
         return UnfilteredWordle(self._secret_words, self.legal_words, self.max_iter,
                                 self.states.copy(), self.cur_possible_words.copy())
 
-    def get_possible_patterns(self):
-        return [LOSING_PATTERN]
-
     def filter_words(self):
         return self.cur_possible_words

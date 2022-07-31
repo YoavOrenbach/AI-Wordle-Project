@@ -32,7 +32,7 @@ class AbsurdleLogic(BasicWordleLogic):
             best_patterns = [k for k, v in pattern_words_count.items() if v == max_count and k != WINNING_PATTERN]
             max_pattern_sum = 0
             best_pattern = best_patterns[-1]
-            for pattern in best_patterns:
+            for pattern in best_patterns:  # Todo: make sure best pattern is like the original absurdle
                 if sum(pattern) > max_pattern_sum:
                     max_pattern_sum = sum(pattern)
                     best_pattern = pattern

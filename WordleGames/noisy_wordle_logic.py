@@ -11,7 +11,7 @@ class NoisyWordleLogic(BasicWordleLogic):
     @staticmethod
     def weight_placing(real_placing):
         return [real_placing] * 1 + [Placing.correct.value] * 33 + [Placing.misplaced.value] * 33 + [
-            Placing.incorrect.value] * 33  # TODO: why this weighting?
+            Placing.incorrect.value] * 33  # TODO: change weighting choice
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
         return NoisyWordleLogic(self._secret_words, self.legal_words, self.max_iter,
@@ -23,15 +23,11 @@ class NoisyWordleLogic(BasicWordleLogic):
         pattern[chosen_square] = random.choice(NoisyWordleLogic.weight_placing(pattern[chosen_square]))
         return pattern
 
-    def get_possible_patterns(self):
-        # pattern = self.get_pattern(guess, self._secret_word)
-        return self.all_patterns
-
     def filter_words(self):
         if not self.get_game_state():
             return self.cur_possible_words
         guess, original_pattern = self.get_game_state()[-1]
-        all_patterns = possible_patterns(original_pattern)
+        all_patterns = noisy_patterns(original_pattern)
         unified_words = set()
         for pattern in all_patterns:
             self.states[-1] = (guess, pattern)
@@ -40,7 +36,8 @@ class NoisyWordleLogic(BasicWordleLogic):
         return list(unified_words)
 
 
-def possible_patterns(pattern):
+def noisy_patterns(pattern):
+    """Returns 11 possible noisy patterns"""
     all_patterns = [pattern]
     for i, placing in enumerate(pattern):
         possible_pattern1 = pattern.copy()
