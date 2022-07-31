@@ -4,6 +4,7 @@ from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import Placing, GameType, AlgorithmType
 from tqdm import tqdm
 import random
+import pickle
 
 
 # Rewards for the placing of each letter in a guess:
@@ -46,6 +47,12 @@ class QLearningAgent:
                 actions_lst = [action]
             elif max_action == self.get_q_value(state, action):
                 actions_lst.append(action)
+        if not actions_lst:
+            print(state)
+            print(actions)
+            print(max_action)
+            for action in actions:
+                print(self.get_q_value(state, action), max_action < self.get_q_value(state, action))
         return random.choice(actions_lst)
 
     def get_q_action(self, state, actions, epsilon):
@@ -60,6 +67,14 @@ class QLearningAgent:
         """Updates the Q-table given the current state, the action to take, the new state and the hyper-parameters."""
         self.Q_values[(state, action)] = self.Q_values[(state, action)] + alpha * \
                                          (reward+discount*self.get_value(next_state, actions)-self.Q_values[(state, action)])
+
+    def save_agent(self, game_name):
+        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'wb') as f:
+            pickle.dump(self.Q_values, f)
+
+    def load_agent(self, game_name):
+        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'rb') as f:
+            self.Q_values = pickle.load(f)
 
 
 class ApproximateQAgent(QLearningAgent):
@@ -103,10 +118,18 @@ class ApproximateQAgent(QLearningAgent):
         for i in features:
             self.weights[i] = self.weights[i] + alpha * correction * features[i]
 
+    def save_agent(self, game_name):
+        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'wb') as f:
+            pickle.dump(self.weights, f)
+
+    def load_agent(self, game_name):
+        with open(f'Algorithms/saved_rl_agents/{game_name}.pkl', 'rb') as f:
+            self.weights = pickle.load(f)
+
 
 class Reinforcement(Algorithm):
     """A reinforcement algorithm to play a Wordle type game"""
-    def __init__(self, game: AbstractWordleLogic):
+    def __init__(self, game: AbstractWordleLogic, train=True):
         """
         Initializes the algorithm guess count, game type, the agent being used (approximate or not), and trains for a
         fixed number of episodes.
@@ -114,25 +137,29 @@ class Reinforcement(Algorithm):
         """
         super(Reinforcement, self).__init__(AlgorithmType.Reinforcement)
         self.game = game
-        if game.type != GameType.NoisyWordle:
+
+        if game.type != GameType.UnfilteredWordle:
             self.agent = QLearningAgent()
             self.approximate = False
-            self.train(num_episodes=40000)
         else:
             self.agent = ApproximateQAgent(game.get_pattern)
             self.approximate = True
-            self.train(num_episodes=1000)
 
-    def train(self, num_episodes):
+        if train:
+            self.train()
+        else:
+            self.agent.load_agent(game_name=self.game.type.value)
+
+    def train(self):
         """Trains the agent for a given number of episodes.
         Decides on the hyper-parameters, simulates games, calculates rewards and updates the agent."""
         # hyper-parameters
         alpha = 0.2
         discount = 0.8
         epsilon = 1.0
-        #decay_rate = 0.005
-        epsilon_decay = 0.9999  # 0.995 for secret list
+        epsilon_decay = 0.9999 if not self.approximate else 0.9995
         epsilon_min = 0.05
+        num_episodes = 40000 if not self.approximate else 1000
 
         for _ in tqdm(range(num_episodes)):
             secret_word = self.game.generate_secret_word()
@@ -157,10 +184,9 @@ class Reinforcement(Algorithm):
                 state = next_state
 
             # Decrease epsilon
-            #epsilon = np.exp(-decay_rate*episode)
             epsilon = max(epsilon_min, epsilon*epsilon_decay)
             self.game.reset()
-
+        self.agent.save_agent(game_name=self.game.type.value)
         print(f"Training completed over {num_episodes} episodes")
 
     def get_action(self, game_logic: AbstractWordleLogic):

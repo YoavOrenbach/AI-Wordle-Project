@@ -37,3 +37,7 @@ class AbsurdleLogic(BasicWordleLogic):
                     max_pattern_sum = sum(pattern)
                     best_pattern = pattern
         return best_pattern
+
+    def reset(self):
+        super(AbsurdleLogic, self).reset()
+        self._possible_secret_words = self._secret_words

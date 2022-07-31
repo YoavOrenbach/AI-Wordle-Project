@@ -3,20 +3,21 @@ from typing import List
 
 import util
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, GameType, LETTERS_NUM, MAX
+from common import Placing, GameType, LETTERS_NUM, MAX, LOSING_PATTERN
 
 
 class YellowWordle(AbstractWordleLogic):
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
         super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
             cur_possible_words, GameType.YellowWordle)
-        self.all_patterns = [list(pattern) for pattern in itertools.product([1, 2], repeat=LETTERS_NUM)]
+        self.all_patterns = [list(pattern) for pattern in
+                             itertools.product([Placing.misplaced.value, Placing.incorrect.value], repeat=LETTERS_NUM)]
 
     def get_pattern(self, guess: str, secret_word: str):
         target_word = list(secret_word)
         pattern = [Placing.incorrect for _ in range(LETTERS_NUM)]
 
-        for i in range(5):
+        for i in range(LETTERS_NUM):
             if guess[i] in target_word:
                 target_word.remove(guess[i])
                 pattern[i] = Placing.misplaced
@@ -24,16 +25,17 @@ class YellowWordle(AbstractWordleLogic):
         return [int(elem) for elem in pattern]
 
     def get_possible_patterns(self):
-        # return [self.get_pattern(guess, self._secret_word)]
-
         if len(self.states) <= 1:
-            return self.all_patterns
+            return [LOSING_PATTERN]
+
         _, last_pattern = self.states[-2]
+        if last_pattern == LOSING_PATTERN:
+            return [LOSING_PATTERN]
 
         yellow_sum = last_pattern.count(Placing.misplaced.value)
 
         def should_keep_pattern(pattern):
-            if pattern.count(Placing.misplaced.value) < yellow_sum:
+            if pattern.count(Placing.misplaced.value) != yellow_sum:
                 return False
             return True
 

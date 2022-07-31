@@ -1,7 +1,3 @@
-
-
-
-
 import random
 from WordleGames import BasicWordleLogic
 from common import Placing, GameType, LETTERS_NUM, MAX, Word

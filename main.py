@@ -2,7 +2,7 @@ import random
 from argparse import ArgumentParser
 
 from Algorithms import Random, Minimax, AlphaBeta, Expectimax, Entropy, Reinforcement
-from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle
+from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle, UnfilteredWordle
 from WordleGames.vocabulary_wordle_logic import VocabularyWordleLogic
 from common import AlgorithmType, GameType
 from simulator import Simulator
@@ -14,11 +14,11 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument('-n', '--num-games', type=int, default=1, help='# of games to simulate')
+    parser.add_argument('-n', '--num-games', type=int, default=5, help='# of games to simulate')
     parser.add_argument('-u', '--user-interface', type=bool, default=False, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
-                        default=GameType.Absurdle.value, help='which game to use')
+                        default=GameType.BasicWordle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
                         default=AlgorithmType.Random.value, help='which algorithm to use')
@@ -55,6 +55,8 @@ def main():
         game = NoisyWordleLogic(secret_words, legal_words)
     elif args.game == GameType.YellowWordle:
         game = YellowWordle(secret_words, legal_words)
+    elif args.game == GameType.UnfilteredWordle:
+        game = UnfilteredWordle(secret_words, legal_words)
     else:
         raise Exception(f"{args.game} is not valid game")
 

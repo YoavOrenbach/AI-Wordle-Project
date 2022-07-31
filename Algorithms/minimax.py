@@ -11,15 +11,15 @@ from tqdm import tqdm
 
 
 class AdversarialAgent(Algorithm):
-    opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise", GameType.NoisyWordle: "tares",
-                       GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
+    opening_guesses = {GameType.BasicWordle: "stoae", GameType.YellowWordle: "stoae", GameType.NoisyWordle: "stoae",
+                       GameType.Absurdle: "stoae", GameType.FakeVocabularyWordle: "lxpyn"}  # depth 1 words
 
     def __init__(self, algorithm_type, depth=1):
         super(AdversarialAgent, self).__init__(algorithm_type)
         self.depth = depth
 
     @abstractmethod
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0, beta=0):
+    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
         pass
 
     def get_action(self, game_logic: AbstractWordleLogic):
@@ -29,7 +29,7 @@ class AdversarialAgent(Algorithm):
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in possible_words:
+        for word in tqdm(possible_words):
             successor_game = game_logic.generate_successor(agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:
@@ -42,7 +42,7 @@ class Minimax(AdversarialAgent):
     def __init__(self):
         super(Minimax, self).__init__(AlgorithmType.Minimax)
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0, beta=0):
+    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
         legal_actions = game_logic.get_legal_actions(player_id)
         if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
@@ -61,7 +61,7 @@ class AlphaBeta(AdversarialAgent):
     def __init__(self):
         super(AlphaBeta, self).__init__(AlgorithmType.AlphaBeta)
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0, beta=0):
+    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
         legal_actions = game_logic.get_legal_actions(player_id)
         if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
@@ -88,7 +88,7 @@ class Expectimax(AdversarialAgent):
     def __init__(self):
         super(Expectimax, self).__init__(AlgorithmType.Expectimax)
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0, beta=0):
+    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
         legal_actions = game_logic.get_legal_actions(player_id)
         if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
             return evaluation_function(game_logic)
@@ -114,7 +114,7 @@ def evaluation_function(game_logic: AbstractWordleLogic):
                 score += (game_logic.max_iter-game_logic.get_turn_num()+1) * 5
             else:
                 score -= (game_logic.get_turn_num()+1) * 5
-    return score
+    return -score
     """
     remaining_words = len(game_logic.get_possible_words())
     return -remaining_words

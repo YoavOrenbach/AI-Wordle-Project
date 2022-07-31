@@ -13,16 +13,17 @@ class Simulator:
         self.game_logic = game
         self.algo = algo
 
-    def simulate_games(self, num_games, user_interface=True):
+    def simulate_games(self, num_games, user_interface=True, secret_words=None):
         """
         This method simulates a given number of game can show a pygame graphical interface
         :param num_games: the number of games to simulate
         :param user_interface: a boolean flag that determines if to show graphical interface or not.
+        :param secret_words: a list of words to be used as secret words
         """
         results = []
         start = time.time()
-        for _ in tqdm(range(num_games)):
-            secret_word = self.game_logic.generate_secret_word()
+        for i in tqdm(range(num_games)):
+            secret_word = self.game_logic.generate_secret_word() if secret_words is None else secret_words[i]
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()
         end = time.time()

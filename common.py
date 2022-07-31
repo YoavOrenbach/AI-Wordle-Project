@@ -22,6 +22,7 @@ class GameType(str, Enum):
     RealVocabularyWordle = "real_vocabulary"
     NoisyWordle = "noisy"
     YellowWordle = "yellow"
+    UnfilteredWordle = "unfiltered"
 
 
 class Placing(IntEnum):
@@ -32,3 +33,4 @@ class Placing(IntEnum):
 
 
 WINNING_PATTERN = tuple([Placing.correct.value for _ in range(LETTERS_NUM)])
+LOSING_PATTERN = [Placing.incorrect.value]*LETTERS_NUM
