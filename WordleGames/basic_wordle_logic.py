@@ -3,7 +3,7 @@ import itertools
 import util
 
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, Word, GameType, MAX, LETTERS_NUM, LOSING_PATTERN,min_patterns
+from common import Placing, Word, GameType, MAX, LETTERS_NUM, LOSING_PATTERN
 
 
 class BasicWordleLogic(AbstractWordleLogic):

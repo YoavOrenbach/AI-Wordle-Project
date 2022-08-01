@@ -88,16 +88,6 @@ class AbstractWordleLogic(ABC):
         self.states[-1] = (guess, action)
         self.cur_possible_words = self.filter_words()
 
-    def generate_successor(self, agent_index=MAX, action=None):
-        successor = self.successor_creator()
-        if agent_index == MAX:
-            successor.apply_action(action)  # action = guess
-        elif agent_index == MIN:
-            successor.apply_opponent_action(action)  # action = pattern
-        else:
-            raise Exception("illegal agent index.")
-        return successor
-
     def get_possible_patterns(self, guess):
         return list(set(tuple(self.get_pattern(guess, secret_word)) for secret_word in self.cur_possible_words))
 
