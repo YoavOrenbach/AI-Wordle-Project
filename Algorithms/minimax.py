@@ -128,7 +128,7 @@ class Expectimax(AdversarialAgent):
 
 
 def compute_expected_min(result_counter, patterns_counter):
-    return (patterns_counter * result_counter) / len(list(patterns_counter.values()))
+    return (patterns_counter * result_counter) / patterns_counter.totalCount()
 
 
 def evaluation_function(game_logic: AbstractWordleLogic):
