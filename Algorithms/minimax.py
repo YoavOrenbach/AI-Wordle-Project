@@ -4,10 +4,12 @@ from abc import abstractmethod
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from common import AlgorithmType
+import util
 
 import random
 from common import MAX, MIN, GameType
 from tqdm import tqdm
+
 
 def generate_successor(game_logic: AbstractWordleLogic, agent_index=MAX, action=None):
     successor = game_logic.successor_creator()
@@ -19,6 +21,7 @@ def generate_successor(game_logic: AbstractWordleLogic, agent_index=MAX, action=
         raise Exception("illegal agent index.")
     return successor
 
+
 def get_legal_actions(game_logic: AbstractWordleLogic, agent_index=MAX):
     if agent_index == MAX:
         return game_logic.get_possible_words()
@@ -28,9 +31,10 @@ def get_legal_actions(game_logic: AbstractWordleLogic, agent_index=MAX):
     else:
         raise Exception("illegal agent index.")
 
+
 class AdversarialAgent(Algorithm):
-    opening_guesses = {GameType.BasicWordle: "stoae", GameType.YellowWordle: "stoae", GameType.NoisyWordle: "stoae",
-                       GameType.Absurdle: "stoae", GameType.FakeVocabularyWordle: "lxpyn"}  # depth 1 words
+    opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "stoae", GameType.NoisyWordle: "serai",
+                       GameType.Absurdle: "serai", GameType.FakeVocabularyWordle: "lxpyn"}  # depth 1 words
 
     def __init__(self, algorithm_type, depth=1):
         super(AdversarialAgent, self).__init__(algorithm_type)
@@ -41,8 +45,8 @@ class AdversarialAgent(Algorithm):
         pass
 
     def get_action(self, game_logic: AbstractWordleLogic):
-        if game_logic.get_turn_num() == 1:
-            return AdversarialAgent.opening_guesses[game_logic.get_type()]
+        #if game_logic.get_turn_num() == 1:
+        #    return AdversarialAgent.opening_guesses[game_logic.get_type()]
 
         possible_words = game_logic.get_possible_words()
         best_action = random.choice(possible_words)
@@ -53,6 +57,7 @@ class AdversarialAgent(Algorithm):
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
+        print(best_action)
         return best_action
 
 
@@ -112,13 +117,18 @@ class Expectimax(AdversarialAgent):
             return evaluation_function(game_logic)
 
         result_lst = []
+        result_counter = util.Counter()
         for i, action in enumerate(legal_actions):
             successor_game = generate_successor(game_logic, agent_index=player_id, action=action)
             if player_id == MAX:
                 result_lst.append(self.adversarial_search(curr_depth + 1, successor_game, MIN))
             else:
-                result_lst.append(self.adversarial_search(curr_depth + 1, successor_game, MAX))
-        return max(result_lst) if player_id == MAX else sum(result_lst) / len(legal_actions)
+                result_counter[tuple(action)] = (self.adversarial_search(curr_depth + 1, successor_game, MAX))
+        return max(result_lst) if player_id == MAX else compute_expected_min(result_counter, legal_actions)
+
+
+def compute_expected_min(result_counter, patterns_counter):
+    return (patterns_counter * result_counter) / len(list(patterns_counter.values()))
 
 
 def evaluation_function(game_logic: AbstractWordleLogic):

@@ -2,6 +2,7 @@ import random
 from abc import ABC, abstractmethod
 from typing import List
 
+import util
 from common import GameType, MAX, MIN, WINNING_PATTERN
 
 
@@ -89,7 +90,11 @@ class AbstractWordleLogic(ABC):
         self.cur_possible_words = self.filter_words()
 
     def get_possible_patterns(self, guess):
-        return list(set(tuple(self.get_pattern(guess, secret_word)) for secret_word in self.cur_possible_words))
+        #return list(set(tuple(self.get_pattern(guess, secret_word)) for secret_word in self.cur_possible_words))
+        patterns_counter = util.Counter()
+        for secret_word in self.cur_possible_words:
+            patterns_counter[tuple(self.get_pattern(guess, secret_word))] += 1
+        return patterns_counter#list(patterns_counter.keys()), list(patterns_counter.values())
 
     def get_legal_actions(self, agent_index=MAX):
         if agent_index == MAX:
