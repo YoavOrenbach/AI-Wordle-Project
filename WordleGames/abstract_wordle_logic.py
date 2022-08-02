@@ -91,15 +91,6 @@ class AbstractWordleLogic(ABC):
     def get_possible_patterns(self, guess):
         return list(set(tuple(self.get_pattern(guess, secret_word)) for secret_word in self.cur_possible_words))
 
-    def get_legal_actions(self, agent_index=MAX):
-        if agent_index == MAX:
-            return self.get_possible_words()
-        elif agent_index == MIN:
-            guess, _ = self.states[-1]
-            return self.get_possible_patterns(guess)
-        else:
-            raise Exception("illegal agent index.")
-
     @abstractmethod
     def filter_words(self):
         pass
