@@ -54,7 +54,7 @@ class Entropy(Algorithm):
         best_expected_info = -math.inf
         best_word = None
 
-        possible_words = game_logic.get_possible_words()  # TODO: maybe use all legal words?
+        possible_words = game_logic.get_possible_words()
         for word in tqdm(possible_words):
             expected_info = self.get_expected_info(word, game_logic)
             if expected_info > best_expected_info:

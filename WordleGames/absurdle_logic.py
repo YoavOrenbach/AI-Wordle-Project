@@ -5,13 +5,13 @@ from common import Word, WINNING_PATTERN, GameType, MAX
 
 
 class AbsurdleLogic(BasicWordleLogic):
-    def __init__(self, secret_words, legal_words, max_iter=None, game_state=[], cur_possible_words=[]):
-        super(AbsurdleLogic, self).__init__(secret_words, legal_words, max_iter,
+    def __init__(self, secret_words, legal_words, should_filter=True, max_iter=None, game_state=[], cur_possible_words=[]):
+        super(AbsurdleLogic, self).__init__(secret_words, legal_words, should_filter, max_iter,
             game_state, cur_possible_words, GameType.Absurdle)
         self._possible_secret_words = secret_words
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return AbsurdleLogic(self._possible_secret_words.copy(), self.legal_words, self.max_iter,
+        return AbsurdleLogic(self._possible_secret_words.copy(), self.legal_words, self.should_filter, self.max_iter,
             self.states.copy(), self.cur_possible_words.copy())
 
     def filter_words(self) -> List[Word]:

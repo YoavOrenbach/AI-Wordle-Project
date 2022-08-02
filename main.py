@@ -15,13 +15,14 @@ def parse_args():
     """
     parser = ArgumentParser()
     parser.add_argument('-n', '--num-games', type=int, default=5, help='# of games to simulate')
-    parser.add_argument('-u', '--user-interface', type=bool, default=False, help='show pygame interface')
+    parser.add_argument('-u', '--user-interface', action='store_true', help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
                         default=GameType.BasicWordle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str.lower,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
                         default=AlgorithmType.Random.value, help='which algorithm to use')
+    parser.add_argument('--no-filter', action='store_true', help='Do not filter words in the game')
     parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 
@@ -43,20 +44,20 @@ def main():
     # select game
     # TODO: create better factory
     if args.game == GameType.BasicWordle:
-        game = BasicWordleLogic(secret_words, legal_words)
+        game = BasicWordleLogic(secret_words, legal_words, not args.no_filter)
     elif args.game == GameType.Absurdle:
-        game = AbsurdleLogic(secret_words, legal_words)
+        game = AbsurdleLogic(secret_words, legal_words, not args.no_filter)
     elif args.game == GameType.FakeVocabularyWordle:
-        game = VocabularyWordleLogic(vocabulary_size=12972, real_vocabulary=False)
+        game = VocabularyWordleLogic(vocabulary_size=12972, real_vocabulary=False, should_filter=not args.no_filter)
     elif args.game == GameType.RealVocabularyWordle:
-        game = VocabularyWordleLogic(vocabulary_size=1000, real_vocabulary=True, secret_words=secret_words,
+        game = VocabularyWordleLogic(vocabulary_size=1000, real_vocabulary=True, should_filter=not args.no_filter, secret_words=secret_words,
                                      legal_words=legal_words)
     elif args.game == GameType.NoisyWordle:
-        game = NoisyWordleLogic(secret_words, legal_words)
+        game = NoisyWordleLogic(secret_words, legal_words, not args.no_filter)
     elif args.game == GameType.YellowWordle:
-        game = YellowWordle(secret_words, legal_words)
+        game = YellowWordle(secret_words, legal_words, not args.no_filter)
     elif args.game == GameType.UnfilteredWordle:
-        game = UnfilteredWordle(secret_words, legal_words)
+        game = UnfilteredWordle(secret_words, legal_words, not args.no_filter)
     else:
         raise Exception(f"{args.game} is not valid game")
 

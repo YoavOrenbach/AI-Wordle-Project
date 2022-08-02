@@ -7,10 +7,10 @@ from common import LETTERS_NUM, GameType
 
 
 class VocabularyWordleLogic(BasicWordleLogic):
-    def __init__(self, vocabulary_size: int, real_vocabulary: bool, secret_words=None, legal_words=None):
+    def __init__(self, vocabulary_size: int, real_vocabulary: bool, should_filter=True, secret_words=None, legal_words=None):
         secret_words, legal_words = VocabularyWordleLogic.get_words(vocabulary_size, real_vocabulary, secret_words,
                                                                     legal_words)
-        super().__init__(secret_words, legal_words)
+        super().__init__(secret_words, legal_words, should_filter)
         if real_vocabulary:
             self.type = GameType.RealVocabularyWordle
         else:

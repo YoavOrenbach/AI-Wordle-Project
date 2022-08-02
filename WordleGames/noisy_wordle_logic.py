@@ -4,8 +4,8 @@ from common import Placing, GameType, LETTERS_NUM, MAX, Word
 
 
 class NoisyWordleLogic(BasicWordleLogic):
-    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
-        super(NoisyWordleLogic, self).__init__(secret_words, legal_words, max_iter,
+    def __init__(self, secret_words, legal_words, should_filter=True, max_iter=6, game_state=[], cur_possible_words=[]):
+        super(NoisyWordleLogic, self).__init__(secret_words, legal_words, should_filter, max_iter,
             game_state, cur_possible_words, GameType.NoisyWordle)
 
     @staticmethod
@@ -14,7 +14,7 @@ class NoisyWordleLogic(BasicWordleLogic):
             Placing.incorrect.value] * 33  # TODO: change weighting choice
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return NoisyWordleLogic(self._secret_words, self.legal_words, self.max_iter,
+        return NoisyWordleLogic(self._secret_words, self.legal_words, self.should_filter, self.max_iter,
             self.states.copy(), self.cur_possible_words.copy())
 
     def get_pattern(self, guess: str, secret_word: Word):
