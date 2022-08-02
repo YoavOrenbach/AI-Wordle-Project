@@ -110,12 +110,11 @@ class WordleApp(tk.Tk):
         combox = ttk.Combobox(self.secret_frame, textvariable=self.secret_word_variable)
         combox['values'] = self.secret_words
         combox.pack(side=tk.LEFT, expand=True)
-        # generator_button = tk.Button(self.secret_frame, text="Randomize word", fg="#d7dadc", bg=COLOR_INCORRECT,
-        #                              highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 10, "bold"),
-        #                              activebackground=COLOR_BLANK, activeforeground="#d7dadc",
-        #                              command=self.randomize_secret_word)
-        # bind_button(generator_button)
-        generator_button = ttk.Button(self.secret_frame, text="Randomize word", command=self.randomize_secret_word)
+        generator_button = tk.Button(self.secret_frame, text="Randomize word", fg="#d7dadc", bg=COLOR_HALF_CORRECT,
+                                     highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 11, "bold"),
+                                     activebackground=COLOR_INCORRECT, activeforeground="#d7dadc",
+                                     command=self.randomize_secret_word, padx=5)
+        bind_button(generator_button, COLOR_HALF_CORRECT)
         generator_button.pack(side=tk.RIGHT, expand=True)
         self.secret_word_variable.set(self.secret_word)
 
@@ -125,8 +124,9 @@ class WordleApp(tk.Tk):
         if not self.absurdle and self.game_variable.get() == GameType.Absurdle.value:
             for slave in self.secret_frame.pack_slaves():
                 slave.pack_forget()
-            absurd_label = tk.Label(self.secret_frame, text="Absurdle game does not have a secret word, but considers all secret words!",
-                                    fg="#d7dadc", bg=COLOR_BLANK, font=12)
+            absrud_msg = "Absurdle game does not have a secret word, but considers all secret words!" \
+                         "\nWe only show the first 6 guesses (for consistency)."
+            absurd_label = tk.Label(self.secret_frame, text=absrud_msg, fg="#d7dadc", bg=COLOR_BLANK, font=12)
             absurd_label.pack()
             self.absurdle = True
 
@@ -150,8 +150,7 @@ class WordleApp(tk.Tk):
         play_button = tk.Button(self.play_frame, text="play", fg="#d7dadc", bg=COLOR_CORRECT,
                                 highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 11, "bold"),
                                 activebackground=COLOR_INCORRECT, activeforeground="#d7dadc", command=self.simulate_game, padx=10)
-        bind_button(play_button)
-        #play_button = ttk.Button(self.play_frame, text="play", command=self.simulate_game)
+        bind_button(play_button, COLOR_CORRECT)
         play_button.pack(pady=5)
 
     def init_board(self):
@@ -267,10 +266,11 @@ class WordleApp(tk.Tk):
 
         game_over_label = tk.Label(self.final_frame, text=game_over_msg, fg="#d7dadc", bg=COLOR_BLANK, font=12)
         game_over_label.pack(side=tk.LEFT, padx=5)
-        #reset_button = tk.Button(self.final_frame, text="reset board", fg="#d7dadc", bg=COLOR_INCORRECT,
-        #                         highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 10, "bold"),
-        #                         activebackground=COLOR_BLANK, activeforeground="#d7dadc", command=self.reset_board)
-        reset_button = ttk.Button(self.final_frame, text="reset board", command=self.reset_board)
+        reset_button = tk.Button(self.final_frame, text="reset board", fg="#d7dadc", bg=COLOR_HALF_CORRECT,
+                                 highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 11, "bold"),
+                                 activebackground=COLOR_INCORRECT, activeforeground="#d7dadc", command=self.reset_board,
+                                 padx=5)
+        bind_button(reset_button, COLOR_HALF_CORRECT)
         reset_button.pack(side=tk.RIGHT, padx=5)
         self.board_full = True
 
@@ -303,13 +303,13 @@ def on_hover(button):
     button.config(bg=COLOR_INCORRECT)
 
 
-def on_leave(button):
-    button.config(bg=COLOR_CORRECT)
+def on_leave(button, color):
+    button.config(bg=color)
 
 
-def bind_button(button):
+def bind_button(button, color):
     button.bind('<Enter>', lambda event, x=button: on_hover(x))
-    button.bind('<Leave>', lambda event, x=button: on_leave(x))
+    button.bind('<Leave>', lambda event, x=button, y=color: on_leave(x, y))
 
 
 if __name__ == "__main__":
