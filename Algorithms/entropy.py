@@ -1,8 +1,6 @@
 import math
 from typing import Dict
 
-from tqdm import tqdm
-
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle_logic import AbstractWordleLogic
 from WordleGames.utils import get_pattern_vanilla
@@ -10,10 +8,9 @@ from common import Word, GameType, AlgorithmType
 
 
 class Entropy(Algorithm):
+    # these guesses were pre-computed using the same algorithm
     opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise", GameType.NoisyWordle: "tares",
                        GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
-
-    # these words were pre-computed using the same algorithm
 
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
@@ -51,7 +48,7 @@ class Entropy(Algorithm):
         best_word = None
 
         possible_words = game_logic.get_possible_words()
-        for word in tqdm(possible_words):
+        for word in possible_words:
             expected_info = self.get_expected_info(word, game_logic)
             if expected_info > best_expected_info:
                 best_expected_info = expected_info
