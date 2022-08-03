@@ -7,6 +7,9 @@ from WordleGames.vocabulary_wordle_logic import VocabularyWordleLogic
 from common import AlgorithmType, GameType
 from simulator import Simulator
 
+DEFAULT_GAMES_NUM = 10
+DEFAULT_IS_WITH_GUI = False
+
 
 def parse_args():
     """
@@ -14,8 +17,8 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument('-n', '--num-games', type=int, default=5, help='# of games to simulate')
-    parser.add_argument('-u', '--user-interface', type=bool, default=False, help='show pygame interface')
+    parser.add_argument('-n', '--num-games', type=int, default=DEFAULT_GAMES_NUM, help='# of games to simulate')
+    parser.add_argument('-u', '--user-interface', type=bool, default=DEFAULT_IS_WITH_GUI, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
                         default=GameType.BasicWordle.value, help='which game to use')

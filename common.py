@@ -22,7 +22,6 @@ class GameType(str, Enum):
     RealVocabularyWordle = "real_vocabulary"
     NoisyWordle = "noisy"
     YellowWordle = "yellow"
-    UnfilteredWordle = "unfiltered"
 
 
 class Placing(IntEnum):
