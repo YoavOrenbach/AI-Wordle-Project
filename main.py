@@ -7,7 +7,7 @@ from WordleGames.vocabulary_wordle_logic import VocabularyWordleLogic
 from common import AlgorithmType, GameType
 from simulator import Simulator
 
-DEFAULT_GAMES_NUM = 1
+DEFAULT_GAMES_NUM = 10
 DEFAULT_IS_WITH_GUI = False
 
 

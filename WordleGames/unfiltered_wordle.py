@@ -1,5 +1,5 @@
 from WordleGames import BasicWordleLogic
-from common import GameType, MAX, LOSING_PATTERN
+from common import GameType, MAX
 
 
 class UnfilteredWordle(BasicWordleLogic):

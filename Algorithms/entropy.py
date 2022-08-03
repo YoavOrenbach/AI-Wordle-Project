@@ -16,7 +16,7 @@ class Entropy(Algorithm):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
 
     def get_pattern(self, guess: Word, secret_word: Word, game_logic: AbstractWordleLogic):
-        if game_logic.type in [GameType.Absurdle]:
+        if game_logic.type in [GameType.Absurdle, GameType.NoisyWordle]:  # this is mainly for faster run
             return get_pattern_vanilla(guess, secret_word)
         else:
             return game_logic.get_pattern(guess, secret_word)
