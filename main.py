@@ -17,8 +17,8 @@ def parse_args():
     :return: the Parsed arguments.
     """
     parser = ArgumentParser()
+    parser.add_argument('-u', '--user-interface', action='store_true', help='show pygame interface')
     parser.add_argument('-n', '--num-games', type=int, default=DEFAULT_GAMES_NUM, help='# of games to simulate')
-    parser.add_argument('-u', '--user-interface', type=bool, default=DEFAULT_IS_WITH_GUI, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str.lower,
                         choices=[game_type.value for game_type in GameType],
                         default=GameType.BasicWordle.value, help='which game to use')

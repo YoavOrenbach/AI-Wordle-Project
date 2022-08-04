@@ -48,6 +48,9 @@ class AbstractWordleLogic(ABC):
     def get_possible_words(self) -> List[str]:
         return self.cur_possible_words
 
+    def get_words(self, only_possible_words=True) -> List[str]:
+        return self.get_possible_words() if only_possible_words else self.get_legal_words()
+
     def generate_secret_word(self):
         return random.choice(self._secret_words)
 

@@ -157,7 +157,7 @@ class Reinforcement(Algorithm):
 
         for _ in tqdm(range(num_episodes)):
             secret_word = self.game.generate_secret_word()
-            legal_actions = self.game.get_possible_words()
+            legal_actions = self.game.get_words()
             done = False
             state = 0 if not self.approximate else ()
 
@@ -172,7 +172,7 @@ class Reinforcement(Algorithm):
                         reward += YELLOW_REWARD
                     else:
                         reward += GREY_REWARD
-                legal_actions = self.game.get_possible_words()
+                legal_actions = self.game.get_words()
                 next_state = 0 if not self.approximate else (action, pattern)
                 self.agent.update(state, action, next_state, reward, alpha, discount, legal_actions)
                 state = next_state
@@ -185,7 +185,7 @@ class Reinforcement(Algorithm):
 
     def get_action(self, game_logic: AbstractWordleLogic):
         """Returns the next guess given the game state and the game being played, according to the type of agent."""
-        actions = game_logic.get_possible_words()
+        actions = game_logic.get_words()
         if not self.approximate:
             return self.agent.get_policy(0, actions)
         state = ()
