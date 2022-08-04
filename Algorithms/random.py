@@ -11,3 +11,10 @@ class Random(Algorithm):
 
     def get_action(self, game_logic: AbstractWordleLogic):
         return random.choice(game_logic.get_words())
+
+class TotalRandom(Algorithm):
+    def __init__(self):
+        super(TotalRandom, self).__init__(AlgorithmType.TotalRandom)
+
+    def get_action(self, game_logic: AbstractWordleLogic):
+        return random.choice(game_logic.get_words(False))

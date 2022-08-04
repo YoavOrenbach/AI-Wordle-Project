@@ -23,7 +23,7 @@ class Entropy(Algorithm):
 
     def get_pattern_probs(self, guess: Word, game_logic: AbstractWordleLogic) -> Dict[tuple, float]:
         pattern_counts = {tuple(pattern): 0 for pattern in game_logic.get_all_patterns()}
-        possible_secret_words = game_logic.get_possible_words()
+        possible_secret_words = game_logic.get_words()
         for secret_word in possible_secret_words:
             pattern_counts[tuple(self.get_pattern(guess, secret_word, game_logic))] += 1
 
@@ -47,7 +47,7 @@ class Entropy(Algorithm):
         best_expected_info = -math.inf
         best_word = None
 
-        possible_words = game_logic.get_possible_words()
+        possible_words = game_logic.get_words()
         for word in possible_words:
             expected_info = self.get_expected_info(word, game_logic)
             if expected_info > best_expected_info:

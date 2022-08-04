@@ -21,7 +21,7 @@ def generate_successor(game_logic: AbstractWordleLogic, agent_index=MAX, action=
 
 def get_legal_actions(game_logic: AbstractWordleLogic, agent_index=MAX):
     if agent_index == MAX:
-        return game_logic.get_possible_words()
+        return game_logic.get_words()
     elif agent_index == MIN:
         guess, _ = game_logic.states[-1]
         return game_logic.get_possible_patterns(guess)
@@ -44,7 +44,7 @@ class AdversarialAgent(Algorithm):
         if game_logic.get_turn_num() == 1:
             return AdversarialAgent.opening_guesses[game_logic.get_type()]
 
-        possible_words = game_logic.get_possible_words()
+        possible_words = game_logic.get_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
         for word in possible_words:
@@ -122,5 +122,5 @@ class Expectimax(AdversarialAgent):
 
 
 def evaluation_function(game_logic: AbstractWordleLogic):
-    remaining_words = len(game_logic.get_possible_words())
+    remaining_words = len(game_logic.get_words())
     return -remaining_words
