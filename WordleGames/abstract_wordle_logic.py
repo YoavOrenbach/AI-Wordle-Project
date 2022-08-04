@@ -12,7 +12,7 @@ class InvalidGuessException(ValueError):
 class AbstractWordleLogic(ABC):
     """An abstract class representing each Wordle type game"""
 
-    def __init__(self, secret_words, legal_words, should_filter=True, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
         super(AbstractWordleLogic, self).__init__()
         self.type: GameType = game_type
         self._secret_words = secret_words
@@ -26,7 +26,6 @@ class AbstractWordleLogic(ABC):
             self.cur_possible_words = cur_possible_words
         self.all_patterns = []
         self.states = game_state  # contains pairs of (guess, pattern), namely a word and its resulting pattern.
-        self.should_filter = should_filter
 
     def get_type(self):
         return self.type
@@ -49,8 +48,8 @@ class AbstractWordleLogic(ABC):
     def get_possible_words(self) -> List[str]:
         return self.cur_possible_words
 
-    def get_words(self) -> List[str]:
-        return self.get_possible_words() if self.should_filter else self.get_legal_words()
+    def get_words(self, only_possible_words=True) -> List[str]:
+        return self.get_possible_words() if only_possible_words else self.get_legal_words()
 
     def generate_secret_word(self):
         return random.choice(self._secret_words)

@@ -7,8 +7,8 @@ from common import Placing, GameType, LETTERS_NUM, MAX, LOSING_PATTERN
 
 
 class YellowWordle(AbstractWordleLogic):
-    def __init__(self, secret_words, legal_words, should_filter=True, max_iter=6, game_state=[], cur_possible_words=[]):
-        super(YellowWordle, self).__init__(secret_words, legal_words, should_filter, max_iter, game_state,
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
+        super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
             cur_possible_words, GameType.YellowWordle)
         self.all_patterns = [list(pattern) for pattern in
                              itertools.product([Placing.misplaced.value, Placing.incorrect.value], repeat=LETTERS_NUM)]
@@ -25,7 +25,7 @@ class YellowWordle(AbstractWordleLogic):
         return [int(elem) for elem in pattern]
 
     def successor_creator(self, agent_index=MAX, action=None):
-        return YellowWordle(self._secret_words, self.legal_words, self.should_filter, self.max_iter, self.states.copy(),
+        return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self.states.copy(),
             self.cur_possible_words.copy())
 
     def filter_words(self) -> List[str]:
