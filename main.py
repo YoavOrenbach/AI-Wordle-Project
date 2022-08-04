@@ -2,6 +2,7 @@ import random
 from argparse import ArgumentParser
 
 from Algorithms import Random, Minimax, AlphaBeta, Expectimax, Entropy, Reinforcement
+from Algorithms.random import TotalRandom
 from WordleGames import BasicWordleLogic, AbsurdleLogic, NoisyWordleLogic, YellowWordle, UnfilteredWordle
 from WordleGames.vocabulary_wordle_logic import VocabularyWordleLogic
 from common import AlgorithmType, GameType
@@ -74,6 +75,8 @@ def main():
         algorithm = Expectimax()
     elif args.algorithm == AlgorithmType.Entropy:
         algorithm = Entropy()
+    elif args.algorithm == AlgorithmType.TotalRandom:
+        algorithm = TotalRandom()
     else:
         algorithm = Reinforcement(game)
 

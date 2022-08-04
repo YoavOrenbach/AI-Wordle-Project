@@ -13,6 +13,7 @@ class AlgorithmType(str, Enum):
     Expectimax = "expectimax"
     Entropy = "entropy"
     Reinforcement = "reinforcement"
+    TotalRandom = "total_random"
 
 
 class GameType(str, Enum):
