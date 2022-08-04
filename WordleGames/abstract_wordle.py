@@ -2,6 +2,7 @@ import random
 from abc import ABC, abstractmethod
 from typing import List
 
+import util
 from common import GameType, MAX, MIN, WINNING_PATTERN
 
 
@@ -9,11 +10,11 @@ class InvalidGuessException(ValueError):
     pass
 
 
-class AbstractWordleLogic(ABC):
+class AbstractWordle(ABC):
     """An abstract class representing each Wordle type game"""
 
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[], game_type=None):
-        super(AbstractWordleLogic, self).__init__()
+        super(AbstractWordle, self).__init__()
         self.type: GameType = game_type
         self._secret_words = secret_words
         self.legal_words = legal_words
@@ -47,9 +48,6 @@ class AbstractWordleLogic(ABC):
 
     def get_possible_words(self) -> List[str]:
         return self.cur_possible_words
-
-    def get_words(self, only_possible_words=True) -> List[str]:
-        return self.get_possible_words() if only_possible_words else self.get_legal_words()
 
     def generate_secret_word(self):
         return random.choice(self._secret_words)
@@ -88,11 +86,24 @@ class AbstractWordleLogic(ABC):
 
     def apply_opponent_action(self, action):
         guess, _ = self.states[-1]
-        self.states[-1] = (guess, action)
+        pattern = list(action)
+        self.states[-1] = (guess, pattern)
         self.cur_possible_words = self.filter_words()
 
     def get_possible_patterns(self, guess):
-        return list(set(tuple(self.get_pattern(guess, secret_word)) for secret_word in self.cur_possible_words))
+        patterns_counter = util.Counter()
+        for secret_word in self.cur_possible_words:
+            patterns_counter[tuple(self.get_pattern(guess, secret_word))] += 1
+        return patterns_counter
+
+    def get_legal_actions(self, agent_index=MAX):
+        if agent_index == MAX:
+            return self.get_possible_words()
+        elif agent_index == MIN:
+            guess, _ = self.states[-1]
+            return self.get_possible_patterns(guess)
+        else:
+            raise Exception("illegal agent index.")
 
     @abstractmethod
     def filter_words(self):
