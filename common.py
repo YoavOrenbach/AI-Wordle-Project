@@ -7,22 +7,22 @@ LETTERS_NUM = 5
 
 
 class AlgorithmType(str, Enum):
-    Random = "random"
-    Minimax = "minimax"
-    AlphaBeta = "alphabeta"
-    Expectimax = "expectimax"
-    Entropy = "entropy"
-    Reinforcement = "reinforcement"
+    TotalRandom = "Total Random"
+    Random = "Random"
+    Minimax = "Minimax"
+    AlphaBeta = "Alphabeta"
+    Expectimax = "Expectimax"
+    Entropy = "Entropy"
+    Reinforcement = "Reinforcement"
 
 
 class GameType(str, Enum):
-    BasicWordle = "wordle"
-    Absurdle = "absurdle"
-    FakeVocabularyWordle = "fake_vocabulary"
-    RealVocabularyWordle = "real_vocabulary"
-    NoisyWordle = "noisy"
-    YellowWordle = "yellow"
-    UnfilteredWordle = "unfiltered"
+    BasicWordle = "Wordle"
+    Absurdle = "Absurdle"
+    FakeVocabularyWordle = "Fake vocabulary"
+    RealVocabularyWordle = "Real vocabulary"
+    NoisyWordle = "Noisy"
+    YellowWordle = "Yellow"
 
 
 class Placing(IntEnum):
@@ -33,4 +33,4 @@ class Placing(IntEnum):
 
 
 WINNING_PATTERN = tuple([Placing.correct.value for _ in range(LETTERS_NUM)])
-LOSING_PATTERN = [Placing.incorrect.value]*LETTERS_NUM
+LOSING_PATTERN = tuple([Placing.incorrect.value]*LETTERS_NUM)

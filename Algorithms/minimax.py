@@ -2,7 +2,7 @@ import numpy as np
 from abc import abstractmethod
 
 from Algorithms.algorithm import Algorithm
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
+from WordleGames.abstract_wordle import AbstractWordle
 from common import AlgorithmType
 import util
 
@@ -11,8 +11,8 @@ from common import MAX, MIN, GameType
 from tqdm import tqdm
 
 
-def generate_successor(game_logic: AbstractWordleLogic, agent_index=MAX, action=None):
-    successor = game_logic.successor_creator()
+def generate_successor(game: AbstractWordle, agent_index=MAX, action=None):
+    successor = game.successor_creator()
     if agent_index == MAX:
         successor.apply_action(action)  # action = guess
     elif agent_index == MIN:
@@ -22,57 +22,60 @@ def generate_successor(game_logic: AbstractWordleLogic, agent_index=MAX, action=
     return successor
 
 
-def get_legal_actions(game_logic: AbstractWordleLogic, agent_index=MAX):
+def get_legal_actions(game: AbstractWordle, agent_index=MAX):
     if agent_index == MAX:
-        return game_logic.get_possible_words()
+        return game.get_possible_words()
     elif agent_index == MIN:
-        guess, _ = game_logic.states[-1]
-        return game_logic.get_possible_patterns(guess)
+        guess, _ = game.states[-1]
+        return game.get_possible_patterns(guess)
     else:
         raise Exception("illegal agent index.")
 
 
 class AdversarialAgent(Algorithm):
-    opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "stoae", GameType.NoisyWordle: "serai",
-                       GameType.Absurdle: "serai", GameType.FakeVocabularyWordle: "lxpyn"}  # depth 1 words
-
     def __init__(self, algorithm_type, depth=1):
         super(AdversarialAgent, self).__init__(algorithm_type)
         self.depth = depth
+        self.opening_guesses = None
+        self.absurdle_computed_second_guess = ""
 
     @abstractmethod
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
+    def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
         pass
 
-    def get_action(self, game_logic: AbstractWordleLogic):
-        #if game_logic.get_turn_num() == 1:
-        #    return AdversarialAgent.opening_guesses[game_logic.get_type()]
+    def get_action(self, game: AbstractWordle):
+        if game.get_turn_num() == 1:
+            return self.opening_guesses[game.get_type()]
+        elif game.get_type() == GameType.Absurdle and game.get_turn_num() == 2:
+            return self.absurdle_computed_second_guess
 
-        possible_words = game_logic.get_possible_words()
+        possible_words = game.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
         for word in possible_words:
-            successor_game = generate_successor(game_logic, agent_index=MAX, action=word)
+            successor_game = generate_successor(game, agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
-        print(best_action)
         return best_action
 
 
 class Minimax(AdversarialAgent):
     def __init__(self):
         super(Minimax, self).__init__(AlgorithmType.Minimax)
+        self.opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "arise",
+                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai"}
+        self.absurdle_computed_second_guess = "bludy"
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
-        legal_actions = get_legal_actions(game_logic, player_id)
-        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
-            return evaluation_function(game_logic)
+    def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
+        legal_actions = get_legal_actions(game, player_id)
+        if curr_depth == self.depth * 2 or game.get_done() or not legal_actions:
+            return evaluation_function(game)
 
         result_lst = []
         for i, action in enumerate(legal_actions):
-            successor_game = generate_successor(game_logic, agent_index=player_id, action=action)
+            successor_game = generate_successor(game, agent_index=player_id, action=action)
             if player_id == MAX:
                 result_lst.append(self.adversarial_search(curr_depth + 1, successor_game, MIN))
             else:
@@ -83,15 +86,18 @@ class Minimax(AdversarialAgent):
 class AlphaBeta(AdversarialAgent):
     def __init__(self):
         super(AlphaBeta, self).__init__(AlgorithmType.AlphaBeta)
+        self.opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "arise",
+                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai"}
+        self.absurdle_computed_second_guess = "bludy"
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
-        legal_actions = get_legal_actions(game_logic, player_id)
-        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
-            return evaluation_function(game_logic)
+    def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
+        legal_actions = get_legal_actions(game, player_id)
+        if curr_depth == self.depth * 2 or game.get_done() or not legal_actions:
+            return evaluation_function(game)
 
         if player_id == MAX:
             for i, action in enumerate(legal_actions):
-                successor_game = generate_successor(game_logic, agent_index=player_id, action=action)
+                successor_game = generate_successor(game, agent_index=player_id, action=action)
                 result = self.adversarial_search(curr_depth + 1, successor_game, MIN, alpha, beta)
                 alpha = max(alpha, result)
                 if beta <= alpha:
@@ -99,7 +105,7 @@ class AlphaBeta(AdversarialAgent):
             return alpha
         else:
             for i, action in enumerate(legal_actions):
-                successor_game = generate_successor(game_logic, agent_index=player_id, action=action)
+                successor_game = generate_successor(game, agent_index=player_id, action=action)
                 result = self.adversarial_search(curr_depth + 1, successor_game, MAX, alpha, beta)
                 beta = min(beta, result)
                 if beta <= alpha:
@@ -110,16 +116,19 @@ class AlphaBeta(AdversarialAgent):
 class Expectimax(AdversarialAgent):
     def __init__(self):
         super(Expectimax, self).__init__(AlgorithmType.Expectimax)
+        self.opening_guesses = {GameType.BasicWordle: "lares", GameType.YellowWordle: "arise",
+                                GameType.NoisyWordle: "lares", GameType.Absurdle: "lares"}
+        self.absurdle_computed_second_guess = "mount"
 
-    def adversarial_search(self, curr_depth, game_logic: AbstractWordleLogic, player_id, alpha=0.0, beta=0.0):
-        legal_actions = get_legal_actions(game_logic, player_id)
-        if curr_depth == self.depth * 2 or game_logic.get_done() or not legal_actions:
-            return evaluation_function(game_logic)
+    def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
+        legal_actions = get_legal_actions(game, player_id)
+        if curr_depth == self.depth * 2 or game.get_done() or not legal_actions:
+            return evaluation_function(game)
 
         result_lst = []
         result_counter = util.Counter()
         for i, action in enumerate(legal_actions):
-            successor_game = generate_successor(game_logic, agent_index=player_id, action=action)
+            successor_game = generate_successor(game, agent_index=player_id, action=action)
             if player_id == MAX:
                 result_lst.append(self.adversarial_search(curr_depth + 1, successor_game, MIN))
             else:
@@ -131,6 +140,6 @@ def compute_expected_min(result_counter, patterns_counter):
     return (patterns_counter * result_counter) / patterns_counter.totalCount()
 
 
-def evaluation_function(game_logic: AbstractWordleLogic):
-    remaining_words = len(game_logic.get_possible_words())
+def evaluation_function(game: AbstractWordle):
+    remaining_words = len(game.get_possible_words())
     return -remaining_words

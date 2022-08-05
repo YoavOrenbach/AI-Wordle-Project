@@ -2,11 +2,11 @@ import itertools
 from typing import List
 
 import util
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, GameType, LETTERS_NUM, MAX, LOSING_PATTERN
+from WordleGames.abstract_wordle import AbstractWordle
+from common import Placing, GameType, LETTERS_NUM, MAX
 
 
-class YellowWordle(AbstractWordleLogic):
+class YellowWordle(AbstractWordle):
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
         super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
             cur_possible_words, GameType.YellowWordle)
@@ -26,7 +26,7 @@ class YellowWordle(AbstractWordleLogic):
 
     def successor_creator(self, agent_index=MAX, action=None):
         return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self.states.copy(),
-            self.cur_possible_words.copy())
+                            self.cur_possible_words.copy())
 
     def filter_words(self) -> List[str]:
         """

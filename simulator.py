@@ -28,7 +28,8 @@ class Simulator:
             self.game_logic.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
-        return results
+        cum_stats = np.sum(results, axis=0)
+        return cum_stats
 
     def simulate_game(self, secret_word, user_interface=True):
         """

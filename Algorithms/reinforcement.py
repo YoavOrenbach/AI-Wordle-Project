@@ -1,7 +1,7 @@
 import util
 from Algorithms.algorithm import Algorithm
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, GameType, AlgorithmType
+from WordleGames.abstract_wordle import AbstractWordle
+from common import Placing, AlgorithmType
 from tqdm import tqdm
 import random
 import pickle
@@ -82,6 +82,7 @@ class ApproximateQAgent(QLearningAgent):
     def get_features(self, state, action):
         """Returns the features of a given (state, action) pair by calculating the pattern of the action, and
          comparing it to the pattern of the current state"""
+
         features = util.Counter()
         features[MATCHES] = 0
         features[DIFFERENCES] = 0
@@ -123,7 +124,7 @@ class ApproximateQAgent(QLearningAgent):
 
 class Reinforcement(Algorithm):
     """A reinforcement algorithm to play a Wordle type game"""
-    def __init__(self, game: AbstractWordleLogic, train=True):
+    def __init__(self, game: AbstractWordle, train=False, approximate=False):
         """
         Initializes the algorithm guess count, game type, the agent being used (approximate or not), and trains for a
         fixed number of episodes.
@@ -131,13 +132,12 @@ class Reinforcement(Algorithm):
         """
         super(Reinforcement, self).__init__(AlgorithmType.Reinforcement)
         self.game = game
+        self.approximate = approximate
 
-        if game.type != GameType.UnfilteredWordle:
+        if not self.approximate:
             self.agent = QLearningAgent()
-            self.approximate = False
         else:
             self.agent = ApproximateQAgent(game.get_pattern)
-            self.approximate = True
 
         if train:
             self.train()
@@ -151,8 +151,8 @@ class Reinforcement(Algorithm):
         alpha = 0.2
         discount = 0.8
         epsilon = 1.0
-        epsilon_decay = 0.9999 if not self.approximate else 0.9995
         epsilon_min = 0.05
+        epsilon_decay = 0.9999 if not self.approximate else 0.9995
         num_episodes = 40000 if not self.approximate else 1000
 
         for _ in tqdm(range(num_episodes)):
@@ -183,13 +183,13 @@ class Reinforcement(Algorithm):
         self.agent.save_agent()
         print(f"Training completed over {num_episodes} episodes")
 
-    def get_action(self, game_logic: AbstractWordleLogic):
+    def get_action(self, game: AbstractWordle):
         """Returns the next guess given the game state and the game being played, according to the type of agent."""
-        actions = game_logic.get_possible_words()
+        actions = game.get_possible_words()
         if not self.approximate:
             return self.agent.get_policy(0, actions)
         state = ()
-        if game_logic.get_game_state():
-            guess, pattern = game_logic.get_game_state()[-1]
+        if game.get_game_state():
+            guess, pattern = game.get_game_state()[-1]
             state = (guess, pattern)
         return self.agent.get_policy(state, actions)

@@ -2,16 +2,16 @@ from typing import List
 import itertools
 import util
 
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing, Word, GameType, MAX, LETTERS_NUM, LOSING_PATTERN
+from WordleGames.abstract_wordle import AbstractWordle
+from common import Placing, Word, GameType, MAX, LETTERS_NUM
 
 
-class BasicWordleLogic(AbstractWordleLogic):
+class BasicWordle(AbstractWordle):
     """Classic Wordle game"""
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[],
                  game_type=GameType.BasicWordle):
-        super(BasicWordleLogic, self).__init__(secret_words, legal_words, max_iter, game_state,
-            cur_possible_words, game_type)
+        super(BasicWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
+                                          cur_possible_words, game_type)
         self.all_patterns = [list(pattern) for pattern in
                              itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
@@ -37,8 +37,8 @@ class BasicWordleLogic(AbstractWordleLogic):
         return pattern
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
-        return BasicWordleLogic(self._secret_words, self.legal_words, self.max_iter,
-            self.states.copy(), self.cur_possible_words.copy())
+        return BasicWordle(self._secret_words, self.legal_words, self.max_iter,
+                           self.states.copy(), self.cur_possible_words.copy())
 
     def filter_words(self) -> List[Word]:
         """
@@ -96,11 +96,11 @@ class BasicWordleLogic(AbstractWordleLogic):
                 return False
 
             # 2. remove words if they have misplaced letters in the wrong spot or misplaced letters are not in the word
-            if any((word[idx]==letter or letter not in word) for idx, letter in misplaced_letters):
+            if any((word[idx] == letter or letter not in word) for idx, letter in misplaced_letters):
                 return False
 
             # 3. remove words that don't match correct letters
-            if any((word[idx]!=letter) for idx, letter in correct_letters):
+            if any((word[idx] != letter) for idx, letter in correct_letters):
                 return False
 
             # 4. remove words that contain more letters than the known amount
