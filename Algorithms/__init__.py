@@ -1,5 +1,4 @@
+from .random import Random, TotalRandom
 from .entropy import Entropy
-from .expectimax import Expectimax
-from .minimax import Minimax
-from .random import Random
+from .minimax import Minimax, AlphaBeta, Expectimax
 from .reinforcement import Reinforcement

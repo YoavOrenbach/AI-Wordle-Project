@@ -1,18 +1,21 @@
-from typing import List, Tuple
-
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from common import Placing
-from game_visible_state import GameVisibleState
+from typing import List
+import itertools
 import util
 
+from WordleGames.abstract_wordle import AbstractWordle
+from common import Placing, Word, GameType, MAX, LETTERS_NUM
 
-class BasicWordleLogic(AbstractWordleLogic):
+
+class BasicWordle(AbstractWordle):
     """Classic Wordle game"""
+    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[],
+                 game_type=GameType.BasicWordle):
+        super(BasicWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
+                                          cur_possible_words, game_type)
+        self.all_patterns = [list(pattern) for pattern in
+                             itertools.product([placing.value for placing in Placing], repeat=LETTERS_NUM)]
 
-    def __init__(self, secret_words, legal_words, max_iter=6):
-        super(BasicWordleLogic, self).__init__("Wordle", secret_words, legal_words, max_iter)
-
-    def get_pattern(self, guess: str, secret_word: str):
+    def get_pattern(self, guess: Word, secret_word: Word):
         pool = {}
         for g, s in zip(guess, secret_word):
             if g == s:
@@ -33,8 +36,11 @@ class BasicWordleLogic(AbstractWordleLogic):
                 pattern.append(int(Placing.incorrect))
         return pattern
 
-    def get_possible_words(self, game_visible_state: GameVisibleState) -> List[
-        str]:  # TODO: it also updates and this behaviour is unexpected
+    def successor_creator(self, successor=None, agent_index=MAX, action=None):
+        return BasicWordle(self._secret_words, self.legal_words, self.max_iter,
+                           self.states.copy(), self.cur_possible_words.copy())
+
+    def filter_words(self) -> List[Word]:
         """
         This method updates and returns the current words one can guess in a basic wordle game.
         There are 5 filters a word must pass to be considered possible:
@@ -49,7 +55,7 @@ class BasicWordleLogic(AbstractWordleLogic):
         :param game_visible_state: the current state of the game containing a list of pairs of (guess, patterns)
         :return: the current list of legal words to guess: self.cur_legal_words
         """
-        states = game_visible_state.get_states()
+        states = self.states
         if not states:  # if no guess was made we return the list as is, since every word is possible.
             return self.cur_possible_words
         guess, pattern = states[-1]
@@ -109,10 +115,4 @@ class BasicWordleLogic(AbstractWordleLogic):
 
             return True
 
-        self.cur_possible_words = list(filter(should_keep_word, self.cur_possible_words))
-        return self.cur_possible_words
-
-    def reset(self):
-        self.cur_iter = 0
-        self.done = False
-        self.cur_possible_words = self.legal_words
+        return list(filter(should_keep_word, self.cur_possible_words))

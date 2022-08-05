@@ -1,9 +1,9 @@
 import time
 import numpy as np
+from tqdm import tqdm
 
 from common import Placing
 from graphical_interface import GraphicalInterface
-from game_visible_state import GameVisibleState
 
 
 class Simulator:
@@ -13,28 +13,29 @@ class Simulator:
         self.game_logic = game
         self.algo = algo
 
-    def simulate_games(self, num_games, user_interface=True):
+    def simulate_games(self, num_games, user_interface=True, secret_words=None):
         """
         This method simulates a given number of game can show a pygame graphical interface
         :param num_games: the number of games to simulate
         :param user_interface: a boolean flag that determines if to show graphical interface or not.
+        :param secret_words: a list of words to be used as secret words
         """
         results = []
         start = time.time()
-        for _ in range(num_games):
-            secret_word = self.game_logic.generate_secret_word()
+        for i in tqdm(range(num_games)):
+            secret_word = self.game_logic.generate_secret_word() if secret_words is None else secret_words[i]
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()
-            self.algo.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
+        cum_stats = np.sum(results, axis=0)
+        return cum_stats
 
     def simulate_game(self, secret_word, user_interface=True):
         """
         This method simulates a single game
         :return: the stats for the game.
         """
-        game_state = GameVisibleState()
         done = False
         correct_answer = False
         num_guesses = 0
@@ -47,15 +48,14 @@ class Simulator:
             gi = GraphicalInterface(secret_word)
 
         while not done:
-            guess = self.algo.get_action(game_state, self.game_logic)
-            pattern, done = self.game_logic.step(guess, secret_word)
-            game_state.add_state(guess, pattern)
+            guess = self.algo.get_action(self.game_logic)
+            pattern, done, is_win = self.game_logic.step(guess, secret_word)
             num_guesses += 1
             num_letters_guessed += len(guess)
             num_correct_letters_guessed += pattern.count(int(Placing.correct))
             num_misplaced_letters_guessed += pattern.count(int(Placing.misplaced))
             num_incorrect_letters_guessed += pattern.count(int(Placing.incorrect))
-            if pattern.count(int(Placing.correct)) == len(pattern):
+            if is_win:
                 correct_answer = True
 
             if user_interface:
@@ -78,7 +78,7 @@ class Simulator:
         cum_stats = np.sum(all_stats, axis=0)
         sub_six = (all_stats[:, 1] <= 6).sum() / num_games * 100.0
 
-        print(f'Results for {self.game_logic.name} game with {self.algo.name} algorithm:')
+        print(f'Results for {self.game_logic.type} game with {self.algo.type} algorithm:')
         print('# Games: {}'.format(num_games))
         print('# Wins:  {}'.format(cum_stats[0]))
         print('% <= 6 Guesses:    {:.3f}'.format(sub_six))

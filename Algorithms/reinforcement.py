@@ -1,10 +1,10 @@
 import util
 from Algorithms.algorithm import Algorithm
-from WordleGames.abstract_wordle_logic import AbstractWordleLogic
-from game_visible_state import GameVisibleState
-from common import Placing
+from WordleGames.abstract_wordle import AbstractWordle
+from common import Placing, AlgorithmType
 from tqdm import tqdm
 import random
+import pickle
 
 
 # Rewards for the placing of each letter in a guess:
@@ -62,6 +62,14 @@ class QLearningAgent:
         self.Q_values[(state, action)] = self.Q_values[(state, action)] + alpha * \
                                          (reward+discount*self.get_value(next_state, actions)-self.Q_values[(state, action)])
 
+    def save_agent(self):
+        with open('Algorithms/saved_rl_agents/wordle.pkl', 'wb') as f:
+            pickle.dump(self.Q_values, f)
+
+    def load_agent(self):
+        with open('Algorithms/saved_rl_agents/wordle.pkl', 'rb') as f:
+            self.Q_values = pickle.load(f)
+
 
 class ApproximateQAgent(QLearningAgent):
     """Approximate Q-learning agent."""
@@ -74,6 +82,7 @@ class ApproximateQAgent(QLearningAgent):
     def get_features(self, state, action):
         """Returns the features of a given (state, action) pair by calculating the pattern of the action, and
          comparing it to the pattern of the current state"""
+
         features = util.Counter()
         features[MATCHES] = 0
         features[DIFFERENCES] = 0
@@ -104,48 +113,57 @@ class ApproximateQAgent(QLearningAgent):
         for i in features:
             self.weights[i] = self.weights[i] + alpha * correction * features[i]
 
+    def save_agent(self):
+        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'wb') as f:
+            pickle.dump(self.weights, f)
+
+    def load_agent(self):
+        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'rb') as f:
+            self.weights = pickle.load(f)
+
 
 class Reinforcement(Algorithm):
     """A reinforcement algorithm to play a Wordle type game"""
-    def __init__(self, game: AbstractWordleLogic):
+    def __init__(self, game: AbstractWordle, train=False, approximate=False):
         """
         Initializes the algorithm guess count, game type, the agent being used (approximate or not), and trains for a
         fixed number of episodes.
         :param game: An AbstractWordleLogic type game to simulate training and decide on the type of agent to use.
         """
-        super(Reinforcement, self).__init__("Reinforcement learning")
-        self.guess_count = 0
+        super(Reinforcement, self).__init__(AlgorithmType.Reinforcement)
         self.game = game
-        if game.name != "Noisy Wordle":
+        self.approximate = approximate
+
+        if not self.approximate:
             self.agent = QLearningAgent()
-            self.approximate = False
-            self.train(num_episodes=20000)
         else:
             self.agent = ApproximateQAgent(game.get_pattern)
-            self.approximate = True
-            self.train(num_episodes=1000)
 
-    def train(self, num_episodes):
+        if train:
+            self.train()
+        else:
+            self.agent.load_agent()
+
+    def train(self):
         """Trains the agent for a given number of episodes.
         Decides on the hyper-parameters, simulates games, calculates rewards and updates the agent."""
         # hyper-parameters
         alpha = 0.2
         discount = 0.8
         epsilon = 1.0
-        #decay_rate = 0.005
-        epsilon_decay = 0.9995  # 0.995 for secret list
         epsilon_min = 0.05
+        epsilon_decay = 0.9999 if not self.approximate else 0.9995
+        num_episodes = 40000 if not self.approximate else 1000
 
         for _ in tqdm(range(num_episodes)):
-            game_state = GameVisibleState()
             secret_word = self.game.generate_secret_word()
-            legal_actions = self.game.get_possible_words(game_state)
+            legal_actions = self.game.get_possible_words()
             done = False
             state = 0 if not self.approximate else ()
 
             while not done:
                 action = self.agent.get_q_action(state, legal_actions, epsilon)
-                pattern, done = self.game.step(action, secret_word)
+                pattern, done, _ = self.game.step(action, secret_word)
                 reward = 0
                 for placing in pattern:
                     if placing == Placing.correct.value:
@@ -154,31 +172,24 @@ class Reinforcement(Algorithm):
                         reward += YELLOW_REWARD
                     else:
                         reward += GREY_REWARD
-                game_state.add_state(action, pattern)
-                legal_actions = self.game.get_possible_words(game_state)
+                legal_actions = self.game.get_possible_words()
                 next_state = 0 if not self.approximate else (action, pattern)
                 self.agent.update(state, action, next_state, reward, alpha, discount, legal_actions)
                 state = next_state
 
             # Decrease epsilon
-            #epsilon = np.exp(-decay_rate*episode)
             epsilon = max(epsilon_min, epsilon*epsilon_decay)
             self.game.reset()
-
+        self.agent.save_agent()
         print(f"Training completed over {num_episodes} episodes")
 
-    def get_action(self, game_state, game_logic: AbstractWordleLogic):
+    def get_action(self, game: AbstractWordle):
         """Returns the next guess given the game state and the game being played, according to the type of agent."""
-        self.guess_count += 1
-        actions = game_logic.get_possible_words(game_state)
+        actions = game.get_possible_words()
         if not self.approximate:
             return self.agent.get_policy(0, actions)
         state = ()
-        if game_state.get_states():
-            guess, pattern = game_state.get_states()[-1]
+        if game.get_game_state():
+            guess, pattern = game.get_game_state()[-1]
             state = (guess, pattern)
         return self.agent.get_policy(state, actions)
-
-    def reset(self):
-        """Resets the algorithm."""
-        self.guess_count = 0

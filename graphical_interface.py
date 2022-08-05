@@ -1,7 +1,6 @@
 import pygame
 import string
-
-from common import LETTERS_NUM
+from common import Placing
 
 pygame.init()
 pygame.font.init()
@@ -16,13 +15,13 @@ class Grid:
     """
 
     def __init__(self):
-        self.matrix = [[Cell(i, j) for j in range(LETTERS_NUM)] for i in range(6)]
+        self.matrix = [[Cell(i, j) for j in range(5)] for i in range(6)]
         self.current_row, self.current_column = 0, 0
 
     def enter_letter(self, letter):
         letter = letter.upper()
         if letter in AVAILABLE_LETTERS:
-            if self.current_column == LETTERS_NUM:  # user has already entered 5 letters
+            if self.current_column == 5:  # user has already entered 5 letters
                 print("Sorry Request cannot be processed")
                 return
             self.matrix[self.current_row][self.current_column].assign_letter(letter)
@@ -110,9 +109,9 @@ class GraphicalInterface:
     def generate_verdict(self, verdict):
         verdict_copy = verdict.copy()
         for i in range(len(verdict_copy)):
-            if int(verdict_copy[i]) == 0:
+            if int(verdict_copy[i]) == Placing.correct.value:
                 verdict_copy[i] = "g"
-            elif int(verdict_copy[i]) == 1:
+            elif int(verdict_copy[i]) == Placing.misplaced.value:
                 verdict_copy[i] = "y"
             else:
                 verdict_copy[i] = "b"
