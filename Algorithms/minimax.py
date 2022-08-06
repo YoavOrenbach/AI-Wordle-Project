@@ -45,14 +45,15 @@ class AdversarialAgent(Algorithm):
 
     def get_action(self, game: AbstractWordle):
         if game.get_turn_num() == 1:
-            return self.opening_guesses[game.get_type()]
+            if game.get_type() in self.opening_guesses:
+                return self.opening_guesses[game.get_type()]
         elif game.get_type() == GameType.Absurdle and game.get_turn_num() == 2:
             return self.absurdle_computed_second_guess
 
         possible_words = game.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in possible_words:
+        for word in tqdm(possible_words):
             successor_game = generate_successor(game, agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:

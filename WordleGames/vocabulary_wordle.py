@@ -31,3 +31,6 @@ class VocabularyWordle(BasicWordle):
             sampled_legal_words = random.sample(all_words, vocabulary_size)
             sampled_secret_words = random.sample(sampled_legal_words, secret_vocabulary_size)
         return sampled_secret_words, sampled_legal_words
+
+    def get_word_list(self):
+        return self._secret_words, self.legal_words

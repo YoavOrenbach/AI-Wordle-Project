@@ -5,7 +5,7 @@ from common import Word, WINNING_PATTERN, GameType, MAX
 
 
 class Absurdle(BasicWordle):
-    def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
+    def __init__(self, secret_words, legal_words, max_iter=None, game_state=[], cur_possible_words=[]):
         super(Absurdle, self).__init__(secret_words, legal_words, max_iter,
                                        game_state, cur_possible_words, GameType.Absurdle)
         self._possible_secret_words = secret_words

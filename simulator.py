@@ -22,7 +22,7 @@ class Simulator:
         """
         results = []
         start = time.time()
-        for i in tqdm(range(num_games)):
+        for i in (range(num_games)):
             secret_word = self.game_logic.generate_secret_word() if secret_words is None else secret_words[i]
             results.append(list(self.simulate_game(secret_word, user_interface)))
             self.game_logic.reset()

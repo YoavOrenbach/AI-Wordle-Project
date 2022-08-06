@@ -5,7 +5,7 @@ from factory import load_word_lists, get_game, get_algorithm
 from common import AlgorithmType, GameType
 from simulator import Simulator
 
-DEFAULT_GAMES_NUM = 10
+DEFAULT_GAMES_NUM = 100
 DEFAULT_IS_WITH_GUI = False
 
 
@@ -22,7 +22,7 @@ def parse_args():
                         default=GameType.BasicWordle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
-                        default=AlgorithmType.Random.value, help='which algorithm to use')
+                        default=AlgorithmType.TotalRandom.value, help='which algorithm to use')
     parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 
@@ -46,7 +46,7 @@ def main():
 
     # Simulate games
     simulator = Simulator(game, algorithm)
-    simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface)
+    simulator.simulate_games(num_games=args.num_games, user_interface=args.user_interface, secret_words=secret_words)
 
 
 if __name__ == '__main__':
