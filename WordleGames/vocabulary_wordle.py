@@ -14,6 +14,7 @@ class VocabularyWordle(BasicWordle):
         self._real_legal_path = f'data/vocab_word_lists/real_legal_{vocabulary_size}.txt'
         self._fake_secret_path = f'data/vocab_word_lists/fake_secret_{vocabulary_size}.txt'
         self._fake_legal_path = f'data/vocab_word_lists/fake_legal_{vocabulary_size}.txt'
+        self.vocab_size = vocabulary_size
 
         if not self.check_word_lists(real_vocabulary):
             self.create_word_list(vocabulary_size, real_vocabulary, secret_words, legal_words)
@@ -24,6 +25,9 @@ class VocabularyWordle(BasicWordle):
             self.type = GameType.RealVocabularyWordle
         else:
             self.type = GameType.FakeVocabularyWordle
+
+    def get_vocab_size(self):
+        return self.vocab_size
 
     @classmethod
     def get_words(cls, vocabulary_size, real_vocabulary, secret_words, legal_words):

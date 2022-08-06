@@ -73,10 +73,21 @@ def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
     plot_num_guesses(algorithm_names, num_guesses, game.get_type())
 
 
+def get_minimax_first_guess(secret_words, legal_words, algorithms_dictionary):
+    vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
+    minimax = algorithms_dictionary[AlgorithmType.AlphaBeta]
+    for vocab_size in vocabulary_sizes:
+        print("Game with ", vocab_size)
+        vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=vocab_size)
+        simulator = Simulator(vocab_wordle, minimax)
+        simulator.simulate_games(num_games=1, user_interface=False)
+        print("---------------------")
+
+
+
 def evaluate_vocab(secret_words, legal_words, algorithms, algorithm_names):
     vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
     num_games = 100
-    algorithms = [algorithms[1], algorithms[5]]
     plt.figure(figsize=(10, 6))
     for algorithm in algorithms:
         avg_results = []
@@ -95,17 +106,11 @@ def evaluate_vocab(secret_words, legal_words, algorithms, algorithm_names):
     plt.show()
 
 
-def test(secret_words, legal_words):
-    vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
-    for vocab_size in vocabulary_sizes:
-        vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=vocab_size)
-
-
 def main():
     random.seed(42)
     secret_words, legal_words = load_word_lists()
-    # games_dictionary = get_game_dictionary(secret_words, legal_words)
-    # algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
+    games_dictionary = get_game_dictionary(secret_words, legal_words)
+    algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
     # algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type != AlgorithmType.Minimax]
     # algorithm_names = [algorithm_type.value for algorithm_type in AlgorithmType if
     #                    algorithm_type != AlgorithmType.Minimax]
@@ -117,8 +122,8 @@ def main():
     # evaluate_wordle(yellow_game, algorithms, algorithm_names, 100, secret_words)
     # noisy_game = games_dictionary[GameType.NoisyWordle.value]
     # evaluate_wordle(noisy_game, algorithms, algorithm_names, 100, secret_words)
-    #evaluate_vocab(secret_words, legal_words, algorithms, algorithm_names)
-    test(secret_words, legal_words)
+    # evaluate_vocab(secret_words, legal_words, algorithms, algorithm_names)
+    get_minimax_first_guess(secret_words, legal_words, algorithms_dictionary)
 
 
 if __name__ == '__main__':

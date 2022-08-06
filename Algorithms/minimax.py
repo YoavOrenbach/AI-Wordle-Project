@@ -44,11 +44,13 @@ class AdversarialAgent(Algorithm):
         pass
 
     def get_action(self, game: AbstractWordle):
-        if game.get_turn_num() == 1:
-            if game.get_type() in self.opening_guesses:
-                return self.opening_guesses[game.get_type()]
-        elif game.get_type() == GameType.Absurdle and game.get_turn_num() == 2:
-            return self.absurdle_computed_second_guess
+        # if game.get_turn_num() == 1:
+        #     if game.get_type() != GameType.RealVocabularyWordle:
+        #         return self.opening_guesses[game.get_type()]
+        #     else:
+        #         return self.opening_guesses[game.get_type()][game.get_vocab_size()]
+        # elif game.get_type() == GameType.Absurdle and game.get_turn_num() == 2:
+        #     return self.absurdle_computed_second_guess
 
         possible_words = game.get_possible_words()
         best_action = random.choice(possible_words)
@@ -59,6 +61,7 @@ class AdversarialAgent(Algorithm):
             if high_score < minimax_score:
                 high_score = minimax_score
                 best_action = word
+        print('\033[1m' + best_action + '\033[0m')
         return best_action
 
 
@@ -66,7 +69,8 @@ class Minimax(AdversarialAgent):
     def __init__(self):
         super(Minimax, self).__init__(AlgorithmType.Minimax)
         self.opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "arise",
-                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai"}
+                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai",
+                                GameType.FakeVocabularyWordle: "zpnoy", GameType.RealVocabularyWordle: {1000: "aeros"}}
         self.absurdle_computed_second_guess = "bludy"
 
     def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
@@ -88,7 +92,8 @@ class AlphaBeta(AdversarialAgent):
     def __init__(self):
         super(AlphaBeta, self).__init__(AlgorithmType.AlphaBeta)
         self.opening_guesses = {GameType.BasicWordle: "serai", GameType.YellowWordle: "arise",
-                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai"}
+                                GameType.NoisyWordle: "stoae", GameType.Absurdle: "serai",
+                                GameType.FakeVocabularyWordle: "zpnoy"}
         self.absurdle_computed_second_guess = "bludy"
 
     def adversarial_search(self, curr_depth, game: AbstractWordle, player_id, alpha=0.0, beta=0.0):
