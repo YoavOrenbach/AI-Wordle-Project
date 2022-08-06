@@ -96,20 +96,19 @@ def evaluate_vocab(secret_words, legal_words, algorithms, algorithm_names):
 
 
 def test(secret_words, legal_words):
-    vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=1000)
-    secret_words, legal_words = vocab_wordle.get_word_list()
-    print(secret_words)
-    print(legal_words)
+    vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
+    for vocab_size in vocabulary_sizes:
+        vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=vocab_size)
 
 
 def main():
     random.seed(42)
     secret_words, legal_words = load_word_lists()
-    games_dictionary = get_game_dictionary(secret_words, legal_words)
-    algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
-    algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type != AlgorithmType.Minimax]
-    algorithm_names = [algorithm_type.value for algorithm_type in AlgorithmType if
-                       algorithm_type != AlgorithmType.Minimax]
+    # games_dictionary = get_game_dictionary(secret_words, legal_words)
+    # algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
+    # algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type != AlgorithmType.Minimax]
+    # algorithm_names = [algorithm_type.value for algorithm_type in AlgorithmType if
+    #                    algorithm_type != AlgorithmType.Minimax]
     # wordle_game = games_dictionary[GameType.BasicWordle.value]
     # evaluate_wordle(wordle_game, algorithms, algorithm_names, len(secret_words), secret_words)
     # absurdle_game = games_dictionary[GameType.Absurdle.value]
