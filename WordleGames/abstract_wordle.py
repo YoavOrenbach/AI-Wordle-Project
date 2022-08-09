@@ -79,7 +79,7 @@ class AbstractWordle(ABC):
         self.cur_iter = 0
         self.done = False
         self.cur_possible_words = self.legal_words
-        self.states = []
+        self.states.clear()
 
     def apply_action(self, action: str):
         self.states.append((action, []))

@@ -6,14 +6,29 @@ from WordleGames.abstract_wordle import AbstractWordle
 from WordleGames.utils import get_pattern_vanilla
 from common import Word, GameType, AlgorithmType
 
+from tqdm import tqdm
+
 
 class Entropy(Algorithm):
-    # these guesses were pre-computed using the same algorithm
-    opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise", GameType.NoisyWordle: "tares",
-                       GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn"}
-
     def __init__(self):
         super(Entropy, self).__init__(AlgorithmType.Entropy)
+        # these guesses were pre-computed using the same algorithm
+        self.opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
+                                GameType.NoisyWordle: "tares",
+                                GameType.Absurdle: "tares", GameType.FakeVocabularyWordle: "lxpyn",
+                                GameType.RealVocabularyWordle: {1000: "rates",
+                                                                2000: "tares",
+                                                                3000: "tares",
+                                                                4000: "soare",
+                                                                5000: "tares",
+                                                                6000: "lares",
+                                                                7000: "tares",
+                                                                8000: "lares",
+                                                                9000: "tares",
+                                                                10000: "tares",
+                                                                11000: "tares",
+                                                                12000: "tares",
+                                                                12972: "tares"}}
 
     def get_pattern(self, guess: Word, secret_word: Word, game: AbstractWordle):
         if game.type in [GameType.Absurdle, GameType.NoisyWordle]:  # this is mainly for faster run
@@ -34,21 +49,20 @@ class Entropy(Algorithm):
 
     def get_expected_info(self, guess: Word, game: AbstractWordle) -> float:
         pattern_probs = self.get_pattern_probs(guess, game)
-        return sum(prob * math.log2(1 / prob) if prob != 0 else 0 for prob in pattern_probs.values())
-
-    def get_opening_guess(self, game: AbstractWordle) -> Word:
-        return Entropy.opening_guesses[game.get_type()]
+        return sum(prob * math.log2(1 / prob) if prob!=0 else 0 for prob in pattern_probs.values())
 
     def get_action(self, game: AbstractWordle) -> Word:
         if game.get_turn_num() == 1:
-            if game.get_type() in self.opening_guesses:
-                return self.get_opening_guess(game)
+            if game.get_type() != GameType.RealVocabularyWordle:
+                return self.opening_guesses[game.get_type()]
+            else:
+                return self.opening_guesses[game.get_type()][game.get_vocab_size()]
 
         best_expected_info = -math.inf
         best_word = None
 
         possible_words = game.get_possible_words()
-        for word in possible_words:
+        for word in (possible_words):
             expected_info = self.get_expected_info(word, game)
             if expected_info > best_expected_info:
                 best_expected_info = expected_info

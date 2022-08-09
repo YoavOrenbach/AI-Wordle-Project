@@ -10,7 +10,7 @@ class Simulator:
     """A class for simulating wordle games given a game and algorithm objects"""
 
     def __init__(self, game, algo):
-        self.game_logic = game
+        self.game = game
         self.algo = algo
 
     def simulate_games(self, num_games, user_interface=True, secret_words=None):
@@ -22,10 +22,10 @@ class Simulator:
         """
         results = []
         start = time.time()
-        for i in (range(num_games)):
-            secret_word = self.game_logic.generate_secret_word() if secret_words is None else secret_words[i]
+        for i in tqdm(range(num_games)):
+            secret_word = self.game.generate_secret_word() if secret_words is None else secret_words[i]
             results.append(list(self.simulate_game(secret_word, user_interface)))
-            self.game_logic.reset()
+            self.game.reset()
         end = time.time()
         self.print_simulation_results(np.array(results), num_games, (end - start))
         cum_stats = np.sum(results, axis=0)
@@ -48,8 +48,8 @@ class Simulator:
             gi = GraphicalInterface(secret_word)
 
         while not done:
-            guess = self.algo.get_action(self.game_logic)
-            pattern, done, is_win = self.game_logic.step(guess, secret_word)
+            guess = self.algo.get_action(self.game)
+            pattern, done, is_win = self.game.step(guess, secret_word)
             num_guesses += 1
             num_letters_guessed += len(guess)
             num_correct_letters_guessed += pattern.count(int(Placing.correct))
@@ -78,7 +78,7 @@ class Simulator:
         cum_stats = np.sum(all_stats, axis=0)
         sub_six = (all_stats[:, 1] <= 6).sum() / num_games * 100.0
 
-        print(f'Results for {self.game_logic.type} game with {self.algo.type} algorithm:')
+        print(f'Results for {self.game.type} game with {self.algo.type} algorithm:')
         print('# Games: {}'.format(num_games))
         print('# Wins:  {}'.format(cum_stats[0]))
         print('% <= 6 Guesses:    {:.3f}'.format(sub_six))
