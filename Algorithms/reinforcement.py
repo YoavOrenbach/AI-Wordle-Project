@@ -1,7 +1,7 @@
 import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
-from common import Placing, AlgorithmType
+from common import Placing, AlgorithmType, GameType
 from tqdm import tqdm
 import random
 import pickle
@@ -62,12 +62,14 @@ class QLearningAgent:
         self.Q_values[(state, action)] = self.Q_values[(state, action)] + alpha * \
                                          (reward+discount*self.get_value(next_state, actions)-self.Q_values[(state, action)])
 
-    def save_agent(self):
-        with open('Algorithms/saved_rl_agents/wordle.pkl', 'wb') as f:
+    def save_agent(self, game_type: GameType):
+        agent_game = 'wordle' if game_type != GameType.FakeVocabularyWordle else 'fake'
+        with open(f'Algorithms/saved_rl_agents/{agent_game}.pkl', 'wb') as f:
             pickle.dump(self.Q_values, f)
 
-    def load_agent(self):
-        with open('Algorithms/saved_rl_agents/wordle.pkl', 'rb') as f:
+    def load_agent(self, game_type: GameType):
+        agent_game = 'wordle' if game_type != GameType.FakeVocabularyWordle else 'fake'
+        with open(f'Algorithms/saved_rl_agents/{agent_game}.pkl', 'rb') as f:
             self.Q_values = pickle.load(f)
 
 
@@ -113,12 +115,12 @@ class ApproximateQAgent(QLearningAgent):
         for i in features:
             self.weights[i] = self.weights[i] + alpha * correction * features[i]
 
-    def save_agent(self):
-        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'wb') as f:
+    def save_agent(self, game_type: GameType):
+        with open('Algorithms/saved_rl_agents/approximate.pkl', 'wb') as f:
             pickle.dump(self.weights, f)
 
-    def load_agent(self):
-        with open('Algorithms/saved_rl_agents/unfiltered.pkl', 'rb') as f:
+    def load_agent(self, game_type: GameType):
+        with open('Algorithms/saved_rl_agents/approximate.pkl', 'rb') as f:
             self.weights = pickle.load(f)
 
 
@@ -142,7 +144,7 @@ class Reinforcement(Algorithm):
         if train:
             self.train()
         else:
-            self.agent.load_agent()
+            self.agent.load_agent(self.game.get_type())
 
     def train(self):
         """Trains the agent for a given number of episodes.
@@ -152,7 +154,7 @@ class Reinforcement(Algorithm):
         discount = 0.8
         epsilon = 1.0
         epsilon_min = 0.05
-        epsilon_decay = 0.9999 if not self.approximate else 0.9995
+        epsilon_decay = 0.9999 if not self.approximate else 0.995
         num_episodes = 40000 if not self.approximate else 1000
 
         for _ in tqdm(range(num_episodes)):
@@ -164,14 +166,7 @@ class Reinforcement(Algorithm):
             while not done:
                 action = self.agent.get_q_action(state, legal_actions, epsilon)
                 pattern, done, _ = self.game.step(action, secret_word)
-                reward = 0
-                for placing in pattern:
-                    if placing == Placing.correct.value:
-                        reward += GREEN_REWARD
-                    elif placing == Placing.misplaced.value:
-                        reward += YELLOW_REWARD
-                    else:
-                        reward += GREY_REWARD
+                reward = constant_rewards(pattern)
                 legal_actions = self.game.get_possible_words()
                 next_state = 0 if not self.approximate else (action, pattern)
                 self.agent.update(state, action, next_state, reward, alpha, discount, legal_actions)
@@ -180,7 +175,7 @@ class Reinforcement(Algorithm):
             # Decrease epsilon
             epsilon = max(epsilon_min, epsilon*epsilon_decay)
             self.game.reset()
-        self.agent.save_agent()
+        self.agent.save_agent(self.game.get_type())
         print(f"Training completed over {num_episodes} episodes")
 
     def get_action(self, game: AbstractWordle):
@@ -193,3 +188,27 @@ class Reinforcement(Algorithm):
             guess, pattern = game.get_game_state()[-1]
             state = (guess, pattern)
         return self.agent.get_policy(state, actions)
+
+
+def constant_rewards(pattern):
+    reward = 0
+    for placing in pattern:
+        if placing == Placing.correct.value:
+            reward += GREEN_REWARD
+        elif placing == Placing.misplaced.value:
+            reward += YELLOW_REWARD
+        else:
+            reward += GREY_REWARD
+    return reward
+
+
+def turn_rewards(pattern, turn_num):
+    reward = 0
+    for placing in pattern:
+        if placing == Placing.correct.value:
+            reward += (7-turn_num)*GREEN_REWARD
+        elif placing == Placing.misplaced.value:
+            reward += (7-turn_num)*YELLOW_REWARD
+        else:
+            reward += turn_num*GREY_REWARD
+    return reward

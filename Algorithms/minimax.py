@@ -7,15 +7,15 @@ from common import AlgorithmType
 import util
 
 import random
-from common import MAX, MIN, GameType
+from common import MAX, MIN, GameType, Placing
 from tqdm import tqdm
 
 
 def generate_successor(game: AbstractWordle, agent_index=MAX, action=None):
     successor = game.successor_creator()
-    if agent_index==MAX:
+    if agent_index == MAX:
         successor.apply_action(action)  # action = guess
-    elif agent_index==MIN:
+    elif agent_index == MIN:
         successor.apply_opponent_action(action)  # action = pattern
     else:
         raise Exception("illegal agent index.")
@@ -23,9 +23,9 @@ def generate_successor(game: AbstractWordle, agent_index=MAX, action=None):
 
 
 def get_legal_actions(game: AbstractWordle, agent_index=MAX):
-    if agent_index==MAX:
+    if agent_index == MAX:
         return game.get_possible_words()
-    elif agent_index==MIN:
+    elif agent_index == MIN:
         guess, _ = game.states[-1]
         return game.get_possible_patterns(guess)
     else:
@@ -55,7 +55,7 @@ class AdversarialAgent(Algorithm):
         possible_words = game.get_possible_words()
         best_action = random.choice(possible_words)
         high_score = -np.inf
-        for word in (possible_words):
+        for word in possible_words:
             successor_game = generate_successor(game, agent_index=MAX, action=word)
             minimax_score = self.adversarial_search(1, successor_game, MIN, -np.inf, np.inf)
             if high_score < minimax_score:
@@ -158,11 +158,11 @@ class Expectimax(AdversarialAgent):
         result_counter = util.Counter()
         for i, action in enumerate(legal_actions):
             successor_game = generate_successor(game, agent_index=player_id, action=action)
-            if player_id==MAX:
+            if player_id == MAX:
                 result_lst.append(self.adversarial_search(curr_depth + 1, successor_game, MIN))
             else:
                 result_counter[tuple(action)] = (self.adversarial_search(curr_depth + 1, successor_game, MAX))
-        return max(result_lst) if player_id==MAX else compute_expected_min(result_counter, legal_actions)
+        return max(result_lst) if player_id == MAX else compute_expected_min(result_counter, legal_actions)
 
 
 def compute_expected_min(result_counter, patterns_counter):
@@ -172,3 +172,21 @@ def compute_expected_min(result_counter, patterns_counter):
 def evaluation_function(game: AbstractWordle):
     remaining_words = len(game.get_possible_words())
     return -remaining_words
+
+
+def evaluation_function_turn_num(game: AbstractWordle):
+    return -game.get_turn_num()
+
+
+def evaluation_function_game_score(game: AbstractWordle):
+    score = 0
+    game_state = game.get_game_state()
+    for _, pattern in game_state:
+        for placing in pattern:
+            if placing == Placing.correct.value:
+                score += 10
+            elif placing == Placing.misplaced.value:
+                score += 5
+            else:
+                score += 1
+    return score
