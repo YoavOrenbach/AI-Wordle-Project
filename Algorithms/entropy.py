@@ -80,6 +80,17 @@ class EntropyFrequency(Entropy):
         super(EntropyFrequency, self).__init__()
         self.priors = get_frequency_based_priors()
 
+    def get_pattern_freq_probs(self, guess: Word, game: AbstractWordle, word_to_prob) -> Dict[tuple, float]:
+        pattern_probs = {tuple(pattern): 0 for pattern in game.get_all_patterns()}
+        possible_secret_words = game.get_possible_words()
+        for secret_word in possible_secret_words:
+            pattern_probs[tuple(self.get_pattern(guess, secret_word, game))] += word_to_prob[secret_word]
+        return pattern_probs
+
+    def get_expected_freq_info(self, guess: Word, game: AbstractWordle, word_to_prob) -> float:
+        pattern_probs = self.get_pattern_freq_probs(guess, game, word_to_prob)
+        return entropy(list(pattern_probs.values()), base=2)
+
     def get_action(self, game: AbstractWordle) -> Word:
         if game.get_turn_num() == 1:
             if game.get_type() != GameType.RealVocabularyWordle:
@@ -94,8 +105,8 @@ class EntropyFrequency(Entropy):
         weights = get_weights(possible_words, self.priors)
         distribution_entropy = entropy_of_distributions(weights)
         word_to_weight = dict(zip(possible_words, weights))
-        for word in possible_words:
-            expected_info = self.get_expected_info(word, game)
+        for word in (possible_words):
+            expected_info = self.get_expected_freq_info(word, game, word_to_weight)
             prob = word_to_weight[word]
             expected_score = get_expected_scores(prob, distribution_entropy, expected_info)
             if expected_score < best_expected_info:
