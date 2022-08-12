@@ -89,7 +89,7 @@ class EntropyFrequency(Entropy):
 
     def get_expected_freq_info(self, guess: Word, game: AbstractWordle, word_to_prob) -> float:
         pattern_probs = self.get_pattern_freq_probs(guess, game, word_to_prob)
-        return entropy(list(pattern_probs.values()), base=2)
+        return sum(prob * math.log2(1 / prob) if prob != 0 else 0 for prob in pattern_probs.values())
 
     def get_action(self, game: AbstractWordle) -> Word:
         if game.get_turn_num() == 1:
@@ -105,7 +105,7 @@ class EntropyFrequency(Entropy):
         weights = get_weights(possible_words, self.priors)
         distribution_entropy = entropy_of_distributions(weights)
         word_to_weight = dict(zip(possible_words, weights))
-        for word in (possible_words):
+        for word in possible_words:
             expected_info = self.get_expected_freq_info(word, game, word_to_weight)
             prob = word_to_weight[word]
             expected_score = get_expected_scores(prob, distribution_entropy, expected_info)
