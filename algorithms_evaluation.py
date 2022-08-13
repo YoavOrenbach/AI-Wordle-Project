@@ -187,7 +187,7 @@ def evaluate_vocab(secret_words, legal_words, algorithms):
     plt.plot(vocabulary_sizes, alphabeta, label="AlphaBeta pruning")
     plt.plot(vocabulary_sizes, expectimax, label="Expectimax")
     plt.plot(vocabulary_sizes, Entropy, label="Entropy")
-    # plt.plot(vocabulary_sizes, Frq, label="Entroyp with Frequency")
+    plt.plot(vocabulary_sizes, Frq, label="Entroyp with Frequency")
     plt.plot(vocabulary_sizes, random, label="Q-learning")
     plt.title("Algorithms avg number of guesses as a function of the real vocabulary size")
     plt.ylabel("Avg number of guesses")
