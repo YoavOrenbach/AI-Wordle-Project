@@ -1,5 +1,4 @@
 from Algorithms import Random, TotalRandom, Minimax, AlphaBeta, Expectimax, Entropy, Reinforcement
-from Algorithms.entropy import EntropyFrequency
 from WordleGames import BasicWordle, Absurdle, NoisyWordle, YellowWordle
 from WordleGames.vocabulary_wordle import VocabularyWordle
 from WordleGames.abstract_wordle import AbstractWordle
@@ -45,8 +44,7 @@ def get_algorithm(algorithm_type: AlgorithmType, game: AbstractWordle):
     elif algorithm_type == AlgorithmType.Expectimax:
         algorithm = Expectimax()
     elif algorithm_type == AlgorithmType.Entropy:
-        #algorithm = Entropy()
-        algorithm = EntropyFrequency()
+        algorithm = Entropy()
     elif algorithm_type == AlgorithmType.Reinforcement:
         algorithm = Reinforcement(game, train=False)
     else:
