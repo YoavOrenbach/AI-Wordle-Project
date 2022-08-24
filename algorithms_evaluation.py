@@ -9,7 +9,8 @@ from factory import load_word_lists, get_game_dictionary, get_algorithms_diction
 
 
 def plot_avg_guesses(algorithm_names, avg_results, game_type, num_games):
-    """Displays a bar graph of average guess count """
+    """Displays a bar graph of avg_results count from a list of algorithm_names and a game_type,
+    over num_games games"""
     plt.figure(figsize=(10, 6))
     plt.bar(algorithm_names, avg_results, color='royalblue')
     for i in range(len(algorithm_names)):
@@ -23,6 +24,8 @@ def plot_avg_guesses(algorithm_names, avg_results, game_type, num_games):
 
 
 def plot_win_percentage(algorithm_names, win_percentage, game_type, num_games):
+    """Displays a bar graph of win_percentage count from a list of algorithm_names and a game_type,
+    over num_games games"""
     plt.figure(figsize=(10, 6))
     plt.bar(algorithm_names, win_percentage, color='firebrick')
     for i in range(len(algorithm_names)):
@@ -35,6 +38,7 @@ def plot_win_percentage(algorithm_names, win_percentage, game_type, num_games):
 
 
 def plot_num_guesses(algorithm_names, num_guesses, game_type):
+    """Displays a bar graph of num_guesses count from a list of algorithm_names and a game_type"""
     plt.figure(figsize=(10, 6))
     plt.bar(algorithm_names, num_guesses, color='forestgreen')
     for i in range(len(algorithm_names)):
@@ -47,6 +51,8 @@ def plot_num_guesses(algorithm_names, num_guesses, game_type):
 
 
 def plot_real_vs_fake(algorithm_names, results_real, results_fake):
+    """Displays a bar graph with the comparison of Real Vocab Wordle vs Fake Vocab Wordle based on results_real,
+    results_fake results"""
     bar_width = 1 / 3
     plt.subplots(figsize=(10, 6))
 
@@ -71,6 +77,8 @@ def plot_real_vs_fake(algorithm_names, results_real, results_fake):
 
 
 def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games, secret_words=None):
+    """Calculate results (average number of turns and precentage of success) of algorithms over a game, when it's
+    playing num_games games"""
     avg_results = []
     win_percentage = []
     if game.get_type()!=GameType.BasicWordle:
@@ -91,6 +99,7 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
 
 
 def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
+    """Calculate number of turns of algorithms over a game, when played 100 ganes"""
     num_guesses = []
     for algorithm in algorithms:
         simulator = Simulator(game, algorithm)
@@ -104,6 +113,12 @@ def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
 
 
 def evaluate_vocab(secret_words, legal_words, algorithms):
+    """
+    Display a line graph of all algorithms
+    X axis is the number of words in the possible words list
+    Y axis is the average number of guess per game, when run over 100 games for each size
+    Sized of the list of possible words start from 1000 to 12972 with 1000 difference each time
+    """
     vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
     for algorithm in algorithms:
         avg_results = []
@@ -124,6 +139,7 @@ def evaluate_vocab(secret_words, legal_words, algorithms):
 
 
 def main():
+    """Runs an evaluation as needed for the analisys of all algorithms and games"""
     random.seed(42)
     secret_words, legal_words = load_word_lists()
     games_dictionary = get_game_dictionary(secret_words, legal_words)

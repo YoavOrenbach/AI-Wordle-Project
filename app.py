@@ -19,6 +19,7 @@ APP_ICON = "data/assets/wordle_logo_32x32.png"
 
 class WordleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
+        """Initializes the Worlde app"""
         tk.Tk.__init__(self, *args, **kwargs)
 
         # load game and algorithm objects, and set all class members:

@@ -6,6 +6,7 @@ from common import AlgorithmType, GameType
 
 
 def load_word_lists():
+    """Loads the list of legal and secret words for lists"""
     with open('data/legal_words.txt', 'r') as f:
         legal_words = f.read().splitlines()
     with open('data/secret_words.txt', 'r') as f:
@@ -14,6 +15,10 @@ def load_word_lists():
 
 
 def get_game(secret_words, legal_words, game_type: GameType, real_size=1000, fake_size=12972):
+    """
+    Initializes a game based on game_type, using additional vital information such as legal and secret words list
+    real_size and fake_size are the sizes of real and fake words list in the Vocabulary Wordle game
+    """
     if game_type == GameType.BasicWordle:
         game = BasicWordle(secret_words, legal_words)
     elif game_type == GameType.Absurdle:
@@ -33,6 +38,10 @@ def get_game(secret_words, legal_words, game_type: GameType, real_size=1000, fak
 
 
 def get_algorithm(algorithm_type: AlgorithmType, game: AbstractWordle):
+    """
+    Initializes a game based on AlgorithmType
+    game is the type of game that RL should study
+    """
     if algorithm_type == AlgorithmType.Random:
         algorithm = Random()
     elif algorithm_type == AlgorithmType.TotalRandom:
@@ -53,6 +62,7 @@ def get_algorithm(algorithm_type: AlgorithmType, game: AbstractWordle):
 
 
 def get_game_dictionary(secret_words, legal_words):
+    """Return a dictionary of game names as a key and a game variable as a value for each game"""
     games_dic = {}
     for game_type in GameType:
         games_dic[game_type.value] = get_game(secret_words, legal_words, game_type)
@@ -60,6 +70,7 @@ def get_game_dictionary(secret_words, legal_words):
 
 
 def get_algorithms_dictionary(game: AbstractWordle):
+    """Return a dictionary of algorithm names as a key and a algorithm variable as a value for each algorithm"""
     algos_dic = {}
     for algo_type in AlgorithmType:
         algos_dic[algo_type.value] = get_algorithm(algo_type, game)

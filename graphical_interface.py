@@ -15,6 +15,7 @@ class Grid:
     """
 
     def __init__(self):
+        """Initializing the Grid class"""
         self.matrix = [[Cell(i, j) for j in range(5)] for i in range(6)]
         self.current_row, self.current_column = 0, 0
 

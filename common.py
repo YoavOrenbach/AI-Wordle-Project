@@ -7,6 +7,7 @@ LETTERS_NUM = 5
 
 
 class AlgorithmType(str, Enum):
+    """An Enum for all the names of the implemented algorithms"""
     TotalRandom = "Total Random"
     Random = "Random"
     Minimax = "Minimax"
@@ -17,6 +18,7 @@ class AlgorithmType(str, Enum):
 
 
 class GameType(str, Enum):
+    """An Enum for all the names of the implemented games"""
     BasicWordle = "Wordle"
     Absurdle = "Absurdle"
     FakeVocabularyWordle = "Fake vocabulary"
