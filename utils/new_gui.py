@@ -71,6 +71,7 @@ class WordleApp(tk.Tk):
         center(self)
 
     def heading(self):
+        """Sets the heading of the GUI."""
         self.title("Wordle Agents")
         app_icon = tk.PhotoImage(file=APP_ICON)
         self.iconphoto(False, app_icon)
@@ -84,6 +85,7 @@ class WordleApp(tk.Tk):
         separator.pack(fill=tk.X, padx=20)
 
     def game_options(self):
+        """Shows the game options."""
         game_label = tk.Label(self.game_frame, text="Please choose your desired Wordle game:", fg="#d7dadc",
                               bg=COLOR_BLANK, font=12)
         game_label.pack(side=tk.LEFT, padx=5)
@@ -95,6 +97,7 @@ class WordleApp(tk.Tk):
         self.game_variable.set(game_options[0])
 
     def algorithm_options(self):
+        """Shows the algorithm options."""
         algorithm_label = tk.Label(self.algorithm_frame, text="Please choose your desired Algorithm agent:",
                                    fg="#d7dadc", bg=COLOR_BLANK, font=12)
         algorithm_label.pack(side=tk.LEFT, padx=5)
@@ -106,6 +109,7 @@ class WordleApp(tk.Tk):
         self.algorithm_variable.set(algorithm_options[0])
 
     def secret_word_options(self):
+        """Allows to choose a secret word or randomize it."""
         secret_label = tk.Label(self.secret_frame,
                                 text="Please choose a word for the agent to guess or randomize a word:",
                                 fg="#d7dadc", bg=COLOR_BLANK, font=12)
@@ -122,6 +126,7 @@ class WordleApp(tk.Tk):
         self.secret_word_variable.set(self.secret_word)
 
     def change_game(self, *args):
+        """A command to change the game."""
         self.game = self.games_dictionary[self.game_variable.get()]
 
         if not self.absurdle and self.game_variable.get() == GameType.Absurdle.value:
@@ -140,13 +145,16 @@ class WordleApp(tk.Tk):
             self.absurdle = False
 
     def change_algorithm(self, *args):
+        """A command to change the algorithm."""
         self.algorithm = self.algorithms_dictionary[self.algorithm_variable.get()]
 
     def randomize_secret_word(self):
+        """Randomizes a single word"""
         self.secret_word = self.game.generate_secret_word()
         self.secret_word_variable.set(self.secret_word)
 
     def play_area(self):
+        """The grid play area."""
         play_lbl = tk.Label(self.play_frame, text="Press play to watch the agent guesses to solve the game:",
                             fg="#d7dadc", bg=COLOR_BLANK, font=12)
         play_lbl.pack(pady=5)
@@ -196,6 +204,7 @@ class WordleApp(tk.Tk):
         # <== main game grid <==
 
     def play(self):
+        """Plays the game using after to show every turn."""
         if self.current_guess < MAX_TRIES and not self.game.get_done():
             guess = self.algorithm.get_action(self.game)
             pattern, done, is_win = self.game.step(guess, self.secret_word)
@@ -205,6 +214,7 @@ class WordleApp(tk.Tk):
             self.after_cancel(self.track_play)
 
     def simulate_game(self):
+        """Simulates a single game solved by the algorithm."""
         if self.secret_word_variable.get() not in self.secret_words:
             messagebox.showwarning("secret word warning", "secret word is not in the list of possible secret words.\n "
                                                           "Please choose a word from the list or generate one randomly")
@@ -230,6 +240,7 @@ class WordleApp(tk.Tk):
         self.current_guess = 0
 
     def update_board(self, guess, pattern):
+        """This method updates the game board."""
         colors = []
         for placing in pattern:
             if placing == int(Placing.correct):
@@ -259,6 +270,7 @@ class WordleApp(tk.Tk):
                 )
 
     def game_over(self, is_win):
+        """Shows a game over message."""
         if self.board_full:
             for slave in self.final_frame.pack_slaves():
                 slave.pack_forget()
@@ -279,6 +291,7 @@ class WordleApp(tk.Tk):
         self.board_full = True
 
     def reset_board(self):
+        """This method resets the game board."""
         self.board_full = False
         self.new_game()
         for slave in self.final_frame.pack_slaves():

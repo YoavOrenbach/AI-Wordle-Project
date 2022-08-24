@@ -42,6 +42,7 @@ class Grid:
 
 
 class Cell:
+    """A cell in the grid"""
     def __init__(self, row, column):
         self.row = row
         self.column = column
@@ -86,6 +87,7 @@ class Cell:
 
 
 class GraphicalInterface:
+    """A pygame graphical interface."""
     WIDTH, HEIGHT = (500, 700)
 
     def __init__(self, target_word):

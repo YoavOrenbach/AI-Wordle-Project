@@ -17,7 +17,8 @@ In order to make the project more interesting we made different variations of Wo
 1. Run the command ```pip3 install -r requirements.txt```
 2. Run ```python3 run_with_gui.py``` to run the game with gui.
 
-    When running the gui you can choose any Wordle game variation and any algorithm we used.
+    When running the gui you can choose any Wordle game variation (apart from Fake vocabulary since it changes the
+    words for all other games) and any algorithm we used.
    
     In addition, you can choose a secret word for the algorithms to guess or randomize one 
     (exept for Absurdle where there is no secret word).
@@ -27,7 +28,7 @@ In order to make the project more interesting we made different variations of Wo
     You can run simulate_games.py with different arguments to simulate different game variation and different algorithms.
     Specifically, you can use the flag -n to change the number of games, -u to use the pygame interface, -g to choose a game type, -a to choose an algorithm type.
    
-    For example, you can run ```python3 simulate_games.py -n 10 -u True -g Noisy Wordle -a Q-learning ``` to simulate 10 Noisy Wordle games using the Q-learning algorithm.
+    For example, you can run ```python3 simulate_games.py -n 10 -u True -g Noisy-Wordle -a Q-learning ``` to simulate 10 Noisy Wordle games using the Q-learning algorithm.
 
 
 ### Results

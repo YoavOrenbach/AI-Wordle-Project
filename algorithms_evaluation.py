@@ -83,11 +83,10 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
     win_percentage = []
     if game.get_type() != GameType.BasicWordle:
         if game.get_type() == GameType.FakeVocabularyWordle:
-            with open('../data/vocab_word_lists/fake_secret_12972.txt', 'r') as f:
+            with open('data/vocab_word_lists/fake_secret_12972.txt', 'r') as f:
                 secret_words = f.read().splitlines()
             secret_words = random.sample(secret_words, num_games)
 
-    algorithms = [algorithms[-2]]
     for algorithm in algorithms:
         simulator = Simulator(game, algorithm)
         cum_stats = simulator.simulate_games(num_games=num_games, user_interface=False, secret_words=secret_words)
