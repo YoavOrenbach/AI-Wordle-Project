@@ -3,9 +3,9 @@ import numpy as np
 import random
 
 from WordleGames.abstract_wordle import AbstractWordle
-from common import AlgorithmType, GameType
-from simulator import Simulator
-from factory import load_word_lists, get_game_dictionary, get_algorithms_dictionary, get_game
+from utils.common import AlgorithmType, GameType
+from utils.simulator import Simulator
+from utils.factory import load_word_lists, get_game_dictionary, get_algorithms_dictionary, get_game
 
 
 def plot_avg_guesses(algorithm_names, avg_results, game_type, num_games):
@@ -83,7 +83,7 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
     win_percentage = []
     if game.get_type()!=GameType.BasicWordle:
         if game.get_type()==GameType.FakeVocabularyWordle:
-            with open('data/vocab_word_lists/fake_secret_12972.txt', 'r') as f:
+            with open('../data/vocab_word_lists/fake_secret_12972.txt', 'r') as f:
                 secret_words = f.read().splitlines()
             secret_words = random.sample(secret_words, num_games)
 

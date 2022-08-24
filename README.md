@@ -25,7 +25,7 @@ The code can be found in the ```AI-Wordle-Project``` reposiroty.
 
 ### To run the code
 1. Run the command ```pip3 install -r requirements.txt```
-2. Run ```python3 main.py``` to start the game.
+2. Run ```python3 run_with_gui.py``` to run the game with gui.
 
 ## Authors
 - Yoav Orenbach, yoav.orenbach@mail.huji.ac.il

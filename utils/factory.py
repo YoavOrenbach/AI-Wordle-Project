@@ -2,7 +2,7 @@ from Algorithms import Random, TotalRandom, Minimax, AlphaBeta, Expectimax, Entr
 from WordleGames import BasicWordle, Absurdle, NoisyWordle, YellowWordle
 from WordleGames.vocabulary_wordle import VocabularyWordle
 from WordleGames.abstract_wordle import AbstractWordle
-from common import AlgorithmType, GameType
+from utils.common import AlgorithmType, GameType
 
 
 def load_word_lists():

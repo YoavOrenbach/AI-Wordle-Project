@@ -4,7 +4,7 @@ import string
 import os
 
 from WordleGames import BasicWordle
-from common import LETTERS_NUM, GameType
+from utils.common import LETTERS_NUM, GameType
 
 
 class VocabularyWordle(BasicWordle):

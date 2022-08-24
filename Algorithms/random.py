@@ -2,7 +2,7 @@ import random
 
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
-from common import AlgorithmType
+from utils.common import AlgorithmType
 
 
 class Random(Algorithm):

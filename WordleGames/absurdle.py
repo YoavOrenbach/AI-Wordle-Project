@@ -1,7 +1,7 @@
 from typing import List
 
 from WordleGames import BasicWordle
-from common import Word, WINNING_PATTERN, GameType, MAX
+from utils.common import Word, WINNING_PATTERN, GameType, MAX
 
 
 class Absurdle(BasicWordle):

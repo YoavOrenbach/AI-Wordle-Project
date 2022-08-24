@@ -3,11 +3,11 @@ from abc import abstractmethod
 
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
-from common import AlgorithmType
+from utils.common import AlgorithmType
 import util
 
 import random
-from common import MAX, MIN, GameType, Placing
+from utils.common import MAX, MIN, GameType, Placing
 
 
 def generate_successor(game: AbstractWordle, agent_index=MAX, action=None):

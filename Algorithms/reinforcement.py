@@ -1,7 +1,7 @@
 import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
-from common import Placing, AlgorithmType, GameType
+from utils.common import Placing, AlgorithmType, GameType
 from tqdm import tqdm
 import random
 import pickle

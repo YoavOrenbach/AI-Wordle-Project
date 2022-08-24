@@ -7,7 +7,7 @@ from scipy.stats import entropy
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
 from WordleGames.utils import get_pattern_vanilla
-from common import Word, GameType, AlgorithmType
+from utils.common import Word, GameType, AlgorithmType
 
 WORD_FREQ_MAP_FILE = "data/freq_map.json"
 

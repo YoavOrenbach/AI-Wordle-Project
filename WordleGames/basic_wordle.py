@@ -3,7 +3,7 @@ import itertools
 import util
 
 from WordleGames.abstract_wordle import AbstractWordle
-from common import Placing, Word, GameType, MAX, LETTERS_NUM
+from utils.common import Placing, Word, GameType, MAX, LETTERS_NUM
 
 
 class BasicWordle(AbstractWordle):

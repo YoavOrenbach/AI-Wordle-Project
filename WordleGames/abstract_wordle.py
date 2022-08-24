@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import util
-from common import GameType, WINNING_PATTERN
+from utils.common import GameType, WINNING_PATTERN
 
 
 class InvalidGuessException(ValueError):

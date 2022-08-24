@@ -1,9 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
+from tkinter import ttk
 
-from factory import *
-from common import Placing, AlgorithmType, GameType
+from utils.common import Placing, AlgorithmType, GameType
+from utils.factory import *
 
 WORD_LEN = 5
 MAX_TRIES = 6
@@ -106,7 +106,8 @@ class WordleApp(tk.Tk):
         self.algorithm_variable.set(algorithm_options[0])
 
     def secret_word_options(self):
-        secret_label = tk.Label(self.secret_frame, text="Please choose a word for the agent to guess or randomize a word:",
+        secret_label = tk.Label(self.secret_frame,
+                                text="Please choose a word for the agent to guess or randomize a word:",
                                 fg="#d7dadc", bg=COLOR_BLANK, font=12)
         secret_label.pack(padx=5, pady=5)
         combox = ttk.Combobox(self.secret_frame, textvariable=self.secret_word_variable)
@@ -151,7 +152,8 @@ class WordleApp(tk.Tk):
         play_lbl.pack(pady=5)
         play_button = tk.Button(self.play_frame, text="play", fg="#d7dadc", bg=COLOR_CORRECT,
                                 highlightbackground=COLOR_BORDER_HIGHLIGHT, font=("Helvetica Neue", 11, "bold"),
-                                activebackground=COLOR_INCORRECT, activeforeground="#d7dadc", command=self.simulate_game, padx=10)
+                                activebackground=COLOR_INCORRECT, activeforeground="#d7dadc",
+                                command=self.simulate_game, padx=10)
         bind_button(play_button, COLOR_CORRECT)
         play_button.pack(pady=5)
 
@@ -209,8 +211,8 @@ class WordleApp(tk.Tk):
             return
         self.secret_word = self.secret_word_variable.get()
         self.new_game()
-        #self.play()
-        #self.current_guess = 0
+        # self.play()
+        # self.current_guess = 0
         is_win = False
         done = False
         while self.current_guess < MAX_TRIES and not done:
@@ -297,7 +299,7 @@ def center(win):
     win_height = height + titlebar_height + frm_width
     x = win.winfo_screenwidth() // 2 - win_width // 2
     y = win.winfo_screenheight() // 2 - win_height // 2
-    win.geometry('{}x{}+{}+{}'.format(int(width*1.1), int(height*1.1), x, y))
+    win.geometry('{}x{}+{}+{}'.format(int(width * 1.1), int(height * 1.1), x, y))
     win.deiconify()
 
 
@@ -312,8 +314,3 @@ def on_leave(button, color):
 def bind_button(button, color):
     button.bind('<Enter>', lambda event, x=button: on_hover(x))
     button.bind('<Leave>', lambda event, x=button, y=color: on_leave(x, y))
-
-
-if __name__ == "__main__":
-    WordleApp().mainloop()
-

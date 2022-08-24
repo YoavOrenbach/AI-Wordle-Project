@@ -1,4 +1,4 @@
-from common import Placing, Word
+from utils.common import Placing, Word
 
 
 def get_pattern_vanilla(guess: Word, secret_word: Word):

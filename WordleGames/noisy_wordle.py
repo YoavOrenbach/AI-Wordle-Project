@@ -1,6 +1,6 @@
 import random
 from WordleGames import BasicWordle
-from common import Placing, GameType, LETTERS_NUM, MAX, Word, LOSING_PATTERN
+from utils.common import Placing, GameType, LETTERS_NUM, MAX, Word, LOSING_PATTERN
 import util
 
 

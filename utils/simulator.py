@@ -2,8 +2,8 @@ import time
 import numpy as np
 from tqdm import tqdm
 
-from common import Placing
-from graphical_interface import GraphicalInterface
+from utils.common import Placing
+from utils.first_gui import GraphicalInterface
 
 
 class Simulator:

@@ -3,7 +3,7 @@ from typing import List
 
 import util
 from WordleGames.abstract_wordle import AbstractWordle
-from common import Placing, GameType, LETTERS_NUM, MAX
+from utils.common import Placing, GameType, LETTERS_NUM, MAX
 
 
 class YellowWordle(AbstractWordle):

@@ -1,12 +1,12 @@
 import random
 from argparse import ArgumentParser
 
-from factory import load_word_lists, get_game, get_algorithm
-from common import AlgorithmType, GameType
-from simulator import Simulator
+from utils.factory import load_word_lists, get_game, get_algorithm
+from utils.common import AlgorithmType, GameType
+from utils.simulator import Simulator
 
 DEFAULT_GAMES_NUM = 100
-DEFAULT_IS_WITH_GUI = False
+DEFAULT_IS_WITH_GUI = True
 
 
 def parse_args():
@@ -27,7 +27,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def simulate_games():
     # Parse arguments
     args = parse_args()
 
@@ -50,4 +50,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    simulate_games()

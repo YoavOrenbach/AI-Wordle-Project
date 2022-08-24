@@ -1,6 +1,6 @@
 import pygame
 import string
-from common import Placing
+from utils.common import Placing
 
 pygame.init()
 pygame.font.init()
