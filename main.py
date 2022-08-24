@@ -19,10 +19,10 @@ def parse_args():
     parser.add_argument('-u', '--user-interface', type=bool, default=DEFAULT_IS_WITH_GUI, help='show pygame interface')
     parser.add_argument('-g', '--game', type=str,
                         choices=[game_type.value for game_type in GameType],
-                        default=GameType.RealVocabularyWordle.value, help='which game to use')
+                        default=GameType.BasicWordle.value, help='which game to use')
     parser.add_argument('-a', '--algorithm', type=str,
                         choices=[algorithm_type.value for algorithm_type in AlgorithmType],
-                        default=AlgorithmType.Entropy.value, help='which algorithm to use')
+                        default=AlgorithmType.Random.value, help='which algorithm to use')
     parser.add_argument('--seed', type=int, default=42, help='random seed. -1 for system time.')
     return parser.parse_args()
 
@@ -39,7 +39,7 @@ def main():
     secret_words, legal_words = load_word_lists()
 
     # select game
-    game = get_game(secret_words, legal_words, args.game, real_size=12000)
+    game = get_game(secret_words, legal_words, args.game)
 
     # select algorithm
     algorithm = get_algorithm(args.algorithm, game)

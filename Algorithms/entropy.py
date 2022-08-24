@@ -4,8 +4,6 @@ import json
 import numpy as np
 from scipy.stats import entropy
 
-from tqdm import tqdm
-
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
 from WordleGames.utils import get_pattern_vanilla
@@ -15,7 +13,9 @@ WORD_FREQ_MAP_FILE = "data/freq_map.json"
 
 
 class Entropy(Algorithm):
+    """An Entropy based algorithm"""
     def __init__(self):
+        """Initializes the Entropy based algorithm."""
         super(Entropy, self).__init__(AlgorithmType.Entropy)
         # these guesses were pre-computed using the same algorithm
         self.opening_guesses = {GameType.BasicWordle: "tares", GameType.YellowWordle: "arise",
@@ -36,12 +36,16 @@ class Entropy(Algorithm):
                                                                 12972: "tares"}}
 
     def get_pattern(self, guess: Word, secret_word: Word, game: AbstractWordle):
+        """Returns the best pattern for the game that is being played."""
         if game.type in [GameType.Absurdle, GameType.NoisyWordle]:
             return get_pattern_vanilla(guess, secret_word)
         else:
             return game.get_pattern(guess, secret_word)
 
     def get_pattern_probs(self, guess: Word, game: AbstractWordle) -> Dict[tuple, float]:
+        """Calculates the probabilities of every pattern to appear assuming uniform distribution.
+        We generate a pattern between the guess and every possible word, sum the amount of times each pattern was
+        generated, and divide by the number of possible words to get the probabilities."""
         pattern_counts = {tuple(pattern): 0 for pattern in game.get_all_patterns()}
         possible_secret_words = game.get_possible_words()
         for secret_word in possible_secret_words:
@@ -53,10 +57,12 @@ class Entropy(Algorithm):
         return pattern_probs
 
     def get_expected_info(self, guess: Word, game: AbstractWordle) -> float:
+        """Calculates the entropy - the expected information we get from a guess."""
         pattern_probs = self.get_pattern_probs(guess, game)
         return sum(prob * math.log2(1 / prob) if prob != 0 else 0 for prob in pattern_probs.values())
 
     def get_action(self, game: AbstractWordle) -> Word:
+        """Returns the next guess given the game being played."""
         if game.get_turn_num() == 1:
             if game.get_type() != GameType.RealVocabularyWordle:
                 return self.opening_guesses[game.get_type()]
@@ -76,11 +82,15 @@ class Entropy(Algorithm):
 
 
 class EntropyFrequency(Entropy):
+    """An Entropy based algorithm which incorporates word frequencies."""
     def __init__(self):
+        """Initializes the Entropy with word frequencies algorithm."""
         super(EntropyFrequency, self).__init__()
         self.priors = get_frequency_based_priors()
 
     def get_pattern_freq_probs(self, guess: Word, game: AbstractWordle, word_to_prob) -> Dict[tuple, float]:
+        """Calculates the probabilities of every pattern to appear using the probabilities of each word.
+        We generate a pattern between the guess and every possible word, and add the probability of the possible word."""
         pattern_probs = {tuple(pattern): 0 for pattern in game.get_all_patterns()}
         possible_secret_words = game.get_possible_words()
         for secret_word in possible_secret_words:
@@ -88,10 +98,13 @@ class EntropyFrequency(Entropy):
         return pattern_probs
 
     def get_expected_freq_info(self, guess: Word, game: AbstractWordle, word_to_prob) -> float:
+        """Calculates the entropy - the expected information we get from a guess taking into account the
+        probabilities of every possible word."""
         pattern_probs = self.get_pattern_freq_probs(guess, game, word_to_prob)
         return sum(prob * math.log2(1 / prob) if prob != 0 else 0 for prob in pattern_probs.values())
 
     def get_action(self, game: AbstractWordle) -> Word:
+        """Returns the next guess given the game being played."""
         if game.get_turn_num() == 1:
             if game.get_type() != GameType.RealVocabularyWordle:
                 return self.opening_guesses[game.get_type()]
@@ -104,7 +117,7 @@ class EntropyFrequency(Entropy):
         possible_words = game.get_possible_words()
         weights = get_weights(possible_words, self.priors)
         distribution_entropy = entropy_of_distributions(weights)
-        word_to_weight = dict(zip(possible_words, weights))
+        word_to_weight = dict(zip(possible_words, weights)) # Dictionary of the probabilities of the possible words.
         for word in possible_words:
             expected_info = self.get_expected_freq_info(word, game, word_to_weight)
             prob = word_to_weight[word]
@@ -116,12 +129,14 @@ class EntropyFrequency(Entropy):
 
 
 def get_word_frequencies():
+    """Returns a dictionary of words frequencies."""
     with open(WORD_FREQ_MAP_FILE) as fp:
         result = json.load(fp)
     return result
 
 
 def sigmoid(x):
+    """Applies the sigmoid function to a given number."""
     return 1 / (1 + math.exp(-x))
 
 
@@ -152,6 +167,7 @@ def get_frequency_based_priors(n_common=3000, width_under_sigmoid=10):
     return priors
 
 def get_weights(words, priors):
+    """Returns a probabilities (weights) dictionary for the given words given the priors (after applying sigmoid)"""
     frequencies = np.array([priors[word] for word in words])
     total = frequencies.sum()
     if total == 0:
@@ -160,6 +176,8 @@ def get_weights(words, priors):
 
 
 def entropy_of_distributions(distributions, atol=1e-12):
+    """Returns the entropy of the entire distribution.
+    In our case the entropy according to the probabilities of all possible words."""
     axis = len(distributions.shape) - 1
     return entropy(distributions, base=2, axis=axis)
 
@@ -183,9 +201,12 @@ def entropy_to_expected_score(ent):
 
 
 def get_expected_scores(prob, h0, h1):
-    # If this guess is the true answer, score is 1. Otherwise, it's 1 plus
-    # the expected number of guesses it will take after getting the corresponding
-    # amount of information.
+    """
+    If this guess is the true answer, score is 1. Otherwise, it's 1 plus
+    the expected number of guesses it will take after getting the corresponding
+    amount of information.
+    We found the absolute function wo work better than entropy_to_expected_score.
+    """
     return prob + (1 - prob) * (1 + abs(h0-h1))
 
 

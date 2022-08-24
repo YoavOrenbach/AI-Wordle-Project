@@ -179,7 +179,7 @@ class Reinforcement(Algorithm):
         print(f"Training completed over {num_episodes} episodes")
 
     def get_action(self, game: AbstractWordle):
-        """Returns the next guess given the game state and the game being played, according to the type of agent."""
+        """Returns the next guess given the game being played, according to the agent type (classic vs approximate)"""
         actions = game.get_possible_words()
         if not self.approximate:
             return self.agent.get_policy(0, actions)
@@ -191,6 +191,7 @@ class Reinforcement(Algorithm):
 
 
 def constant_rewards(pattern):
+    """Returns rewards according to the given pattern. green is 10, yellow is 5, and grey is -5."""
     reward = 0
     for placing in pattern:
         if placing == Placing.correct.value:
@@ -203,6 +204,8 @@ def constant_rewards(pattern):
 
 
 def turn_rewards(pattern, turn_num):
+    """Returns rewards according to the given pattern and the game's turn number. Since the goal is to guess in as
+    fewer guesses as possible, a lower turn results in more rewards."""
     reward = 0
     for placing in pattern:
         if placing == Placing.correct.value:

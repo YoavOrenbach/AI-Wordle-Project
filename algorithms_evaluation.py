@@ -9,6 +9,7 @@ from factory import load_word_lists, get_game_dictionary, get_algorithms_diction
 
 
 def plot_avg_guesses(algorithm_names, avg_results, game_type, num_games):
+    """Displays a bar graph of average guess count """
     plt.figure(figsize=(10, 6))
     plt.bar(algorithm_names, avg_results, color='royalblue')
     for i in range(len(algorithm_names)):
@@ -69,64 +70,6 @@ def plot_real_vs_fake(algorithm_names, results_real, results_fake):
     plt.show()
 
 
-def plot_reinforcement_results():
-    plt.figure(figsize=(10, 6))
-    methods = ["Approximate Q-learning", "Q-learning with\nstate=turn", "Q-learning with\nstate=0"]
-    results = [4.9, 3.84, 3.8]
-    plt.bar(methods, results, color='royalblue')
-    for i in range(len(results)):
-        plt.text(i, results[i], "{:.2f}".format(results[i]), ha='center')
-    plt.title("Different RL methods results on Wordle game", fontweight='bold', fontsize=14)
-    plt.ylabel("Average number of guesses", fontweight='bold', fontsize=14)
-    plt.xlabel("Reinforcement techniques", fontweight='bold', fontsize=14)
-    plt.ylim([0, 6])
-    plt.savefig(f"data/plots/Reinforcement_results")
-    plt.show()
-
-
-def plot_entropy_results():
-    plt.figure(figsize=(10, 6))
-    methods = ["Max entropy", "Min expected score"]
-    results = [3.75, 3.86]
-    plt.bar(methods, results, color='royalblue')
-    for i in range(len(results)):
-        plt.text(i, results[i], "{:.2f}".format(results[i]), ha='center')
-    plt.title("Entropy based techniques results on Wordle game", fontweight='bold', fontsize=14)
-    plt.ylabel("Average number of guesses", fontweight='bold', fontsize=14)
-    plt.xlabel("Reinforcement techniques", fontweight='bold', fontsize=14)
-    plt.ylim([0, 6])
-    plt.savefig(f"data/plots/Entropy_results")
-    plt.show()
-
-
-def plot_adversarial_results():
-    methods = ["Number of remaining words", "Game turn number", "Summing the game score"]
-    minimax_results = [3.9, 3.99, 4.08]
-    expectimax_results = [3.86, 3.84, 3.93]
-    bar_width = 1 / 3
-    plt.subplots(figsize=(10, 6))
-
-    # Set position of bar on X axis
-    br1 = np.arange(len(minimax_results))
-    br2 = [x + bar_width for x in br1]
-
-    plt.bar(br1, minimax_results, color='royalblue', width=bar_width, edgecolor='grey', label='Minimax')
-    for i in range(len(minimax_results)):
-        plt.text(i, minimax_results[i], "{:.2f}".format(minimax_results[i]), ha='center')
-    plt.bar(br2, expectimax_results, color='darkorange', width=bar_width, edgecolor='grey', label='Expectimax')
-    for i in range(len(expectimax_results)):
-        plt.text(i + 0.333, expectimax_results[i], "{:.2f}".format(expectimax_results[i]), ha='center')
-
-    plt.title("Algorithms average number of guesses using real Vs fake vocabulary", fontweight='bold', fontsize=14)
-    plt.xlabel("Algorithms", fontweight='bold', fontsize=14)
-    plt.ylabel("Average number of guesses", fontweight='bold', fontsize=14)
-    plt.xticks([r + bar_width / 2 for r in range(len(minimax_results))], methods)
-    plt.ylim([0, 6])
-    plt.legend()
-    plt.savefig("data/plots/Adversarial_guesses")
-    plt.show()
-
-
 def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games, secret_words=None):
     avg_results = []
     win_percentage = []
@@ -143,15 +86,15 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
         avg_results.append(cum_stats[1] / num_games)
         win_percentage.append(100 * cum_stats[0] / num_games)
 
-    # plot_avg_guesses(algorithm_names, avg_results, game.get_type(), num_games)
-    # plot_win_percentage(algorithm_names, win_percentage, game.get_type(), num_games)
+    plot_avg_guesses(algorithm_names, avg_results, game.get_type(), num_games)
+    plot_win_percentage(algorithm_names, win_percentage, game.get_type(), num_games)
 
 
 def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
     num_guesses = []
     for algorithm in algorithms:
         simulator = Simulator(game, algorithm)
-        if algorithm.type==AlgorithmType.Random:
+        if algorithm.type == AlgorithmType.Random:
             cum_stats = simulator.simulate_games(num_games=100, user_interface=False)
             num_guesses.append(cum_stats[1] / 100)
         else:
@@ -162,38 +105,21 @@ def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
 
 def evaluate_vocab(secret_words, legal_words, algorithms):
     vocabulary_sizes = list(range(1000, 12001, 1000)) + [12972]
-    num_games = 100
-    plt.figure(figsize=(10, 6))
-    total_random = [5.96, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
-    random = [3.52, 3.87, 4.14, 4.14, 4.26, 4.41, 4.41, 4.45, 4.44, 4.68, 4.51, 4.72, 4.8]
-    alphabeta = [2.76, 3.11, 3.27, 3.51, 3.48, 3.54, 3.76, 3.66, 3.75, 3.77, 4, 3.94, 3.91]
-    expectimax = [2.72, 3, 3.27, 3.42, 3.59, 3.62, 3.71, 3.74, 3.8, 3.81, 3.95, 3.77, 3.9]
-    Entropy = [2.92, 3.06, 3.3, 3.4, 3.57, 3.54, 3.57, 3.78, 3.63, 3.79, 3.76, 3.75, 3.77]
-    Frq = [2.86, 3.05, 3.31, 3.29, 3.46, 3.51, 3.5, 3.58, 3.53, 3.67, 3.76, 3.66, 3.62]
-    RL = [2.86, 3.07, 3.35, 3.28, 3.83, 3.67, 3.67, 3.55, 3.98, 3.62, 4.18, 3.81, 3.81]
+    for algorithm in algorithms:
+        avg_results = []
+        for vocab_size in vocabulary_sizes:
+            vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=vocab_size)
+            simulator = Simulator(vocab_wordle, algorithm)
+            cum_stats = simulator.simulate_games(num_games=100, user_interface=False)
+            avg_results.append(cum_stats[1] / 100)
+            print(algorithm.type.value, ",", vocab_size, ",", avg_results[-1])
 
-    # for algorithm in algorithms:
-    #     avg_results = []
-    #     for vocab_size in vocabulary_sizes:
-    #         vocab_wordle = get_game(secret_words, legal_words, GameType.RealVocabularyWordle, real_size=vocab_size)
-    #         simulator = Simulator(vocab_wordle, algorithm)
-    #         cum_stats = simulator.simulate_games(num_games=num_games, user_interface=False)
-    #         avg_results.append(cum_stats[1] / num_games)
-    #         print(algorithm.type.value, ",", vocab_size, ",", avg_results[-1])
-    #
-    #     plt.plot(vocabulary_sizes, avg_results, label=algorithm.type.value)
-    plt.plot(vocabulary_sizes, total_random, label="Total Random")
-    plt.plot(vocabulary_sizes, random, label="Random")
-    plt.plot(vocabulary_sizes, alphabeta, label="AlphaBeta pruning")
-    plt.plot(vocabulary_sizes, expectimax, label="Expectimax")
-    plt.plot(vocabulary_sizes, Entropy, label="Entropy")
-    #plt.plot(vocabulary_sizes, Frq, label="Entroyp with Frequency")
-    plt.plot(vocabulary_sizes, RL, label="Q-learning")
+        plt.plot(vocabulary_sizes, avg_results, label=algorithm.type.value)
     plt.title("Algorithms avg number of guesses as a function of the real vocabulary size")
     plt.ylabel("Avg number of guesses")
     plt.xlabel("Vocabulary size")
     plt.legend(loc='upper left')
-    plt.savefig("data/plots/vocab_wordle_avg_guesses1")
+    plt.savefig("data/plots/vocab_wordle_avg_guesses2")
     plt.show()
 
 
@@ -202,27 +128,21 @@ def main():
     secret_words, legal_words = load_word_lists()
     games_dictionary = get_game_dictionary(secret_words, legal_words)
     algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
-    algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type!=AlgorithmType.Minimax]
+    algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type != AlgorithmType.Minimax]
     algorithm_names = [algorithm_type.value for algorithm_type in AlgorithmType if
                        algorithm_type!=AlgorithmType.Minimax]
-    # wordle_game = games_dictionary[GameType.BasicWordle.value]
-    # evaluate_wordle(wordle_game, algorithms, algorithm_names, len(secret_words), secret_words)
-    # absurdle_game = games_dictionary[GameType.Absurdle.value]
-    # evaluate_absurdle(absurdle_game, algorithms, algorithm_names)
+    wordle_game = games_dictionary[GameType.BasicWordle.value]
+    evaluate_wordle(wordle_game, algorithms, algorithm_names, len(secret_words), secret_words)
+    absurdle_game = games_dictionary[GameType.Absurdle.value]
+    evaluate_absurdle(absurdle_game, algorithms, algorithm_names)
     yellow_game = games_dictionary[GameType.YellowWordle.value]
     evaluate_wordle(yellow_game, algorithms, algorithm_names, 100, secret_words)
-    # noisy_game = games_dictionary[GameType.NoisyWordle.value]
-    # evaluate_wordle(noisy_game, algorithms, algorithm_names, 100, secret_words)
-    # evaluate_vocab(secret_words, legal_words, algorithms)
-    # fake_game = games_dictionary[GameType.FakeVocabularyWordle.value]
-    # evaluate_wordle(fake_game, algorithms, algorithm_names, 10, secret_words)
-
-def plot():
-    algorithm_names = ["Random", "Minimax with\nAlphaBeta pruning", "Expectimax", "Entropy", "Reinforcement"]
-    avg_results_real = [4.73, 3.97, 3.92, 3.86, 3.79]
-    avg_results_fake = [5.1, 5.3, 5.1, 5, 4.3]
-    plot_real_vs_fake(algorithm_names, avg_results_real, avg_results_fake)
+    noisy_game = games_dictionary[GameType.NoisyWordle.value]
+    evaluate_wordle(noisy_game, algorithms, algorithm_names, 100, secret_words)
+    evaluate_vocab(secret_words, legal_words, algorithms)
+    fake_game = games_dictionary[GameType.FakeVocabularyWordle.value]
+    evaluate_wordle(fake_game, algorithms, algorithm_names, 10, secret_words)
 
 
-if __name__=='__main__':
-    evaluate_vocab(None,None,None)
+if __name__ == '__main__':
+    main()

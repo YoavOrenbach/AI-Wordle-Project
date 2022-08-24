@@ -5,16 +5,22 @@ from common import Word, WINNING_PATTERN, GameType, MAX
 
 
 class Absurdle(BasicWordle):
+    """Absurdle game class extending the BasicWordle game."""
     def __init__(self, secret_words, legal_words, max_iter=None, game_state=[], cur_possible_words=[]):
         super(Absurdle, self).__init__(secret_words, legal_words, max_iter,
                                        game_state, cur_possible_words, GameType.Absurdle)
         self._possible_secret_words = secret_words
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
+        """Creates a successor game object for the adversarial algorithms."""
         return Absurdle(self._possible_secret_words.copy(), self.legal_words, self.max_iter,
                         self.states.copy(), self.cur_possible_words.copy())
 
     def filter_words(self) -> List[Word]:
+        """
+        Filters words from the possible words list according to the last guess and pattern.
+        In Absurdle, the filtering is like basic Wordle, however the internal list of secret words is updates as well.
+        """
         filtered_words = super(Absurdle, self).filter_words()
         self._possible_secret_words = [word for word in self._possible_secret_words if word in filtered_words]
         return filtered_words
@@ -39,5 +45,6 @@ class Absurdle(BasicWordle):
         return list(best_pattern)
 
     def reset(self):
+        """Resets the Absurdle game. Adding reset for the internal list of secret words."""
         super(Absurdle, self).reset()
         self._possible_secret_words = self._secret_words

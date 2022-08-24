@@ -1,8 +1,9 @@
-import string
-
 from common import Placing, Word
 
+
 def get_pattern_vanilla(guess: Word, secret_word: Word):
+    """Returns a list containing the placing of each letter in the guess according to the secret word
+    like basic Wordle"""
     pool = {}
     for g, s in zip(guess, secret_word):
         if g == s:
@@ -22,7 +23,3 @@ def get_pattern_vanilla(guess: Word, secret_word: Word):
         else:
             pattern.append(int(Placing.incorrect))
     return pattern
-
-
-def get_all_letters():
-    return list(string.ascii_lowercase)

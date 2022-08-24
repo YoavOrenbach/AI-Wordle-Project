@@ -7,6 +7,7 @@ from common import Placing, GameType, LETTERS_NUM, MAX
 
 
 class YellowWordle(AbstractWordle):
+    """Yellow Wordle game"""
     def __init__(self, secret_words, legal_words, max_iter=6, game_state=[], cur_possible_words=[]):
         super(YellowWordle, self).__init__(secret_words, legal_words, max_iter, game_state,
             cur_possible_words, GameType.YellowWordle)
@@ -14,6 +15,7 @@ class YellowWordle(AbstractWordle):
                              itertools.product([Placing.misplaced.value, Placing.incorrect.value], repeat=LETTERS_NUM)]
 
     def get_pattern(self, guess: str, secret_word: str):
+        """Returns a legal pattern for a Yellow Wordle game according to the secret word"""
         target_word = list(secret_word)
         pattern = [Placing.incorrect for _ in range(LETTERS_NUM)]
 
@@ -25,6 +27,7 @@ class YellowWordle(AbstractWordle):
         return [int(elem) for elem in pattern]
 
     def successor_creator(self, agent_index=MAX, action=None):
+        """Creates a successor game object for the adversarial algorithms."""
         return YellowWordle(self._secret_words, self.legal_words, self.max_iter, self.states.copy(),
                             self.cur_possible_words.copy())
 

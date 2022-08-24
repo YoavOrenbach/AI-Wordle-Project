@@ -13,7 +13,7 @@ class AlgorithmType(str, Enum):
     AlphaBeta = "Alphabeta"
     Expectimax = "Expectimax"
     Entropy = "Entropy"
-    Reinforcement = "Reinforcement"
+    Reinforcement = "Q-learning"
 
 
 class GameType(str, Enum):
@@ -21,8 +21,8 @@ class GameType(str, Enum):
     Absurdle = "Absurdle"
     FakeVocabularyWordle = "Fake vocabulary"
     RealVocabularyWordle = "Real vocabulary"
-    NoisyWordle = "Noisy"
-    YellowWordle = "Yellow"
+    NoisyWordle = "Noisy Wordle"
+    YellowWordle = "Yellow Wordle"
 
 
 class Placing(IntEnum):
