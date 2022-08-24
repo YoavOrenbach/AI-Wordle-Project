@@ -13,8 +13,8 @@ class NoisyWordle(BasicWordle):
     @staticmethod
     def weight_placing(real_placing):
         """Returning one of three color with equal chance"""
-        return [real_placing] * 1 + [Placing.correct.value] * 33 + [Placing.misplaced.value] * 33 + [
-            Placing.incorrect.value] * 33  # TODO: change weighting choice
+        return [real_placing] * 1 + [Placing.correct.value] * 33 + [Placing.misplaced.value] * 33 + \
+               [Placing.incorrect.value] * 33
 
     def successor_creator(self, successor=None, agent_index=MAX, action=None):
         """Creates a successor game object for the adversarial algorithms."""

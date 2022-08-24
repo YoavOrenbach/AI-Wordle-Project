@@ -304,13 +304,16 @@ def center(win):
 
 
 def on_hover(button):
+    """Sets color when hovering over button."""
     button.config(bg=COLOR_INCORRECT)
 
 
 def on_leave(button, color):
+    """Sets color when leaving button area."""
     button.config(bg=color)
 
 
 def bind_button(button, color):
+    """Binds button action when hovering"""
     button.bind('<Enter>', lambda event, x=button: on_hover(x))
     button.bind('<Leave>', lambda event, x=button, y=color: on_leave(x, y))

@@ -207,6 +207,6 @@ def get_expected_scores(prob, h0, h1):
     amount of information.
     We found the absolute function wo work better than entropy_to_expected_score.
     """
-    return prob + (1 - prob) * (1 + abs(h0-h1))
+    return prob + (1 - prob) * (1 + max(h0-h1, 0))
 
 

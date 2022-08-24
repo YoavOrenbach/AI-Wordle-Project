@@ -32,7 +32,7 @@ class VocabularyWordle(BasicWordle):
         return self.vocab_size
 
     def check_word_lists(self, real_vocabulary):
-        """Checks if the word list of the real vocabulary already exists."""
+        """Checks if the word list of the real or fake vocabulary already exists."""
         if real_vocabulary:
             if not os.path.isfile(self._real_secret_path) or not os.path.isfile(self._real_legal_path):
                 return False
@@ -61,6 +61,7 @@ class VocabularyWordle(BasicWordle):
             write_list_to_file(self._fake_legal_path, sampled_legal_words)
 
     def load_word_list(self, real_vocabulary):
+        """Loads the real/fake word lists from the secret and legal paths"""
         if real_vocabulary:
             sampled_secret_words = read_list_from_file(self._real_secret_path)
             sampled_legal_words = read_list_from_file(self._real_legal_path)
@@ -71,12 +72,14 @@ class VocabularyWordle(BasicWordle):
 
 
 def write_list_to_file(file_path, word_list):
+    """Writes word list to the given file path"""
     with open(file_path, 'w') as f:
         for word in word_list:
             f.write(word + '\n')
 
 
 def read_list_from_file(file_path):
+    """Reads word list from the given file path"""
     with open(file_path, 'r') as f:
         word_list = f.read().splitlines()
     return word_list

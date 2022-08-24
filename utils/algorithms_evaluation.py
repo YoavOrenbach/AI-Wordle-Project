@@ -81,8 +81,8 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
     playing num_games games"""
     avg_results = []
     win_percentage = []
-    if game.get_type()!=GameType.BasicWordle:
-        if game.get_type()==GameType.FakeVocabularyWordle:
+    if game.get_type() != GameType.BasicWordle:
+        if game.get_type() == GameType.FakeVocabularyWordle:
             with open('../data/vocab_word_lists/fake_secret_12972.txt', 'r') as f:
                 secret_words = f.read().splitlines()
             secret_words = random.sample(secret_words, num_games)
@@ -99,7 +99,7 @@ def evaluate_wordle(game: AbstractWordle, algorithms, algorithm_names, num_games
 
 
 def evaluate_absurdle(game: AbstractWordle, algorithms, algorithm_names):
-    """Calculate number of turns of algorithms over a game, when played 100 ganes"""
+    """Calculate number of turns of algorithms over a game, when played 100 games"""
     num_guesses = []
     for algorithm in algorithms:
         simulator = Simulator(game, algorithm)
@@ -140,13 +140,12 @@ def evaluate_vocab(secret_words, legal_words, algorithms):
 
 def main():
     """Runs an evaluation as needed for the analisys of all algorithms and games"""
-    random.seed(42)
     secret_words, legal_words = load_word_lists()
     games_dictionary = get_game_dictionary(secret_words, legal_words)
     algorithms_dictionary = get_algorithms_dictionary(games_dictionary[GameType.BasicWordle.value])
     algorithms = [algorithm for algorithm in algorithms_dictionary.values() if algorithm.type != AlgorithmType.Minimax]
     algorithm_names = [algorithm_type.value for algorithm_type in AlgorithmType if
-                       algorithm_type!=AlgorithmType.Minimax]
+                       algorithm_type != AlgorithmType.Minimax]
     wordle_game = games_dictionary[GameType.BasicWordle.value]
     evaluate_wordle(wordle_game, algorithms, algorithm_names, len(secret_words), secret_words)
     absurdle_game = games_dictionary[GameType.Absurdle.value]
@@ -157,7 +156,7 @@ def main():
     evaluate_wordle(noisy_game, algorithms, algorithm_names, 100, secret_words)
     evaluate_vocab(secret_words, legal_words, algorithms)
     fake_game = games_dictionary[GameType.FakeVocabularyWordle.value]
-    evaluate_wordle(fake_game, algorithms, algorithm_names, 10, secret_words)
+    evaluate_wordle(fake_game, algorithms, algorithm_names, 100, secret_words)
 
 
 if __name__ == '__main__':
