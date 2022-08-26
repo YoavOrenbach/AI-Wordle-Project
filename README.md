@@ -10,8 +10,13 @@ In this project we used a number of different methods to solve the Wordle game. 
 3. Reinforcement learning using the Q-learning algorithm.
 4. Information-theory based algorithm, the entropy algorithms
 
-
-In order to make the project more interesting we made different variations of Wordle.
+We also implemented different variations of the game including:
+1. Absurdle - An Adverserial version, which keeps a list of the possible secret words, and try to give the pattern that will reduce it as least as possible.
+2. Noisy - One of the tiles may change with an equal probability among all the colors.
+3. Yellow - The tiles can be only yellow or gray, meaning green becomes yellow.
+4. Vocabulary - Change the vocabulary of the game:
+    1. Fake - Each word is a random sequence of 5 letters in from the english alphabet.
+    2. Real - Subset of the game vocabulary, which change the complexity of the game.
 
 ## To run the code
 1. Run the command ```pip3 install -r requirements.txt```
