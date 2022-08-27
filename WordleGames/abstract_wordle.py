@@ -2,7 +2,7 @@ import random
 from abc import ABC, abstractmethod
 from typing import List
 
-import util
+from utils import util
 from utils.common import GameType, WINNING_PATTERN
 
 

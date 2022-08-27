@@ -1,4 +1,4 @@
-import util
+from utils import util
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
 from utils.common import Placing, AlgorithmType, GameType

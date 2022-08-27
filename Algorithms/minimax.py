@@ -4,7 +4,7 @@ from abc import abstractmethod
 from Algorithms.algorithm import Algorithm
 from WordleGames.abstract_wordle import AbstractWordle
 from utils.common import AlgorithmType
-import util
+from utils import util
 
 import random
 from utils.common import MAX, MIN, GameType, Placing

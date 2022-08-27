@@ -1,7 +1,7 @@
 import random
 from WordleGames import BasicWordle
 from utils.common import Placing, GameType, LETTERS_NUM, MAX, Word, LOSING_PATTERN
-import util
+from utils import util
 
 
 class NoisyWordle(BasicWordle):
