@@ -26,7 +26,7 @@ We also implemented different variations of the game including:
     words for all other games) and any algorithm we used.
    
     In addition, you can choose a secret word for the algorithms to guess or randomize one 
-    (exept for Absurdle where there is no secret word).
+    (except for Absurdle where there is no secret word).
 
 3. (Optional) run ```python3 simulate_games.py``` to simulate multiple Wordle games with a pygame interface.
 
@@ -37,7 +37,7 @@ We also implemented different variations of the game including:
 
 
 ### Results
-The results achieved from all the different methods can be found in our report ```AllOverTheWordle-Report.pdf```
+The results achieved from all the different methods can be found in our report ```all_over_the_wordle_report.pdf```
 
 
 
